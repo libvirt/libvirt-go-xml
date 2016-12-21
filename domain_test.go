@@ -31,7 +31,7 @@ import (
 	"testing"
 )
 
-var testData = []struct {
+var domainTestData = []struct {
 	Object   *Domain
 	Expected []string
 }{
@@ -124,7 +124,7 @@ var testData = []struct {
 }
 
 func TestDomain(t *testing.T) {
-	for _, test := range testData {
+	for _, test := range domainTestData {
 		doc, err := xml.MarshalIndent(test.Object, "", "  ")
 		if err != nil {
 			t.Fatal(err)
