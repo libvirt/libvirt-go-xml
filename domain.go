@@ -73,8 +73,33 @@ type DomainInput struct {
 	Bus  string `xml:"bus,attr"`
 }
 
+type DomainGraphicListener struct {
+	Type    string `xml:"type,attr"`
+	Address string `xml:"address,attr,omitempty"`
+	Network string `xml:"network,attr,omitempty"`
+	Socket  string `xml:"socket,attr,omitempty"`
+}
+
 type DomainGraphic struct {
-	Type string `xml:"type,attr"`
+	Type          string                  `xml:"type,attr"`
+	AutoPort      string                  `xml:"autoport,attr,omitempty"`
+	Port          int                     `xml:"port,attr,omitempty"`
+	TLSPort       int                     `xml:"tlsPort,attr,omitempty"`
+	WebSocket     int                     `xml:"websocket,attr,omitempty"`
+	Listen        string                  `xml:"listen,attr,omitempty"`
+	Socket        string                  `xml:"socket,attr,omitempty"`
+	Keymap        string                  `xml:"keymap,attr,omitempty"`
+	Passwd        string                  `xml:"passwd,attr,omitempty"`
+	PasswdValidTo string                  `xml:"passwdValidTo,attr,omitempty"`
+	Connected     string                  `xml:"connected,attr,omitempty"`
+	SharePolicy   string                  `xml:"sharePolicy,attr,omitempty"`
+	DefaultMode   string                  `xml:"defaultMode,attr,omitempty"`
+	Display       string                  `xml:"display,attr,omitempty"`
+	XAuth         string                  `xml:"xauth,attr,omitempty"`
+	FullScreen    string                  `xml:"fullscreen,attr,omitempty"`
+	ReplaceUser   string                  `xml:"replaceUser,attr,omitempty"`
+	MultiUser     string                  `xml:"multiUser,attr,omitempty"`
+	Listeners     []DomainGraphicListener `xml:"listen"`
 }
 
 type DomainVideoModel struct {
