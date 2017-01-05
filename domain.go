@@ -126,6 +126,69 @@ type DomainMemory struct {
 	Unit  string `xml:"unit,attr"`
 }
 
+type DomainOSType struct {
+	Arch    string `xml:"arch,attr"`
+	Machine string `xml:"machine,attr"`
+	Type    string `xml:",chardata"`
+}
+
+type DomainSMBios struct {
+	Mode string `xml:"mode,attr"`
+}
+
+type DomainNVRam struct {
+	NVRam    string `xml:",chardata"`
+	Template string `xml:"template,attr"`
+}
+
+type DomainBootDevice struct {
+	Dev string `xml:"dev,attr"`
+}
+
+type DomainBootMenu struct {
+	Enabled string `xml:"enabled,attr"`
+	Timeout string `xml:"timeout,attr"`
+}
+
+type DomainSysInfo struct {
+	Type      string               `xml:"type,attr"`
+	System    []DomainSysInfoEntry `xml:"system>entry"`
+	BIOS      []DomainSysInfoEntry `xml:"bios>entry"`
+	BaseBoard []DomainSysInfoEntry `xml:"baseBoard>entry"`
+}
+
+type DomainSysInfoEntry struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:",chardata"`
+}
+
+type DomainBIOS struct {
+	UseSerial     string `xml:"useserial,attr"`
+	RebootTimeout string `xml:"rebootTimeout,attr"`
+}
+
+type DomainLoader struct {
+	Path     string `xml:",chardata"`
+	Readonly string `xml:"readonly,attr"`
+	Secure   string `xml:"secure,attr"`
+	Type     string `xml:"type,attr"`
+}
+
+type DomainOS struct {
+	Type        *DomainOSType      `xml:"type"`
+	Loader      *DomainLoader      `xml:"loader"`
+	NVRam       *DomainNVRam       `xml:"nvram"`
+	Kernel      string             `xml:"kernel,omitempty"`
+	Initrd      string             `xml:"initrd,omitempty"`
+	KernelArgs  string             `xml:"cmdline,omitempty"`
+	BootDevices []DomainBootDevice `xml:"boot"`
+	BootMenu    *DomainBootMenu    `xml:"bootmenu"`
+	SMBios      *DomainSMBios      `xml:"smbios"`
+	BIOS        *DomainBIOS        `xml:"bios"`
+	Init        string             `xml:"init,omitempty"`
+	InitArgs    []string           `xml:"initarg"`
+}
+
 type Domain struct {
 	XMLName       xml.Name          `xml:"domain"`
 	Type          string            `xml:"type,attr"`
@@ -134,4 +197,9 @@ type Domain struct {
 	Memory        *DomainMemory     `xml:"memory"`
 	CurrentMemory *DomainMemory     `xml:"currentMemory"`
 	Devices       *DomainDeviceList `xml:"devices"`
+	OS            *DomainOS         `xml:"os"`
+	SysInfo       *DomainSysInfo    `xml:"sysinfo"`
+	OnPoweroff    string            `xml:"on_poweroff,omitempty"`
+	OnReboot      string            `xml:"on_reboot,omitempty"`
+	OnCrash       string            `xml:"on_crash,omitempty"`
 }

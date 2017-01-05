@@ -121,6 +121,170 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Memory: &DomainMemory{
+				Unit:  "KiB",
+				Value: "8192",
+			},
+			CurrentMemory: &DomainMemory{
+				Unit:  "KiB",
+				Value: "4096",
+			},
+			OS: &DomainOS{
+				Type: &DomainOSType{
+					Arch:    "x86_64",
+					Machine: "pc",
+					Type:    "hvm",
+				},
+				BootDevices: []DomainBootDevice{
+					DomainBootDevice{
+						Dev: "hd",
+					},
+				},
+				Loader: &DomainLoader{
+					Readonly: "yes",
+					Secure:   "no",
+					Type:     "rom",
+					Path:     "/loader",
+				},
+				SMBios: &DomainSMBios{
+					Mode: "sysinfo",
+				},
+				BIOS: &DomainBIOS{
+					UseSerial:     "yes",
+					RebootTimeout: "0",
+				},
+				Init: "/bin/systemd",
+				InitArgs: []string{
+					"--unit",
+					"emergency.service",
+				},
+			},
+			SysInfo: &DomainSysInfo{
+				Type: "smbios",
+				BIOS: []DomainSysInfoEntry{
+					DomainSysInfoEntry{
+						Name:  "vendor",
+						Value: "vendor",
+					},
+				},
+				System: []DomainSysInfoEntry{
+					DomainSysInfoEntry{
+						Name:  "manufacturer",
+						Value: "manufacturer",
+					},
+					DomainSysInfoEntry{
+						Name:  "product",
+						Value: "product",
+					},
+					DomainSysInfoEntry{
+						Name:  "version",
+						Value: "version",
+					},
+				},
+				BaseBoard: []DomainSysInfoEntry{
+					DomainSysInfoEntry{
+						Name:  "manufacturer",
+						Value: "manufacturer",
+					},
+					DomainSysInfoEntry{
+						Name:  "product",
+						Value: "product",
+					},
+					DomainSysInfoEntry{
+						Name:  "version",
+						Value: "version",
+					},
+					DomainSysInfoEntry{
+						Name:  "serial",
+						Value: "serial",
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <memory unit="KiB">8192</memory>`,
+			`  <currentMemory unit="KiB">4096</currentMemory>`,
+			`  <os>`,
+			`    <type arch="x86_64" machine="pc">hvm</type>`,
+			`    <loader readonly="yes" secure="no" type="rom">/loader</loader>`,
+			`    <boot dev="hd"></boot>`,
+			`    <smbios mode="sysinfo"></smbios>`,
+			`    <bios useserial="yes" rebootTimeout="0"></bios>`,
+			`    <init>/bin/systemd</init>`,
+			`    <initarg>--unit</initarg>`,
+			`    <initarg>emergency.service</initarg>`,
+			`  </os>`,
+			`  <sysinfo type="smbios">`,
+			`    <system>`,
+			`      <entry name="manufacturer">manufacturer</entry>`,
+			`      <entry name="product">product</entry>`,
+			`      <entry name="version">version</entry>`,
+			`    </system>`,
+			`    <bios>`,
+			`      <entry name="vendor">vendor</entry>`,
+			`    </bios>`,
+			`    <baseBoard>`,
+			`      <entry name="manufacturer">manufacturer</entry>`,
+			`      <entry name="product">product</entry>`,
+			`      <entry name="version">version</entry>`,
+			`      <entry name="serial">serial</entry>`,
+			`    </baseBoard>`,
+			`  </sysinfo>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			OS: &DomainOS{
+				NVRam: &DomainNVRam{
+					Template: "/t.fd",
+					NVRam:    "/vars.fd",
+				},
+				BootMenu: &DomainBootMenu{
+					Enabled: "yes",
+					Timeout: "3000",
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <os>`,
+			`    <nvram template="/t.fd">/vars.fd</nvram>`,
+			`    <bootmenu enabled="yes" timeout="3000"></bootmenu>`,
+			`  </os>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			OS: &DomainOS{
+				Kernel:     "/vmlinuz",
+				Initrd:     "/initrd",
+				KernelArgs: "arg",
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <os>`,
+			`    <kernel>/vmlinuz</kernel>`,
+			`    <initrd>/initrd</initrd>`,
+			`    <cmdline>arg</cmdline>`,
+			`  </os>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {
