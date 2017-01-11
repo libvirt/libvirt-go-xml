@@ -35,20 +35,18 @@
 //
 //  import (
 //   "github.com/libvirt/libvirt-go-xml"
-//   "encoding/xml"
 //  )
 //
 //  domcfg := &libvirtxml.Domain{Type: "kvm", Name: "demo",
 //                               UUID: "8f99e332-06c4-463a-9099-330fb244e1b3",
 //                               ....}
-//  xmldoc, err := xml.Marshal(domcfg)
+//  xmldoc, err := domcfg.Marshal()
 //
 // Example parsing a domainXML document, in combination with libvirt-go
 //
 //  import (
 //    "github.com/libvirt/libvirt-go"
 //    "github.com/libvirt/libvirt-go-xml"
-//    "encoding/xml"
 //    "fmt"
 //  )
 //
@@ -57,7 +55,7 @@
 //  xmldoc, err := dom.GetXMLDesc(0)
 //
 //  domcfg := &libvirtxml.Domain{}
-//  err := xml.Unmarshal([]byte(xmldocC), domcfg)
+//  err := domcfg.Unmarshal(xmldoc)
 //
 //  fmt.Printf("Virt type %s", domcfg.Type)
 //
