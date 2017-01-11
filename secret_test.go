@@ -26,7 +26,6 @@
 package libvirtxml
 
 import (
-	"encoding/xml"
 	"strings"
 	"testing"
 )
@@ -147,14 +146,14 @@ var secretTestData = []struct {
 
 func TestSecret(t *testing.T) {
 	for _, test := range secretTestData {
-		doc, err := xml.MarshalIndent(test.Object, "", "  ")
+		doc, err := test.Object.Marshal()
 		if err != nil {
 			t.Fatal(err)
 		}
 
 		expect := strings.Join(test.Expected, "\n")
 
-		if string(doc) != expect {
+		if doc != expect {
 			t.Fatal("Bad xml:\n", string(doc), "\n does not match\n", expect, "\n")
 		}
 	}

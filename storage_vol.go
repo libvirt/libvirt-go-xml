@@ -81,3 +81,15 @@ type StorageVolume struct {
 	Target       *StorageVolumeTarget       `xml:"target"`
 	BackingStore *StorageVolumeBackingStore `xml:"backingStore"`
 }
+
+func (s *StorageVolume) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *StorageVolume) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}

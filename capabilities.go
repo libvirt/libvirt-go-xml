@@ -142,3 +142,15 @@ type Caps struct {
 	Host    CapsHost    `xml:"host"`
 	Guests  []CapsGuest `xml:"guest"`
 }
+
+func (c *Caps) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), c)
+}
+
+func (c *Caps) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}

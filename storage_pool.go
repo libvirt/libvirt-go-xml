@@ -124,3 +124,15 @@ type StoragePool struct {
 	Target     *StoragePoolTarget `xml:"target"`
 	Source     *StoragePoolSource `xml:"source"`
 }
+
+func (s *StoragePool) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *StoragePool) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}

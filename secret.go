@@ -44,3 +44,15 @@ type Secret struct {
 	UUID        string       `xml:"uuid,omitempty"`
 	Usage       *SecretUsage `xml:"usage"`
 }
+
+func (s *Secret) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *Secret) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}

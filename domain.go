@@ -203,3 +203,15 @@ type Domain struct {
 	OnReboot      string            `xml:"on_reboot,omitempty"`
 	OnCrash       string            `xml:"on_crash,omitempty"`
 }
+
+func (d *Domain) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *Domain) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
