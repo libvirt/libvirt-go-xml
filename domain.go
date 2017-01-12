@@ -43,11 +43,18 @@ type DomainDiskDriver struct {
 	Type string `xml:"type,attr"`
 }
 
+type DomainDiskTarget struct {
+	Dev string `xml:"dev,attr"`
+	Bus string `xml:"bus,attr"`
+}
+
 type DomainDisk struct {
 	Type       string               `xml:"type,attr"`
 	Device     string               `xml:"device,attr"`
+	Snapshot   string               `xml:"snapshot,attr,omitempty"`
 	Driver     DomainDiskDriver     `xml:"driver"`
 	FileSource DomainDiskFileSource `xml:"source"`
+	Target     *DomainDiskTarget    `xml:"target"`
 }
 
 type DomainInterfaceMAC struct {
@@ -123,7 +130,7 @@ type DomainDeviceList struct {
 
 type DomainMemory struct {
 	Value string `xml:",chardata"`
-	Unit  string `xml:"unit,attr"`
+	Unit  string `xml:"unit,attr,omitempty"`
 }
 
 type DomainOSType struct {
@@ -191,7 +198,7 @@ type DomainOS struct {
 
 type Domain struct {
 	XMLName       xml.Name          `xml:"domain"`
-	Type          string            `xml:"type,attr"`
+	Type          string            `xml:"type,attr,omitempty"`
 	Name          string            `xml:"name"`
 	UUID          *string           `xml:"uuid"`
 	Memory        *DomainMemory     `xml:"memory"`
