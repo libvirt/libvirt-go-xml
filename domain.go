@@ -206,7 +206,7 @@ type Domain struct {
 	XMLName       xml.Name          `xml:"domain"`
 	Type          string            `xml:"type,attr,omitempty"`
 	Name          string            `xml:"name"`
-	UUID          *string           `xml:"uuid"`
+	UUID          string            `xml:"uuid,omitempty"`
 	Memory        *DomainMemory     `xml:"memory"`
 	CurrentMemory *DomainMemory     `xml:"currentMemory"`
 	MaximumMemory *DomainMaxMemory  `xml:"maxMemory"`
