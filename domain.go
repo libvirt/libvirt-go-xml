@@ -49,12 +49,12 @@ type DomainDiskTarget struct {
 }
 
 type DomainDisk struct {
-	Type       string               `xml:"type,attr"`
-	Device     string               `xml:"device,attr"`
-	Snapshot   string               `xml:"snapshot,attr,omitempty"`
-	Driver     DomainDiskDriver     `xml:"driver"`
-	FileSource DomainDiskFileSource `xml:"source"`
-	Target     *DomainDiskTarget    `xml:"target"`
+	Type       string                `xml:"type,attr"`
+	Device     string                `xml:"device,attr"`
+	Snapshot   string                `xml:"snapshot,attr,omitempty"`
+	Driver     DomainDiskDriver      `xml:"driver"`
+	FileSource *DomainDiskFileSource `xml:"source"`
+	Target     *DomainDiskTarget     `xml:"target"`
 }
 
 type DomainInterfaceMAC struct {
