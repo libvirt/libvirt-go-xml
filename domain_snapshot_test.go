@@ -97,7 +97,7 @@ var domainSnapshotTestData = []struct {
 			Domain: &Domain{
 				Name: "fedora",
 				Memory: &DomainMemory{
-					Value: "1048576",
+					Value: 1048576,
 				},
 				Devices: &DomainDeviceList{
 					Disks: []DomainDisk{

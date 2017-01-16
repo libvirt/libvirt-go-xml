@@ -129,7 +129,7 @@ type DomainDeviceList struct {
 }
 
 type DomainMemory struct {
-	Value string `xml:",chardata"`
+	Value int    `xml:",chardata"`
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 

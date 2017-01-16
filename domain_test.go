@@ -126,11 +126,11 @@ var domainTestData = []struct {
 			Name: "test",
 			Memory: &DomainMemory{
 				Unit:  "KiB",
-				Value: "8192",
+				Value: 8192,
 			},
 			CurrentMemory: &DomainMemory{
 				Unit:  "KiB",
-				Value: "4096",
+				Value: 4096,
 			},
 			MaximumMemory: &DomainMaxMemory{
 				Unit:  "KiB",
