@@ -133,6 +133,12 @@ type DomainMemory struct {
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 
+type DomainMaxMemory struct {
+	Value int    `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+	Slots int    `xml:"slots,attr,omitempty"`
+}
+
 type DomainOSType struct {
 	Arch    string `xml:"arch,attr"`
 	Machine string `xml:"machine,attr"`
@@ -203,6 +209,7 @@ type Domain struct {
 	UUID          *string           `xml:"uuid"`
 	Memory        *DomainMemory     `xml:"memory"`
 	CurrentMemory *DomainMemory     `xml:"currentMemory"`
+	MaximumMemory *DomainMaxMemory  `xml:"maxMemory"`
 	Devices       *DomainDeviceList `xml:"devices"`
 	OS            *DomainOS         `xml:"os"`
 	SysInfo       *DomainSysInfo    `xml:"sysinfo"`

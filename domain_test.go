@@ -132,6 +132,11 @@ var domainTestData = []struct {
 				Unit:  "KiB",
 				Value: "4096",
 			},
+			MaximumMemory: &DomainMaxMemory{
+				Unit:  "KiB",
+				Value: 16384,
+				Slots: 2,
+			},
 			OS: &DomainOS{
 				Type: &DomainOSType{
 					Arch:    "x86_64",
@@ -209,6 +214,7 @@ var domainTestData = []struct {
 			`  <name>test</name>`,
 			`  <memory unit="KiB">8192</memory>`,
 			`  <currentMemory unit="KiB">4096</currentMemory>`,
+			`  <maxMemory unit="KiB" slots="2">16384</maxMemory>`,
 			`  <os>`,
 			`    <type arch="x86_64" machine="pc">hvm</type>`,
 			`    <loader readonly="yes" secure="no" type="rom">/loader</loader>`,
