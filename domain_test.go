@@ -54,11 +54,11 @@ var domainTestData = []struct {
 					DomainDisk{
 						Type:   "file",
 						Device: "cdrom",
-						Driver: DomainDiskDriver{
+						Driver: &DomainDiskDriver{
 							Name: "qemu",
 							Type: "qcow2",
 						},
-						FileSource: DomainDiskFileSource{
+						FileSource: &DomainDiskFileSource{
 							File: "/var/lib/libvirt/images/demo.qcow2",
 						},
 					},

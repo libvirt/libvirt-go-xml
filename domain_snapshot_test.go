@@ -104,11 +104,11 @@ var domainSnapshotTestData = []struct {
 						DomainDisk{
 							Type:   "file",
 							Device: "disk",
-							Driver: DomainDiskDriver{
+							Driver: &DomainDiskDriver{
 								Name: "qemu",
 								Type: "raw",
 							},
-							FileSource: DomainDiskFileSource{
+							FileSource: &DomainDiskFileSource{
 								File: "/path/to/old",
 							},
 							Target: &DomainDiskTarget{
@@ -120,11 +120,11 @@ var domainSnapshotTestData = []struct {
 							Type:     "file",
 							Device:   "disk",
 							Snapshot: "external",
-							Driver: DomainDiskDriver{
+							Driver: &DomainDiskDriver{
 								Name: "qemu",
 								Type: "raw",
 							},
-							FileSource: DomainDiskFileSource{
+							FileSource: &DomainDiskFileSource{
 								File: "/path/to/old2",
 							},
 							Target: &DomainDiskTarget{
