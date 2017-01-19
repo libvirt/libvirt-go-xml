@@ -202,6 +202,10 @@ type DomainOS struct {
 	InitArgs    []string           `xml:"initarg"`
 }
 
+type DomainResource struct {
+	Partition string `xml:"partition,omitempty"`
+}
+
 type Domain struct {
 	XMLName       xml.Name          `xml:"domain"`
 	Type          string            `xml:"type,attr,omitempty"`
@@ -210,6 +214,7 @@ type Domain struct {
 	Memory        *DomainMemory     `xml:"memory"`
 	CurrentMemory *DomainMemory     `xml:"currentMemory"`
 	MaximumMemory *DomainMaxMemory  `xml:"maxMemory"`
+	Resource      *DomainResource   `xml:"resource"`
 	Devices       *DomainDeviceList `xml:"devices"`
 	OS            *DomainOS         `xml:"os"`
 	SysInfo       *DomainSysInfo    `xml:"sysinfo"`

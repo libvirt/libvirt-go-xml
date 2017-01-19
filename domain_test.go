@@ -290,6 +290,23 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Resource: &DomainResource{
+				Partition: "/machines/production",
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <resource>`,
+			`    <partition>/machines/production</partition>`,
+			`  </resource>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {
