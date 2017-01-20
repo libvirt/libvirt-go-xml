@@ -78,7 +78,7 @@ type CapsHostNUMADistance struct {
 
 type CapsHostNUMACell struct {
 	ID        int                    `xml:"id,attr"`
-	Memory    []CapsHostNUMAMemory   `xml:"memory"`
+	Memory    CapsHostNUMAMemory     `xml:"memory"`
 	PageInfo  []CapsHostNUMAPageInfo `xml:"pages"`
 	Distances []CapsHostNUMADistance `xml:"distances>sibling"`
 	CPUS      []CapsHostNUMACPU      `xml:"cpus>cpu"`
