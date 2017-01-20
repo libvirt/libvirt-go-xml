@@ -54,14 +54,14 @@ type CapsHostCPU struct {
 }
 
 type CapsHostNUMAMemory struct {
-	Size int    `xml:"size,attr"`
+	Size uint64 `xml:"size,attr"`
 	Unit string `xml:"unit,attr"`
 }
 
 type CapsHostNUMAPageInfo struct {
 	Size  int    `xml:"size,attr"`
 	Unit  string `xml:"unit,attr"`
-	Count int    `xml:",chardata"`
+	Count uint64 `xml:",chardata"`
 }
 
 type CapsHostNUMACPU struct {
