@@ -377,6 +377,230 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "bridge",
+						MAC: &DomainInterfaceMAC{
+							Address: "06:39:b4:00:00:46",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							Bridge: "private",
+						},
+						Target: &DomainInterfaceTarget{
+							Dev: "vnet3",
+						},
+						Alias: &DomainInterfaceAlias{
+							Name: "net1",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="bridge">`,
+			`      <mac address="06:39:b4:00:00:46"></mac>`,
+			`      <model type="virtio"></model>`,
+			`      <source bridge="private"></source>`,
+			`      <target dev="vnet3"></target>`,
+			`      <alias name="net1"></alias>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "network",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "e1000",
+						},
+						Source: &DomainInterfaceSource{
+							Network: "default",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="network">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="e1000"></model>`,
+			`      <source network="default"></source>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "user",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+						Link: &DomainInterfaceLink{
+							State: "up",
+						},
+						Boot: &DomainInterfaceBoot{
+							Order: 1,
+						},
+						Driver: &DomainInterfaceDriver{
+							Name:   "vhost",
+							Queues: 5,
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="user">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="virtio"></model>`,
+			`      <link state="up"></link>`,
+			`      <boot order="1"></boot>`,
+			`      <driver name="vhost" queues="5"></driver>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "server",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							Address: "127.0.0.1",
+							Port:    1234,
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="server">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="virtio"></model>`,
+			`      <source address="127.0.0.1" port="1234"></source>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "ethernet",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+						Script: &DomainInterfaceScript{
+							Path: "/etc/qemu-ifup",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="ethernet">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="virtio"></model>`,
+			`      <script path="/etc/qemu-ifup"></script>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "vhostuser",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							Type: "unix",
+							Path: "/tmp/vhost0.sock",
+							Mode: "server",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="vhostuser">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="virtio"></model>`,
+			`      <source type="unix" path="/tmp/vhost0.sock" mode="server"></source>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {

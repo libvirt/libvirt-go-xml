@@ -65,10 +65,52 @@ type DomainInterfaceModel struct {
 	Type string `xml:"type,attr"`
 }
 
+type DomainInterfaceSource struct {
+	Bridge  string `xml:"bridge,attr,omitempty"`
+	Network string `xml:"network,attr,omitempty"`
+	Address string `xml:"address,attr,omitempty"`
+	Type    string `xml:"type,attr,omitempty"`
+	Path    string `xml:"path,attr,omitempty"`
+	Mode    string `xml:"mode,attr,omitempty"`
+	Port    uint   `xml:"port,attr,omitempty"`
+}
+
+type DomainInterfaceTarget struct {
+	Dev string `xml:"dev,attr"`
+}
+
+type DomainInterfaceAlias struct {
+	Name string `xml:"name,attr"`
+}
+
+type DomainInterfaceLink struct {
+	State string `xml:"state,attr"`
+}
+
+type DomainInterfaceBoot struct {
+	Order int `xml:"order,attr"`
+}
+
+type DomainInterfaceScript struct {
+	Path string `xml:"path,attr"`
+}
+
+type DomainInterfaceDriver struct {
+	Name   string `xml:"name,attr"`
+	Queues uint   `xml:"queues,attr,omitempty"`
+}
+
 type DomainInterface struct {
-	Type  string                `xml:"type,attr"`
-	MAC   *DomainInterfaceMAC   `xml:"mac"`
-	Model *DomainInterfaceModel `xml:"model"`
+	Type   string                 `xml:"type,attr"`
+	MAC    *DomainInterfaceMAC    `xml:"mac"`
+	Model  *DomainInterfaceModel  `xml:"model"`
+	Source *DomainInterfaceSource `xml:"source"`
+	Target *DomainInterfaceTarget `xml:"target"`
+	Alias  *DomainInterfaceAlias  `xml:"alias"`
+	Link   *DomainInterfaceLink   `xml:"link"`
+	Boot   *DomainInterfaceBoot   `xml:"boot"`
+	Script *DomainInterfaceScript `xml:"script"`
+	Driver *DomainInterfaceDriver `xml:"driver"`
 }
 
 type DomainChardev struct {
