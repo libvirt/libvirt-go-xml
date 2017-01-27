@@ -311,6 +311,12 @@ var domainTestData = []struct {
 		Object: &Domain{
 			Type: "kvm",
 			Name: "test",
+			VCPU: &DomainVCPU{
+				Placement: "static",
+				CPUSet:    "1-4,^3,6",
+				Current:   "1",
+				Value:     2,
+			},
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
@@ -328,6 +334,7 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
+			`  <vcpu placement="static" cpuset="1-4,^3,6" current="1">2</vcpu>`,
 			`  <devices>`,
 			`    <interface type="network">`,
 			`      <mac address="00:11:22:33:44:55"></mac>`,
