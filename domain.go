@@ -206,6 +206,13 @@ type DomainResource struct {
 	Partition string `xml:"partition,omitempty"`
 }
 
+type DomainVCPU struct {
+	Placement string `xml:"placement,attr,omitempty"`
+	CPUSet    string `xml:"cpuset,attr,omitempty"`
+	Current   string `xml:"current,attr,omitempty"`
+	Value     int    `xml:",chardata"`
+}
+
 type Domain struct {
 	XMLName       xml.Name          `xml:"domain"`
 	Type          string            `xml:"type,attr,omitempty"`
@@ -214,6 +221,7 @@ type Domain struct {
 	Memory        *DomainMemory     `xml:"memory"`
 	CurrentMemory *DomainMemory     `xml:"currentMemory"`
 	MaximumMemory *DomainMaxMemory  `xml:"maxMemory"`
+	VCPU          *DomainVCPU       `xml:"vcpu"`
 	Resource      *DomainResource   `xml:"resource"`
 	Devices       *DomainDeviceList `xml:"devices"`
 	OS            *DomainOS         `xml:"os"`

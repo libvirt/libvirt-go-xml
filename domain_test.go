@@ -307,6 +307,24 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			VCPU: &DomainVCPU{
+				Placement: "static",
+				CPUSet:    "1-4,^3,6",
+				Current:   "1",
+				Value:     2,
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <vcpu placement="static" cpuset="1-4,^3,6" current="1">2</vcpu>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {
