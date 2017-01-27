@@ -213,6 +213,31 @@ type DomainVCPU struct {
 	Value     int    `xml:",chardata"`
 }
 
+type DomainCPUModel struct {
+	Fallback string `xml:"fallback,attr,omitempty"`
+	Value    string `xml:",chardata"`
+}
+
+type DomainCPUTopology struct {
+	Sockets int `xml:"sockets,attr,omitempty"`
+	Cores   int `xml:"cores,attr,omitempty"`
+	Threads int `xml:"threads,attr,omitempty"`
+}
+
+type DomainCPUFeature struct {
+	Policy string `xml:"policy,attr,omitempty"`
+	Name   string `xml:"name,attr,omitempty"`
+}
+
+type DomainCPU struct {
+	Match    string             `xml:"match,attr,omitempty"`
+	Mode     string             `xml:"mode,attr,omitempty"`
+	Model    *DomainCPUModel    `xml:"model"`
+	Vendor   string             `xml:"vendor,omitempty"`
+	Topology *DomainCPUTopology `xml:"topology"`
+	Features []DomainCPUFeature `xml:"feature"`
+}
+
 type Domain struct {
 	XMLName       xml.Name          `xml:"domain"`
 	Type          string            `xml:"type,attr,omitempty"`
@@ -222,6 +247,7 @@ type Domain struct {
 	CurrentMemory *DomainMemory     `xml:"currentMemory"`
 	MaximumMemory *DomainMaxMemory  `xml:"maxMemory"`
 	VCPU          *DomainVCPU       `xml:"vcpu"`
+	CPU           *DomainCPU        `xml:"cpu"`
 	Resource      *DomainResource   `xml:"resource"`
 	Devices       *DomainDeviceList `xml:"devices"`
 	OS            *DomainOS         `xml:"os"`

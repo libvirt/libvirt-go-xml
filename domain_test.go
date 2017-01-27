@@ -344,6 +344,39 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			CPU: &DomainCPU{
+				Match: "exact",
+				Model: &DomainCPUModel{
+					Fallback: "allow",
+					Value:    "core2duo",
+				},
+				Vendor: "Intel",
+				Topology: &DomainCPUTopology{
+					Sockets: 1,
+					Cores:   2,
+					Threads: 1,
+				},
+				Features: []DomainCPUFeature{
+					DomainCPUFeature{Policy: "disable", Name: "lahf_lm"},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <cpu match="exact">`,
+			`    <model fallback="allow">core2duo</model>`,
+			`    <vendor>Intel</vendor>`,
+			`    <topology sockets="1" cores="2" threads="1"></topology>`,
+			`    <feature policy="disable" name="lahf_lm"></feature>`,
+			`  </cpu>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {
