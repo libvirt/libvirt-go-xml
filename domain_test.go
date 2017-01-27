@@ -307,6 +307,36 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "network",
+						MAC: &DomainInterfaceMAC{
+							Address: "00:11:22:33:44:55",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="network">`,
+			`      <mac address="00:11:22:33:44:55"></mac>`,
+			`      <model type="virtio"></model>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {
