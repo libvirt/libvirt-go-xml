@@ -140,8 +140,8 @@ type DomainMaxMemory struct {
 }
 
 type DomainOSType struct {
-	Arch    string `xml:"arch,attr"`
-	Machine string `xml:"machine,attr"`
+	Arch    string `xml:"arch,attr,omitempty"`
+	Machine string `xml:"machine,attr,omitempty"`
 	Type    string `xml:",chardata"`
 }
 
