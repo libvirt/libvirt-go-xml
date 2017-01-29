@@ -62,13 +62,13 @@ type DomainInterfaceMAC struct {
 }
 
 type DomainInterfaceModel struct {
-	Type string `xml:type,attr"`
+	Type string `xml:"type,attr"`
 }
 
 type DomainInterface struct {
-	Type  string               `xml:"type,attr"`
-	MAC   string               `xml:"mac"`
-	Model DomainInterfaceModel `xml:"model"`
+	Type  string                `xml:"type,attr"`
+	MAC   *DomainInterfaceMAC   `xml:"mac"`
+	Model *DomainInterfaceModel `xml:"model"`
 }
 
 type DomainChardev struct {
