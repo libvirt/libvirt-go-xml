@@ -137,8 +137,34 @@ type DomainInterface struct {
 	Driver *DomainInterfaceDriver `xml:"driver"`
 }
 
+type DomainChardevSource struct {
+	Mode string `xml:"mode,attr"`
+	Path string `xml:"path,attr"`
+}
+
+type DomainChardevTarget struct {
+	Type  string `xml:"type,attr"`
+	Name  string `xml:"name,attr"`
+	State string `xml:"state,attr,omitempty"` // is guest agent connected?
+}
+
+type DomainAlias struct {
+	Name string `xml:"name,attr"`
+}
+
+type DomainAddress struct {
+	Type       string `xml:"type,attr"`
+	Controller *uint  `xml:"controller,attr"`
+	Bus        *uint  `xml:"bus,attr"`
+	Port       *uint  `xml:"port,attr"`
+}
+
 type DomainChardev struct {
-	Type string `xml:"type,attr"`
+	Type    string               `xml:"type,attr"`
+	Source  *DomainChardevSource `xml:"source"`
+	Target  *DomainChardevTarget `xml:"target"`
+	Alias   *DomainAlias         `xml:"alias"`
+	Address *DomainAddress       `xml:"address"`
 }
 
 type DomainInput struct {
@@ -192,6 +218,7 @@ type DomainDeviceList struct {
 	Inputs      []DomainInput      `xml:"input"`
 	Graphics    []DomainGraphic    `xml:"graphics"`
 	Videos      []DomainVideo      `xml:"video"`
+	Channels    []DomainChardev    `xml:"channel"`
 }
 
 type DomainMemory struct {
