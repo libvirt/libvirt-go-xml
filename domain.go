@@ -34,8 +34,20 @@ type DomainController struct {
 	Index string `xml:"index,attr"`
 }
 
-type DomainDiskFileSource struct {
-	File string `xml:"file,attr"`
+type DomainDiskSourceHost struct {
+	Transport string `xml:"transport,attr,omitempty"`
+	Name      string `xml:"name,attr,omitempty"`
+	Port      string `xml:"port,attr,omitempty"`
+	Socket    string `xml:"socket,attr,omitempty"`
+}
+
+type DomainDiskSource struct {
+	File          string                 `xml:"file,attr,omitempty"`
+	Device        string                 `xml:"dev,attr,omitempty"`
+	Protocol      string                 `xml:"protocol,attr,omitempty"`
+	Name          string                 `xml:"name,attr,omitempty"`
+	Hosts         []DomainDiskSourceHost `xml:"host"`
+	StartupPolicy string                 `xml:"startupPolicy,attr,omitempty"`
 }
 
 type DomainDiskDriver struct {
@@ -49,12 +61,12 @@ type DomainDiskTarget struct {
 }
 
 type DomainDisk struct {
-	Type       string                `xml:"type,attr"`
-	Device     string                `xml:"device,attr"`
-	Snapshot   string                `xml:"snapshot,attr,omitempty"`
-	Driver     *DomainDiskDriver     `xml:"driver"`
-	FileSource *DomainDiskFileSource `xml:"source"`
-	Target     *DomainDiskTarget     `xml:"target"`
+	Type     string            `xml:"type,attr"`
+	Device   string            `xml:"device,attr"`
+	Snapshot string            `xml:"snapshot,attr,omitempty"`
+	Driver   *DomainDiskDriver `xml:"driver"`
+	Source   *DomainDiskSource `xml:"source"`
+	Target   *DomainDiskTarget `xml:"target"`
 }
 
 type DomainInterfaceMAC struct {

@@ -108,7 +108,7 @@ var domainSnapshotTestData = []struct {
 								Name: "qemu",
 								Type: "raw",
 							},
-							FileSource: &DomainDiskFileSource{
+							Source: &DomainDiskSource{
 								File: "/path/to/old",
 							},
 							Target: &DomainDiskTarget{
@@ -124,7 +124,7 @@ var domainSnapshotTestData = []struct {
 								Name: "qemu",
 								Type: "raw",
 							},
-							FileSource: &DomainDiskFileSource{
+							Source: &DomainDiskSource{
 								File: "/path/to/old2",
 							},
 							Target: &DomainDiskTarget{

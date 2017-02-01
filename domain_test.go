@@ -58,8 +58,68 @@ var domainTestData = []struct {
 							Name: "qemu",
 							Type: "qcow2",
 						},
-						FileSource: &DomainDiskFileSource{
+						Source: &DomainDiskSource{
 							File: "/var/lib/libvirt/images/demo.qcow2",
+						},
+						Target: &DomainDiskTarget{
+							Dev: "vda",
+							Bus: "virtio",
+						},
+					},
+					DomainDisk{
+						Type:   "block",
+						Device: "disk",
+						Driver: &DomainDiskDriver{
+							Name: "qemu",
+							Type: "raw",
+						},
+						Source: &DomainDiskSource{
+							Device: "/dev/sda1",
+						},
+						Target: &DomainDiskTarget{
+							Dev: "vdb",
+							Bus: "virtio",
+						},
+					},
+					DomainDisk{
+						Type:   "network",
+						Device: "disk",
+						Source: &DomainDiskSource{
+							Protocol: "rbd",
+							Name:     "somepool/somevol",
+							Hosts: []DomainDiskSourceHost{
+								DomainDiskSourceHost{
+									Transport: "tcp",
+									Name:      "rbd1.example.com",
+									Port:      "3000",
+								},
+								DomainDiskSourceHost{
+									Transport: "tcp",
+									Name:      "rbd2.example.com",
+									Port:      "3000",
+								},
+							},
+						},
+						Target: &DomainDiskTarget{
+							Dev: "vdc",
+							Bus: "virtio",
+						},
+					},
+					DomainDisk{
+						Type:   "network",
+						Device: "disk",
+						Source: &DomainDiskSource{
+							Protocol: "nbd",
+							Hosts: []DomainDiskSourceHost{
+								DomainDiskSourceHost{
+									Transport: "unix",
+									Socket:    "/var/run/nbd.sock",
+								},
+							},
+						},
+						Target: &DomainDiskTarget{
+							Dev: "vdd",
+							Bus: "virtio",
 						},
 					},
 				},
@@ -72,6 +132,25 @@ var domainTestData = []struct {
 			`    <disk type="file" device="cdrom">`,
 			`      <driver name="qemu" type="qcow2"></driver>`,
 			`      <source file="/var/lib/libvirt/images/demo.qcow2"></source>`,
+			`      <target dev="vda" bus="virtio"></target>`,
+			`    </disk>`,
+			`    <disk type="block" device="disk">`,
+			`      <driver name="qemu" type="raw"></driver>`,
+			`      <source dev="/dev/sda1"></source>`,
+			`      <target dev="vdb" bus="virtio"></target>`,
+			`    </disk>`,
+			`    <disk type="network" device="disk">`,
+			`      <source protocol="rbd" name="somepool/somevol">`,
+			`        <host transport="tcp" name="rbd1.example.com" port="3000"></host>`,
+			`        <host transport="tcp" name="rbd2.example.com" port="3000"></host>`,
+			`      </source>`,
+			`      <target dev="vdc" bus="virtio"></target>`,
+			`    </disk>`,
+			`    <disk type="network" device="disk">`,
+			`      <source protocol="nbd">`,
+			`        <host transport="unix" socket="/var/run/nbd.sock"></host>`,
+			`      </source>`,
+			`      <target dev="vdd" bus="virtio"></target>`,
 			`    </disk>`,
 			`  </devices>`,
 			`</domain>`,
