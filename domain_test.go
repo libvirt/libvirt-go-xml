@@ -84,6 +84,13 @@ var domainTestData = []struct {
 					DomainDisk{
 						Type:   "network",
 						Device: "disk",
+						Auth: &DomainDiskAuth{
+							Username: "fred",
+							Secret: &DomainDiskSecret{
+								Type: "ceph",
+								UUID: "e49f09c9-119e-43fd-b5a9-000d41e65493",
+							},
+						},
 						Source: &DomainDiskSource{
 							Protocol: "rbd",
 							Name:     "somepool/somevol",
@@ -140,6 +147,9 @@ var domainTestData = []struct {
 			`      <target dev="vdb" bus="virtio"></target>`,
 			`    </disk>`,
 			`    <disk type="network" device="disk">`,
+			`      <auth username="fred">`,
+			`        <secret type="ceph" uuid="e49f09c9-119e-43fd-b5a9-000d41e65493"></secret>`,
+			`      </auth>`,
 			`      <source protocol="rbd" name="somepool/somevol">`,
 			`        <host transport="tcp" name="rbd1.example.com" port="3000"></host>`,
 			`        <host transport="tcp" name="rbd2.example.com" port="3000"></host>`,

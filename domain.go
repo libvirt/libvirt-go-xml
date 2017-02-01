@@ -34,6 +34,17 @@ type DomainController struct {
 	Index string `xml:"index,attr"`
 }
 
+type DomainDiskSecret struct {
+	Type  string `xml:"type,attr,omitempty"`
+	Usage string `xml:"usage,attr,omitempty"`
+	UUID  string `xml:"uuid,attr,omitempty"`
+}
+
+type DomainDiskAuth struct {
+	Username string            `xml:"username,attr,omitempty"`
+	Secret   *DomainDiskSecret `xml:"secret"`
+}
+
 type DomainDiskSourceHost struct {
 	Transport string `xml:"transport,attr,omitempty"`
 	Name      string `xml:"name,attr,omitempty"`
@@ -65,6 +76,7 @@ type DomainDisk struct {
 	Device   string            `xml:"device,attr"`
 	Snapshot string            `xml:"snapshot,attr,omitempty"`
 	Driver   *DomainDiskDriver `xml:"driver"`
+	Auth     *DomainDiskAuth   `xml:"auth"`
 	Source   *DomainDiskSource `xml:"source"`
 	Target   *DomainDiskTarget `xml:"target"`
 }
