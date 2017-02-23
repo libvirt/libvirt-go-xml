@@ -62,13 +62,13 @@ type DomainDiskSource struct {
 }
 
 type DomainDiskDriver struct {
-	Name string `xml:"name,attr"`
-	Type string `xml:"type,attr"`
+	Name string `xml:"name,attr,omitempty"`
+	Type string `xml:"type,attr,omitempty"`
 }
 
 type DomainDiskTarget struct {
-	Dev string `xml:"dev,attr"`
-	Bus string `xml:"bus,attr"`
+	Dev string `xml:"dev,attr,omitempty"`
+	Bus string `xml:"bus,attr,omitempty"`
 }
 
 type DomainDisk struct {
