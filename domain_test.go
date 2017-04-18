@@ -690,6 +690,61 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Filesystems: []DomainFilesystem{
+					DomainFilesystem{
+						Type:       "mount",
+						AccessMode: "mapped",
+						Driver: &DomainFilesystemDriver{
+							Type:     "path",
+							WRPolicy: "immediate",
+						},
+						Source: &DomainFilesystemSource{
+							Dir: "/home/user/test",
+						},
+						Target: &DomainFilesystemTarget{
+							Dir: "user-test-mount",
+						},
+					},
+					DomainFilesystem{
+						Type:       "file",
+						AccessMode: "passthrough",
+						Driver: &DomainFilesystemDriver{
+							Name: "loop",
+							Type: "raw",
+						},
+						Source: &DomainFilesystemSource{
+							File: "/home/user/test.img",
+						},
+						Target: &DomainFilesystemTarget{
+							Dir: "user-file-test-mount",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <filesystem type="mount" accessmode="mapped">`,
+			`      <driver type="path" wrpolicy="immediate"></driver>`,
+			`      <source dir="/home/user/test"></source>`,
+			`      <target dir="user-test-mount"></target>`,
+			`    </filesystem>`,
+			`    <filesystem type="file" accessmode="passthrough">`,
+			`      <driver type="raw" name="loop"></driver>`,
+			`      <source file="/home/user/test.img"></source>`,
+			`      <target dir="user-file-test-mount"></target>`,
+			`    </filesystem>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {

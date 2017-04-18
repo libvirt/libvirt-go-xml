@@ -81,6 +81,45 @@ type DomainDisk struct {
 	Target   *DomainDiskTarget `xml:"target"`
 }
 
+type DomainFilesystemDriver struct {
+	Type     string `xml:"type,attr"`
+	Name     string `xml:"name,attr,omitempty"`
+	WRPolicy string `xml:"wrpolicy,attr,omitempty"`
+}
+
+type DomainFilesystemSource struct {
+	Dir  string `xml:"dir,attr,omitempty"`
+	File string `xml:"file,attr,omitempty"`
+}
+
+type DomainFilesystemTarget struct {
+	Dir string `xml:"dir,attr"`
+}
+
+type DomainFilesystemReadOnly struct {
+}
+
+type DomainFilesystemSpaceHardLimit struct {
+	Value int    `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+}
+
+type DomainFilesystemSpaceSoftLimit struct {
+	Value int    `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+}
+
+type DomainFilesystem struct {
+	Type           string                          `xml:"type,attr"`
+	AccessMode     string                          `xml:"accessmode,attr"`
+	Driver         *DomainFilesystemDriver         `xml:"driver"`
+	Source         *DomainFilesystemSource         `xml:"source"`
+	Target         *DomainFilesystemTarget         `xml:"target"`
+	ReadOnly       *DomainFilesystemReadOnly       `xml:"readonly"`
+	SpaceHardLimit *DomainFilesystemSpaceHardLimit `xml:"space_hard_limit"`
+	SpaceSoftLimit *DomainFilesystemSpaceSoftLimit `xml:"space_soft_limit"`
+}
+
 type DomainInterfaceMAC struct {
 	Address string `xml:"address,attr"`
 }
@@ -212,6 +251,7 @@ type DomainVideo struct {
 type DomainDeviceList struct {
 	Controllers []DomainController `xml:"controller"`
 	Disks       []DomainDisk       `xml:"disk"`
+	Filesystems []DomainFilesystem `xml:"filesystem"`
 	Interfaces  []DomainInterface  `xml:"interface"`
 	Serials     []DomainChardev    `xml:"serial"`
 	Consoles    []DomainChardev    `xml:"console"`
