@@ -373,23 +373,82 @@ type DomainCPU struct {
 	Features []DomainCPUFeature `xml:"feature"`
 }
 
+type DomainFeature struct {
+}
+
+type DomainFeatureState struct {
+	State string `xml:"state,attr,omitempty"`
+}
+
+type DomainFeatureAPIC struct {
+	EOI string `xml:"eio,attr,omitempty"`
+}
+
+type DomainFeatureHyperVVendorId struct {
+	DomainFeatureState
+	Value string `xml:"value,attr,omitempty"`
+}
+
+type DomainFeatureHyperVSpinlocks struct {
+	DomainFeatureState
+	Retries uint `xml:"retries,attr,omitempty"`
+}
+
+type DomainFeatureHyperV struct {
+	DomainFeature
+	Relaxed   *DomainFeatureState           `xml:"relaxed"`
+	VAPIC     *DomainFeatureState           `xml:"vapic"`
+	Spinlocks *DomainFeatureHyperVSpinlocks `xml:"spinlocks"`
+	VPIndex   *DomainFeatureState           `xml:"vpindex"`
+	Runtime   *DomainFeatureState           `xml:"runtime"`
+	Synic     *DomainFeatureState           `xml:"synic"`
+	STimer    *DomainFeatureState           `xml:"stimer"`
+	Reset     *DomainFeatureState           `xml:"reset"`
+	VendorId  *DomainFeatureHyperVVendorId  `xml:"vendor_id"`
+}
+
+type DomainFeatureKVM struct {
+	Hidden *DomainFeatureState `xml:"hidden"`
+}
+
+type DomainFeatureGIC struct {
+	Version string `xml:"version,attr,omitempty"`
+}
+
+type DomainFeatureList struct {
+	PAE        *DomainFeature       `xml:"pae"`
+	ACPI       *DomainFeature       `xml:"acpi"`
+	APIC       *DomainFeatureAPIC   `xml:"apic"`
+	HAP        *DomainFeatureState  `xml:"hap"`
+	Viridian   *DomainFeature       `xml:"viridian"`
+	PrivNet    *DomainFeature       `xml:"privnet"`
+	HyperV     *DomainFeatureHyperV `xml:"hyperv"`
+	KVM        *DomainFeatureKVM    `xml:"kvm"`
+	PVSpinlock *DomainFeatureState  `xml:"pvspinlock"`
+	PMU        *DomainFeatureState  `xml:"pmu"`
+	VMPort     *DomainFeatureState  `xml:"vmport"`
+	GIC        *DomainFeatureGIC    `xml:"gic"`
+	SMM        *DomainFeatureState  `xml:"smm"`
+}
+
 type Domain struct {
-	XMLName       xml.Name          `xml:"domain"`
-	Type          string            `xml:"type,attr,omitempty"`
-	Name          string            `xml:"name"`
-	UUID          string            `xml:"uuid,omitempty"`
-	Memory        *DomainMemory     `xml:"memory"`
-	CurrentMemory *DomainMemory     `xml:"currentMemory"`
-	MaximumMemory *DomainMaxMemory  `xml:"maxMemory"`
-	VCPU          *DomainVCPU       `xml:"vcpu"`
-	CPU           *DomainCPU        `xml:"cpu"`
-	Resource      *DomainResource   `xml:"resource"`
-	Devices       *DomainDeviceList `xml:"devices"`
-	OS            *DomainOS         `xml:"os"`
-	SysInfo       *DomainSysInfo    `xml:"sysinfo"`
-	OnPoweroff    string            `xml:"on_poweroff,omitempty"`
-	OnReboot      string            `xml:"on_reboot,omitempty"`
-	OnCrash       string            `xml:"on_crash,omitempty"`
+	XMLName       xml.Name           `xml:"domain"`
+	Type          string             `xml:"type,attr,omitempty"`
+	Name          string             `xml:"name"`
+	UUID          string             `xml:"uuid,omitempty"`
+	Memory        *DomainMemory      `xml:"memory"`
+	CurrentMemory *DomainMemory      `xml:"currentMemory"`
+	MaximumMemory *DomainMaxMemory   `xml:"maxMemory"`
+	VCPU          *DomainVCPU        `xml:"vcpu"`
+	CPU           *DomainCPU         `xml:"cpu"`
+	Resource      *DomainResource    `xml:"resource"`
+	Devices       *DomainDeviceList  `xml:"devices"`
+	OS            *DomainOS          `xml:"os"`
+	SysInfo       *DomainSysInfo     `xml:"sysinfo"`
+	OnPoweroff    string             `xml:"on_poweroff,omitempty"`
+	OnReboot      string             `xml:"on_reboot,omitempty"`
+	OnCrash       string             `xml:"on_crash,omitempty"`
+	Features      *DomainFeatureList `xml:"features"`
 }
 
 func (d *Domain) Unmarshal(doc string) error {
