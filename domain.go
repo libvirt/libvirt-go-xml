@@ -57,6 +57,8 @@ type DomainDiskSource struct {
 	Device        string                 `xml:"dev,attr,omitempty"`
 	Protocol      string                 `xml:"protocol,attr,omitempty"`
 	Name          string                 `xml:"name,attr,omitempty"`
+	Pool          string                 `xml:"pool,attr,omitempty"`
+	Volume        string                 `xml:"volume,attr,omitempty"`
 	Hosts         []DomainDiskSourceHost `xml:"host"`
 	StartupPolicy string                 `xml:"startupPolicy,attr,omitempty"`
 }
