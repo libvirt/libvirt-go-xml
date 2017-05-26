@@ -132,6 +132,8 @@ var domainTestData = []struct {
 					DomainDisk{
 						Type: "volume",
 						Device: "cdrom",
+						Cache: "none",
+						Io: "native",
 						Source: &DomainDiskSource{
 							Pool: "default",
 							Volume: "myvolume",
@@ -174,7 +176,7 @@ var domainTestData = []struct {
 			`      </source>`,
 			`      <target dev="vdd" bus="virtio"></target>`,
 			`    </disk>`,
-			`    <disk type="volume" device="cdrom">`,
+			`    <disk type="volume" device="cdrom" cache="none" io="native">`,
 			`      <source pool="default" volume="myvolume"></source>`,
 			`      <target dev="vde" bus="virtio"></target>`,
 			`    </disk>`,
