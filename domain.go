@@ -66,8 +66,10 @@ type DomainDiskSource struct {
 }
 
 type DomainDiskDriver struct {
-	Name string `xml:"name,attr,omitempty"`
-	Type string `xml:"type,attr,omitempty"`
+	Name  string `xml:"name,attr,omitempty"`
+	Type  string `xml:"type,attr,omitempty"`
+	Cache string `xml:"cache,attr,omitempty"`
+	IO    string `xml:"io,attr,omitempty"`
 }
 
 type DomainDiskTarget struct {
@@ -79,8 +81,6 @@ type DomainDisk struct {
 	Type     string            `xml:"type,attr"`
 	Device   string            `xml:"device,attr"`
 	Snapshot string            `xml:"snapshot,attr,omitempty"`
-	Cache    string            `xml:"cache,attr,omitempty"`
-	Io       string            `xml:"io,attr,omitempty"`
 	Driver   *DomainDiskDriver `xml:"driver"`
 	Auth     *DomainDiskAuth   `xml:"auth"`
 	Source   *DomainDiskSource `xml:"source"`
