@@ -201,9 +201,10 @@ type DomainChardevSource struct {
 }
 
 type DomainChardevTarget struct {
-	Type  string `xml:"type,attr"`
-	Name  string `xml:"name,attr"`
+	Type  string `xml:"type,attr,omitempty"`
+	Name  string `xml:"name,attr,omitempty"`
 	State string `xml:"state,attr,omitempty"` // is guest agent connected?
+	Port  *uint  `xml:"port,attr"`
 }
 
 type DomainAlias struct {

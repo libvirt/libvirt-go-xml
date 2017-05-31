@@ -46,6 +46,8 @@ var videoAddr = Address{0, 0, 5, 0}
 var fsAddr = Address{0, 0, 6, 0}
 var balloonAddr = Address{0, 0, 7, 0}
 
+var serialPort uint = 0
+
 var domainTestData = []struct {
 	Object   *Domain
 	Expected []string
@@ -266,12 +268,23 @@ var domainTestData = []struct {
 						Function: &balloonAddr.Function,
 					},
 				},
+				Serials: []DomainChardev{
+					DomainChardev{
+						Type: "pty",
+						Target: &DomainChardevTarget{
+							Port: &serialPort,
+						},
+					},
+				},
 			},
 		},
 		Expected: []string{
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
 			`  <devices>`,
+			`    <serial type="pty">`,
+			`      <target port="0"></target>`,
+			`    </serial>`,
 			`    <input type="tablet" bus="usb"></input>`,
 			`    <input type="keyboard" bus="ps2"></input>`,
 			`    <graphics type="vnc"></graphics>`,
