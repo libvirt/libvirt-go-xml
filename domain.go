@@ -102,12 +102,12 @@ type DomainFilesystemReadOnly struct {
 }
 
 type DomainFilesystemSpaceHardLimit struct {
-	Value int    `xml:",chardata"`
+	Value uint   `xml:",chardata"`
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 
 type DomainFilesystemSpaceSoftLimit struct {
-	Value int    `xml:",chardata"`
+	Value uint   `xml:",chardata"`
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 
@@ -153,7 +153,7 @@ type DomainInterfaceLink struct {
 }
 
 type DomainInterfaceBoot struct {
-	Order int `xml:"order,attr"`
+	Order uint `xml:"order,attr"`
 }
 
 type DomainInterfaceScript struct {
@@ -264,14 +264,14 @@ type DomainDeviceList struct {
 }
 
 type DomainMemory struct {
-	Value int    `xml:",chardata"`
+	Value uint   `xml:",chardata"`
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 
 type DomainMaxMemory struct {
-	Value int    `xml:",chardata"`
+	Value uint   `xml:",chardata"`
 	Unit  string `xml:"unit,attr,omitempty"`
-	Slots int    `xml:"slots,attr,omitempty"`
+	Slots uint   `xml:"slots,attr,omitempty"`
 }
 
 type DomainOSType struct {
