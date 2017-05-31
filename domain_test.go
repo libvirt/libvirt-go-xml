@@ -44,6 +44,7 @@ var diskAddr = Address{0, 0, 3, 0}
 var ifaceAddr = Address{0, 0, 4, 0}
 var videoAddr = Address{0, 0, 5, 0}
 var fsAddr = Address{0, 0, 6, 0}
+var balloonAddr = Address{0, 0, 7, 0}
 
 var domainTestData = []struct {
 	Object   *Domain
@@ -255,6 +256,16 @@ var domainTestData = []struct {
 						Type: "vnc",
 					},
 				},
+				MemBalloon: &DomainMemBalloon{
+					Model: "virtio",
+					Address: &DomainAddress{
+						Type:     "pci",
+						Domain:   &balloonAddr.Domain,
+						Bus:      &balloonAddr.Bus,
+						Slot:     &balloonAddr.Slot,
+						Function: &balloonAddr.Function,
+					},
+				},
 			},
 		},
 		Expected: []string{
@@ -268,6 +279,9 @@ var domainTestData = []struct {
 			`      <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
 			`      <address type="pci" domain="0" bus="0" slot="5" function="0"></address>`,
 			`    </video>`,
+			`    <memballoon model="virtio">`,
+			`      <address type="pci" domain="0" bus="0" slot="7" function="0"></address>`,
+			`    </memballoon>`,
 			`  </devices>`,
 			`</domain>`,
 		},
