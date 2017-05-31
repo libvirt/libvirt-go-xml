@@ -30,8 +30,10 @@ import (
 )
 
 type DomainController struct {
-	Type  string `xml:"type,attr"`
-	Index string `xml:"index,attr"`
+	Type    string         `xml:"type,attr"`
+	Index   *uint          `xml:"index,attr"`
+	Model   string         `xml:"model,attr,omitempty"`
+	Address *DomainAddress `xml:"address"`
 }
 
 type DomainDiskSecret struct {
@@ -199,8 +201,13 @@ type DomainAlias struct {
 type DomainAddress struct {
 	Type       string `xml:"type,attr"`
 	Controller *uint  `xml:"controller,attr"`
+	Domain     *uint  `xml:"domain,attr"`
 	Bus        *uint  `xml:"bus,attr"`
 	Port       *uint  `xml:"port,attr"`
+	Slot       *uint  `xml:"slot,attr"`
+	Function   *uint  `xml:"function,attr"`
+	Target     *uint  `xml:"target,attr"`
+	Unit       *uint  `xml:"unit,attr"`
 }
 
 type DomainChardev struct {

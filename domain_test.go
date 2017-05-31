@@ -30,6 +30,16 @@ import (
 	"testing"
 )
 
+type PciAddress struct {
+	Domain   uint
+	Bus      uint
+	Slot     uint
+	Function uint
+}
+
+var uhciIndex uint = 0
+var uhciAddr = PciAddress{0, 0, 1, 2}
+
 var domainTestData = []struct {
 	Object   *Domain
 	Expected []string
@@ -825,6 +835,44 @@ var domainTestData = []struct {
 			`    <pvspinlock state="on"></pvspinlock>`,
 			`    <gic version="2"></gic>`,
 			`  </features>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Controllers: []DomainController{
+					DomainController{
+						Type:  "usb",
+						Index: &uhciIndex,
+						Model: "piix3-uhci",
+						Address: &DomainAddress{
+							Type:     "pci",
+							Domain:   &uhciAddr.Domain,
+							Bus:      &uhciAddr.Bus,
+							Slot:     &uhciAddr.Slot,
+							Function: &uhciAddr.Function,
+						},
+					},
+					DomainController{
+						Type:  "usb",
+						Index: nil,
+						Model: "ehci",
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <controller type="usb" index="0" model="piix3-uhci">`,
+			`      <address type="pci" domain="0" bus="0" slot="1" function="2"></address>`,
+			`    </controller>`,
+			`    <controller type="usb" model="ehci"></controller>`,
+			`  </devices>`,
 			`</domain>`,
 		},
 	},
