@@ -65,6 +65,7 @@ var domainTestData = []struct {
 							Dev: "vda",
 							Bus: "virtio",
 						},
+						Serial: "fishfood",
 					},
 					DomainDisk{
 						Type:   "block",
@@ -152,6 +153,7 @@ var domainTestData = []struct {
 			`      <driver name="qemu" type="qcow2"></driver>`,
 			`      <source file="/var/lib/libvirt/images/demo.qcow2"></source>`,
 			`      <target dev="vda" bus="virtio"></target>`,
+			`      <serial>fishfood</serial>`,
 			`    </disk>`,
 			`    <disk type="block" device="disk">`,
 			`      <driver name="qemu" type="raw"></driver>`,

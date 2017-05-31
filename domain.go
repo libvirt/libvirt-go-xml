@@ -81,6 +81,7 @@ type DomainDisk struct {
 	Auth     *DomainDiskAuth   `xml:"auth"`
 	Source   *DomainDiskSource `xml:"source"`
 	Target   *DomainDiskTarget `xml:"target"`
+	Serial   string            `xml:"serial,omitempty"`
 }
 
 type DomainFilesystemDriver struct {
