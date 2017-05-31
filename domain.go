@@ -66,10 +66,11 @@ type DomainDiskSource struct {
 }
 
 type DomainDiskDriver struct {
-	Name  string `xml:"name,attr,omitempty"`
-	Type  string `xml:"type,attr,omitempty"`
-	Cache string `xml:"cache,attr,omitempty"`
-	IO    string `xml:"io,attr,omitempty"`
+	Name        string `xml:"name,attr,omitempty"`
+	Type        string `xml:"type,attr,omitempty"`
+	Cache       string `xml:"cache,attr,omitempty"`
+	IO          string `xml:"io,attr,omitempty"`
+	ErrorPolicy string `xml:"error_policy,attr,omitempty"`
 }
 
 type DomainDiskTarget struct {
@@ -77,15 +78,23 @@ type DomainDiskTarget struct {
 	Bus string `xml:"bus,attr,omitempty"`
 }
 
+type DomainDiskReadOnly struct {
+}
+
+type DomainDiskShareable struct {
+}
+
 type DomainDisk struct {
-	Type     string            `xml:"type,attr"`
-	Device   string            `xml:"device,attr"`
-	Snapshot string            `xml:"snapshot,attr,omitempty"`
-	Driver   *DomainDiskDriver `xml:"driver"`
-	Auth     *DomainDiskAuth   `xml:"auth"`
-	Source   *DomainDiskSource `xml:"source"`
-	Target   *DomainDiskTarget `xml:"target"`
-	Serial   string            `xml:"serial,omitempty"`
+	Type      string               `xml:"type,attr"`
+	Device    string               `xml:"device,attr"`
+	Snapshot  string               `xml:"snapshot,attr,omitempty"`
+	Driver    *DomainDiskDriver    `xml:"driver"`
+	Auth      *DomainDiskAuth      `xml:"auth"`
+	Source    *DomainDiskSource    `xml:"source"`
+	Target    *DomainDiskTarget    `xml:"target"`
+	Serial    string               `xml:"serial,omitempty"`
+	ReadOnly  *DomainDiskReadOnly  `xml:"readonly"`
+	Shareable *DomainDiskShareable `xml:"shareable"`
 }
 
 type DomainFilesystemDriver struct {
