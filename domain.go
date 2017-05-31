@@ -77,6 +77,8 @@ type DomainDisk struct {
 	Type     string            `xml:"type,attr"`
 	Device   string            `xml:"device,attr"`
 	Snapshot string            `xml:"snapshot,attr,omitempty"`
+	Cache    string            `xml:"cache,attr,omitempty"`
+	Io       string            `xml:"io,attr,omitempty"`
 	Driver   *DomainDiskDriver `xml:"driver"`
 	Auth     *DomainDiskAuth   `xml:"auth"`
 	Source   *DomainDiskSource `xml:"source"`
