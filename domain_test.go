@@ -130,10 +130,10 @@ var domainTestData = []struct {
 						},
 					},
 					DomainDisk{
-						Type: "volume",
+						Type:   "volume",
 						Device: "cdrom",
 						Source: &DomainDiskSource{
-							Pool: "default",
+							Pool:   "default",
 							Volume: "myvolume",
 						},
 						Target: &DomainDiskTarget{
@@ -200,7 +200,11 @@ var domainTestData = []struct {
 				Videos: []DomainVideo{
 					DomainVideo{
 						Model: DomainVideoModel{
-							Type: "cirrus",
+							Type:   "cirrus",
+							Heads:  1,
+							Ram:    4096,
+							VRam:   8192,
+							VGAMem: 256,
 						},
 					},
 				},
@@ -219,7 +223,7 @@ var domainTestData = []struct {
 			`    <input type="keyboard" bus="ps2"></input>`,
 			`    <graphics type="vnc"></graphics>`,
 			`    <video>`,
-			`      <model type="cirrus"></model>`,
+			`      <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
 			`    </video>`,
 			`  </devices>`,
 			`</domain>`,

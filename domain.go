@@ -243,7 +243,11 @@ type DomainGraphic struct {
 }
 
 type DomainVideoModel struct {
-	Type string `xml:"type,attr"`
+	Type   string `xml:"type,attr"`
+	Heads  uint   `xml:"heads,attr,omitempty"`
+	Ram    uint   `xml:"ram,attr,omitempty"`
+	VRam   uint   `xml:"vram,attr,omitempty"`
+	VGAMem uint   `xml:"vgamem,attr,omitempty"`
 }
 
 type DomainVideo struct {
