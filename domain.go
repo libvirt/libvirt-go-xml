@@ -95,6 +95,7 @@ type DomainDisk struct {
 	Serial    string               `xml:"serial,omitempty"`
 	ReadOnly  *DomainDiskReadOnly  `xml:"readonly"`
 	Shareable *DomainDiskShareable `xml:"shareable"`
+	Address   *DomainAddress       `xml:"address"`
 }
 
 type DomainFilesystemDriver struct {
@@ -134,6 +135,7 @@ type DomainFilesystem struct {
 	ReadOnly       *DomainFilesystemReadOnly       `xml:"readonly"`
 	SpaceHardLimit *DomainFilesystemSpaceHardLimit `xml:"space_hard_limit"`
 	SpaceSoftLimit *DomainFilesystemSpaceSoftLimit `xml:"space_soft_limit"`
+	Address        *DomainAddress                  `xml:"address"`
 }
 
 type DomainInterfaceMAC struct {
@@ -180,16 +182,17 @@ type DomainInterfaceDriver struct {
 }
 
 type DomainInterface struct {
-	Type   string                 `xml:"type,attr"`
-	MAC    *DomainInterfaceMAC    `xml:"mac"`
-	Model  *DomainInterfaceModel  `xml:"model"`
-	Source *DomainInterfaceSource `xml:"source"`
-	Target *DomainInterfaceTarget `xml:"target"`
-	Alias  *DomainInterfaceAlias  `xml:"alias"`
-	Link   *DomainInterfaceLink   `xml:"link"`
-	Boot   *DomainInterfaceBoot   `xml:"boot"`
-	Script *DomainInterfaceScript `xml:"script"`
-	Driver *DomainInterfaceDriver `xml:"driver"`
+	Type    string                 `xml:"type,attr"`
+	MAC     *DomainInterfaceMAC    `xml:"mac"`
+	Model   *DomainInterfaceModel  `xml:"model"`
+	Source  *DomainInterfaceSource `xml:"source"`
+	Target  *DomainInterfaceTarget `xml:"target"`
+	Alias   *DomainInterfaceAlias  `xml:"alias"`
+	Link    *DomainInterfaceLink   `xml:"link"`
+	Boot    *DomainInterfaceBoot   `xml:"boot"`
+	Script  *DomainInterfaceScript `xml:"script"`
+	Driver  *DomainInterfaceDriver `xml:"driver"`
+	Address *DomainAddress         `xml:"address"`
 }
 
 type DomainChardevSource struct {
@@ -270,7 +273,8 @@ type DomainVideoModel struct {
 }
 
 type DomainVideo struct {
-	Model DomainVideoModel `xml:"model"`
+	Model   DomainVideoModel `xml:"model"`
+	Address *DomainAddress   `xml:"address"`
 }
 
 type DomainDeviceList struct {

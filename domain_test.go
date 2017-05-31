@@ -30,7 +30,7 @@ import (
 	"testing"
 )
 
-type PciAddress struct {
+type Address struct {
 	Domain   uint
 	Bus      uint
 	Slot     uint
@@ -38,7 +38,12 @@ type PciAddress struct {
 }
 
 var uhciIndex uint = 0
-var uhciAddr = PciAddress{0, 0, 1, 2}
+var uhciAddr = Address{0, 0, 1, 2}
+
+var diskAddr = Address{0, 0, 3, 0}
+var ifaceAddr = Address{0, 0, 4, 0}
+var videoAddr = Address{0, 0, 5, 0}
+var fsAddr = Address{0, 0, 6, 0}
 
 var domainTestData = []struct {
 	Object   *Domain
@@ -90,6 +95,13 @@ var domainTestData = []struct {
 						Target: &DomainDiskTarget{
 							Dev: "vdb",
 							Bus: "virtio",
+						},
+						Address: &DomainAddress{
+							Type:     "pci",
+							Domain:   &diskAddr.Domain,
+							Bus:      &diskAddr.Bus,
+							Slot:     &diskAddr.Slot,
+							Function: &diskAddr.Function,
 						},
 					},
 					DomainDisk{
@@ -176,6 +188,7 @@ var domainTestData = []struct {
 			`      <driver name="qemu" type="raw"></driver>`,
 			`      <source dev="/dev/sda1"></source>`,
 			`      <target dev="vdb" bus="virtio"></target>`,
+			`      <address type="pci" domain="0" bus="0" slot="3" function="0"></address>`,
 			`    </disk>`,
 			`    <disk type="network" device="disk">`,
 			`      <auth username="fred">`,
@@ -228,6 +241,13 @@ var domainTestData = []struct {
 							VRam:   8192,
 							VGAMem: 256,
 						},
+						Address: &DomainAddress{
+							Type:     "pci",
+							Domain:   &videoAddr.Domain,
+							Bus:      &videoAddr.Bus,
+							Slot:     &videoAddr.Slot,
+							Function: &videoAddr.Function,
+						},
 					},
 				},
 				Graphics: []DomainGraphic{
@@ -246,6 +266,7 @@ var domainTestData = []struct {
 			`    <graphics type="vnc"></graphics>`,
 			`    <video>`,
 			`      <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
+			`      <address type="pci" domain="0" bus="0" slot="5" function="0"></address>`,
 			`    </video>`,
 			`  </devices>`,
 			`</domain>`,
@@ -679,6 +700,13 @@ var domainTestData = []struct {
 						Script: &DomainInterfaceScript{
 							Path: "/etc/qemu-ifup",
 						},
+						Address: &DomainAddress{
+							Type:     "pci",
+							Domain:   &ifaceAddr.Domain,
+							Bus:      &ifaceAddr.Bus,
+							Slot:     &ifaceAddr.Slot,
+							Function: &ifaceAddr.Function,
+						},
 					},
 				},
 			},
@@ -691,6 +719,7 @@ var domainTestData = []struct {
 			`      <mac address="52:54:00:39:97:ac"></mac>`,
 			`      <model type="virtio"></model>`,
 			`      <script path="/etc/qemu-ifup"></script>`,
+			`      <address type="pci" domain="0" bus="0" slot="4" function="0"></address>`,
 			`    </interface>`,
 			`  </devices>`,
 			`</domain>`,
@@ -751,6 +780,13 @@ var domainTestData = []struct {
 						Target: &DomainFilesystemTarget{
 							Dir: "user-test-mount",
 						},
+						Address: &DomainAddress{
+							Type:     "pci",
+							Domain:   &fsAddr.Domain,
+							Bus:      &fsAddr.Bus,
+							Slot:     &fsAddr.Slot,
+							Function: &fsAddr.Function,
+						},
 					},
 					DomainFilesystem{
 						Type:       "file",
@@ -777,6 +813,7 @@ var domainTestData = []struct {
 			`      <driver type="path" wrpolicy="immediate"></driver>`,
 			`      <source dir="/home/user/test"></source>`,
 			`      <target dir="user-test-mount"></target>`,
+			`      <address type="pci" domain="0" bus="0" slot="6" function="0"></address>`,
 			`    </filesystem>`,
 			`    <filesystem type="file" accessmode="passthrough">`,
 			`      <driver type="raw" name="loop"></driver>`,
