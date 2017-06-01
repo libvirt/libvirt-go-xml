@@ -232,8 +232,9 @@ type DomainChardev struct {
 }
 
 type DomainInput struct {
-	Type string `xml:"type,attr"`
-	Bus  string `xml:"bus,attr"`
+	Type    string         `xml:"type,attr"`
+	Bus     string         `xml:"bus,attr"`
+	Address *DomainAddress `xml:"address"`
 }
 
 type DomainGraphicListener struct {

@@ -48,6 +48,8 @@ var balloonAddr = Address{0, 0, 7, 0}
 var duplexAddr = Address{0, 0, 8, 0}
 
 var serialPort uint = 0
+var tabletBus uint = 0
+var tabletPort uint = 1
 
 var domainTestData = []struct {
 	Object   *Domain
@@ -230,6 +232,11 @@ var domainTestData = []struct {
 					DomainInput{
 						Type: "tablet",
 						Bus:  "usb",
+						Address: &DomainAddress{
+							Type: "usb",
+							Bus:  &tabletBus,
+							Port: &tabletPort,
+						},
 					},
 					DomainInput{
 						Type: "keyboard",
@@ -301,7 +308,9 @@ var domainTestData = []struct {
 			`    <serial type="pty">`,
 			`      <target port="0"></target>`,
 			`    </serial>`,
-			`    <input type="tablet" bus="usb"></input>`,
+			`    <input type="tablet" bus="usb">`,
+			`      <address type="usb" bus="0" port="1"></address>`,
+			`    </input>`,
 			`    <input type="keyboard" bus="ps2"></input>`,
 			`    <graphics type="vnc"></graphics>`,
 			`    <video>`,
