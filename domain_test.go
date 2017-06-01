@@ -45,6 +45,7 @@ var ifaceAddr = Address{0, 0, 4, 0}
 var videoAddr = Address{0, 0, 5, 0}
 var fsAddr = Address{0, 0, 6, 0}
 var balloonAddr = Address{0, 0, 7, 0}
+var duplexAddr = Address{0, 0, 8, 0}
 
 var serialPort uint = 0
 
@@ -276,6 +277,21 @@ var domainTestData = []struct {
 						},
 					},
 				},
+				Sounds: []DomainSound{
+					DomainSound{
+						Model: "ich6",
+						Codec: &DomainSoundCodec{
+							Type: "duplex",
+						},
+						Address: &DomainAddress{
+							Type:     "pci",
+							Domain:   &duplexAddr.Domain,
+							Bus:      &duplexAddr.Bus,
+							Slot:     &duplexAddr.Slot,
+							Function: &duplexAddr.Function,
+						},
+					},
+				},
 			},
 		},
 		Expected: []string{
@@ -295,6 +311,10 @@ var domainTestData = []struct {
 			`    <memballoon model="virtio">`,
 			`      <address type="pci" domain="0" bus="0" slot="7" function="0"></address>`,
 			`    </memballoon>`,
+			`    <sound model="ich6">`,
+			`      <codec type="duplex"></codec>`,
+			`      <address type="pci" domain="0" bus="0" slot="8" function="0"></address>`,
+			`    </sound>`,
 			`  </devices>`,
 			`</domain>`,
 		},

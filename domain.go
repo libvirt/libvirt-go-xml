@@ -283,6 +283,16 @@ type DomainMemBalloon struct {
 	Address *DomainAddress `xml:"address"`
 }
 
+type DomainSoundCodec struct {
+	Type string `xml:"type,attr"`
+}
+
+type DomainSound struct {
+	Model   string            `xml:"model,attr"`
+	Codec   *DomainSoundCodec `xml:"codec"`
+	Address *DomainAddress    `xml:"address"`
+}
+
 type DomainDeviceList struct {
 	Controllers []DomainController `xml:"controller"`
 	Disks       []DomainDisk       `xml:"disk"`
@@ -295,6 +305,7 @@ type DomainDeviceList struct {
 	Videos      []DomainVideo      `xml:"video"`
 	Channels    []DomainChardev    `xml:"channel"`
 	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
+	Sounds      []DomainSound      `xml:"sound"`
 }
 
 type DomainMemory struct {
