@@ -598,6 +598,9 @@ var domainTestData = []struct {
 					DomainCPUFeature{Policy: "disable", Name: "lahf_lm"},
 				},
 			},
+			Devices: &DomainDeviceList{
+				Emulator: "/bin/qemu-kvm",
+			},
 		},
 		Expected: []string{
 			`<domain type="kvm">`,
@@ -608,6 +611,9 @@ var domainTestData = []struct {
 			`    <topology sockets="1" cores="2" threads="1"></topology>`,
 			`    <feature policy="disable" name="lahf_lm"></feature>`,
 			`  </cpu>`,
+			`  <devices>`,
+			`    <emulator>/bin/qemu-kvm</emulator>`,
+			`  </devices>`,
 			`</domain>`,
 		},
 	},

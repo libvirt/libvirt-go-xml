@@ -338,6 +338,7 @@ type DomainSound struct {
 }
 
 type DomainDeviceList struct {
+	Emulator    string             `xml:"emulator,omitempty"`
 	Controllers []DomainController `xml:"controller"`
 	Disks       []DomainDisk       `xml:"disk"`
 	Filesystems []DomainFilesystem `xml:"filesystem"`
