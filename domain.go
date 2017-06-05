@@ -30,6 +30,7 @@ import (
 )
 
 type DomainController struct {
+	XMLName xml.Name       `xml:"controller"`
 	Type    string         `xml:"type,attr"`
 	Index   *uint          `xml:"index,attr"`
 	Model   string         `xml:"model,attr,omitempty"`
@@ -85,6 +86,7 @@ type DomainDiskShareable struct {
 }
 
 type DomainDisk struct {
+	XMLName   xml.Name             `xml:"disk"`
 	Type      string               `xml:"type,attr"`
 	Device    string               `xml:"device,attr"`
 	Snapshot  string               `xml:"snapshot,attr,omitempty"`
@@ -127,6 +129,7 @@ type DomainFilesystemSpaceSoftLimit struct {
 }
 
 type DomainFilesystem struct {
+	XMLName        xml.Name                        `xml:"filesystem"`
 	Type           string                          `xml:"type,attr"`
 	AccessMode     string                          `xml:"accessmode,attr"`
 	Driver         *DomainFilesystemDriver         `xml:"driver"`
@@ -182,6 +185,7 @@ type DomainInterfaceDriver struct {
 }
 
 type DomainInterface struct {
+	XMLName xml.Name               `xml:"interface"`
 	Type    string                 `xml:"type,attr"`
 	MAC     *DomainInterfaceMAC    `xml:"mac"`
 	Model   *DomainInterfaceModel  `xml:"model"`
@@ -240,6 +244,7 @@ type DomainAddress struct {
 }
 
 type DomainConsole struct {
+	XMLName xml.Name             `xml:"console"`
 	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
 	Target  *DomainConsoleTarget `xml:"target"`
@@ -248,6 +253,7 @@ type DomainConsole struct {
 }
 
 type DomainSerial struct {
+	XMLName xml.Name             `xml:"serial"`
 	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
 	Target  *DomainSerialTarget  `xml:"target"`
@@ -256,6 +262,7 @@ type DomainSerial struct {
 }
 
 type DomainChannel struct {
+	XMLName xml.Name             `xml:"channel"`
 	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
 	Target  *DomainChannelTarget `xml:"target"`
@@ -264,6 +271,7 @@ type DomainChannel struct {
 }
 
 type DomainInput struct {
+	XMLName xml.Name       `xml:"input"`
 	Type    string         `xml:"type,attr"`
 	Bus     string         `xml:"bus,attr"`
 	Address *DomainAddress `xml:"address"`
@@ -307,11 +315,13 @@ type DomainVideoModel struct {
 }
 
 type DomainVideo struct {
+	XMLName xml.Name         `xml:"video"`
 	Model   DomainVideoModel `xml:"model"`
 	Address *DomainAddress   `xml:"address"`
 }
 
 type DomainMemBalloon struct {
+	XMLName xml.Name       `xml:"memballoon"`
 	Model   string         `xml:"model,attr"`
 	Address *DomainAddress `xml:"address"`
 }
@@ -321,6 +331,7 @@ type DomainSoundCodec struct {
 }
 
 type DomainSound struct {
+	XMLName xml.Name          `xml:"sound"`
 	Model   string            `xml:"model,attr"`
 	Codec   *DomainSoundCodec `xml:"codec"`
 	Address *DomainAddress    `xml:"address"`
@@ -534,6 +545,138 @@ func (d *Domain) Unmarshal(doc string) error {
 }
 
 func (d *Domain) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainController) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainController) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainDisk) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainDisk) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainFilesystem) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainFilesystem) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainInterface) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainInterface) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainConsole) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainConsole) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainSerial) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainSerial) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainInput) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainInput) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainVideo) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainVideo) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainChannel) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainChannel) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainMemBalloon) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainMemBalloon) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainSound) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainSound) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err

@@ -52,7 +52,7 @@ var tabletBus uint = 0
 var tabletPort uint = 1
 
 var domainTestData = []struct {
-	Object   *Domain
+	Object   Document
 	Expected []string
 }{
 	{
@@ -1001,6 +1001,230 @@ var domainTestData = []struct {
 			`    <controller type="usb" model="ehci"></controller>`,
 			`  </devices>`,
 			`</domain>`,
+		},
+	},
+
+	/* Tests for sub-documents that can be hotplugged */
+	{
+		Object: &DomainController{
+			Type:  "usb",
+			Index: &uhciIndex,
+			Model: "piix3-uhci",
+			Address: &DomainAddress{
+				Type:     "pci",
+				Domain:   &uhciAddr.Domain,
+				Bus:      &uhciAddr.Bus,
+				Slot:     &uhciAddr.Slot,
+				Function: &uhciAddr.Function,
+			},
+		},
+		Expected: []string{
+			`<controller type="usb" index="0" model="piix3-uhci">`,
+			`  <address type="pci" domain="0" bus="0" slot="1" function="2"></address>`,
+			`</controller>`,
+		},
+	},
+	{
+		Object: &DomainDisk{
+			Type:   "file",
+			Device: "cdrom",
+			Driver: &DomainDiskDriver{
+				Name: "qemu",
+				Type: "qcow2",
+			},
+			Source: &DomainDiskSource{
+				File: "/var/lib/libvirt/images/demo.qcow2",
+			},
+			Target: &DomainDiskTarget{
+				Dev: "vda",
+				Bus: "virtio",
+			},
+			Serial: "fishfood",
+		},
+		Expected: []string{
+			`<disk type="file" device="cdrom">`,
+			`  <driver name="qemu" type="qcow2"></driver>`,
+			`  <source file="/var/lib/libvirt/images/demo.qcow2"></source>`,
+			`  <target dev="vda" bus="virtio"></target>`,
+			`  <serial>fishfood</serial>`,
+			`</disk>`,
+		},
+	},
+	{
+		Object: &DomainFilesystem{
+			Type:       "mount",
+			AccessMode: "mapped",
+			Driver: &DomainFilesystemDriver{
+				Type:     "path",
+				WRPolicy: "immediate",
+			},
+			Source: &DomainFilesystemSource{
+				Dir: "/home/user/test",
+			},
+			Target: &DomainFilesystemTarget{
+				Dir: "user-test-mount",
+			},
+			Address: &DomainAddress{
+				Type:     "pci",
+				Domain:   &fsAddr.Domain,
+				Bus:      &fsAddr.Bus,
+				Slot:     &fsAddr.Slot,
+				Function: &fsAddr.Function,
+			},
+		},
+
+		Expected: []string{
+			`<filesystem type="mount" accessmode="mapped">`,
+			`  <driver type="path" wrpolicy="immediate"></driver>`,
+			`  <source dir="/home/user/test"></source>`,
+			`  <target dir="user-test-mount"></target>`,
+			`  <address type="pci" domain="0" bus="0" slot="6" function="0"></address>`,
+			`</filesystem>`,
+		},
+	},
+	{
+		Object: &DomainInterface{
+			Type: "network",
+			MAC: &DomainInterfaceMAC{
+				Address: "00:11:22:33:44:55",
+			},
+			Model: &DomainInterfaceModel{
+				Type: "virtio",
+			},
+		},
+		Expected: []string{
+			`<interface type="network">`,
+			`  <mac address="00:11:22:33:44:55"></mac>`,
+			`  <model type="virtio"></model>`,
+			`</interface>`,
+		},
+	},
+	{
+		Object: &DomainSerial{
+			Type: "pty",
+			Target: &DomainSerialTarget{
+				Type: "isa",
+				Port: &serialPort,
+			},
+		},
+
+		Expected: []string{
+			`<serial type="pty">`,
+			`  <target type="isa" port="0"></target>`,
+			`</serial>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Type: "pty",
+			Target: &DomainConsoleTarget{
+				Type: "virtio",
+				Port: &serialPort,
+			},
+		},
+
+		Expected: []string{
+			`<console type="pty">`,
+			`  <target type="virtio" port="0"></target>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainInput{
+			Type: "tablet",
+			Bus:  "usb",
+			Address: &DomainAddress{
+				Type: "usb",
+				Bus:  &tabletBus,
+				Port: &tabletPort,
+			},
+		},
+
+		Expected: []string{
+			`<input type="tablet" bus="usb">`,
+			`  <address type="usb" bus="0" port="1"></address>`,
+			`</input>`,
+		},
+	},
+	{
+		Object: &DomainVideo{
+			Model: DomainVideoModel{
+				Type:   "cirrus",
+				Heads:  1,
+				Ram:    4096,
+				VRam:   8192,
+				VGAMem: 256,
+			},
+			Address: &DomainAddress{
+				Type:     "pci",
+				Domain:   &videoAddr.Domain,
+				Bus:      &videoAddr.Bus,
+				Slot:     &videoAddr.Slot,
+				Function: &videoAddr.Function,
+			},
+		},
+
+		Expected: []string{
+			`<video>`,
+			`  <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
+			`  <address type="pci" domain="0" bus="0" slot="5" function="0"></address>`,
+			`</video>`,
+		},
+	},
+	{
+		Object: &DomainChannel{
+			Type: "pty",
+			Target: &DomainChannelTarget{
+				Type:  "virtio",
+				Name:  "org.redhat.spice",
+				State: "connected",
+			},
+		},
+
+		Expected: []string{
+			`<channel type="pty">`,
+			`  <target type="virtio" name="org.redhat.spice" state="connected"></target>`,
+			`</channel>`,
+		},
+	},
+	{
+		Object: &DomainMemBalloon{
+			Model: "virtio",
+			Address: &DomainAddress{
+				Type:     "pci",
+				Domain:   &balloonAddr.Domain,
+				Bus:      &balloonAddr.Bus,
+				Slot:     &balloonAddr.Slot,
+				Function: &balloonAddr.Function,
+			},
+		},
+
+		Expected: []string{
+			`<memballoon model="virtio">`,
+			`  <address type="pci" domain="0" bus="0" slot="7" function="0"></address>`,
+			`</memballoon>`,
+		},
+	},
+	{
+		Object: &DomainSound{
+			Model: "ich6",
+			Codec: &DomainSoundCodec{
+				Type: "duplex",
+			},
+			Address: &DomainAddress{
+				Type:     "pci",
+				Domain:   &duplexAddr.Domain,
+				Bus:      &duplexAddr.Bus,
+				Slot:     &duplexAddr.Slot,
+				Function: &duplexAddr.Function,
+			},
+		},
+
+		Expected: []string{
+			`<sound model="ich6">`,
+			`  <codec type="duplex"></codec>`,
+			`  <address type="pci" domain="0" bus="0" slot="8" function="0"></address>`,
+			`</sound>`,
 		},
 	},
 }
