@@ -276,11 +276,31 @@ var domainTestData = []struct {
 						Function: &balloonAddr.Function,
 					},
 				},
-				Serials: []DomainChardev{
-					DomainChardev{
+				Consoles: []DomainConsole{
+					DomainConsole{
 						Type: "pty",
-						Target: &DomainChardevTarget{
+						Target: &DomainConsoleTarget{
+							Type: "virtio",
 							Port: &serialPort,
+						},
+					},
+				},
+				Serials: []DomainSerial{
+					DomainSerial{
+						Type: "pty",
+						Target: &DomainSerialTarget{
+							Type: "isa",
+							Port: &serialPort,
+						},
+					},
+				},
+				Channels: []DomainChannel{
+					DomainChannel{
+						Type: "pty",
+						Target: &DomainChannelTarget{
+							Type:  "virtio",
+							Name:  "org.redhat.spice",
+							State: "connected",
 						},
 					},
 				},
@@ -306,8 +326,11 @@ var domainTestData = []struct {
 			`  <name>test</name>`,
 			`  <devices>`,
 			`    <serial type="pty">`,
-			`      <target port="0"></target>`,
+			`      <target type="isa" port="0"></target>`,
 			`    </serial>`,
+			`    <console type="pty">`,
+			`      <target type="virtio" port="0"></target>`,
+			`    </console>`,
 			`    <input type="tablet" bus="usb">`,
 			`      <address type="usb" bus="0" port="1"></address>`,
 			`    </input>`,
@@ -317,6 +340,9 @@ var domainTestData = []struct {
 			`      <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
 			`      <address type="pci" domain="0" bus="0" slot="5" function="0"></address>`,
 			`    </video>`,
+			`    <channel type="pty">`,
+			`      <target type="virtio" name="org.redhat.spice" state="connected"></target>`,
+			`    </channel>`,
 			`    <memballoon model="virtio">`,
 			`      <address type="pci" domain="0" bus="0" slot="7" function="0"></address>`,
 			`    </memballoon>`,

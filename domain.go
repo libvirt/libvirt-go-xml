@@ -207,6 +207,22 @@ type DomainChardevTarget struct {
 	Port  *uint  `xml:"port,attr"`
 }
 
+type DomainConsoleTarget struct {
+	Type string `xml:"type,attr,omitempty"`
+	Port *uint  `xml:"port,attr"`
+}
+
+type DomainSerialTarget struct {
+	Type string `xml:"type,attr,omitempty"`
+	Port *uint  `xml:"port,attr"`
+}
+
+type DomainChannelTarget struct {
+	Type  string `xml:"type,attr,omitempty"`
+	Name  string `xml:"name,attr,omitempty"`
+	State string `xml:"state,attr,omitempty"` // is guest agent connected?
+}
+
 type DomainAlias struct {
 	Name string `xml:"name,attr"`
 }
@@ -223,10 +239,26 @@ type DomainAddress struct {
 	Unit       *uint  `xml:"unit,attr"`
 }
 
-type DomainChardev struct {
+type DomainConsole struct {
 	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
-	Target  *DomainChardevTarget `xml:"target"`
+	Target  *DomainConsoleTarget `xml:"target"`
+	Alias   *DomainAlias         `xml:"alias"`
+	Address *DomainAddress       `xml:"address"`
+}
+
+type DomainSerial struct {
+	Type    string               `xml:"type,attr"`
+	Source  *DomainChardevSource `xml:"source"`
+	Target  *DomainSerialTarget  `xml:"target"`
+	Alias   *DomainAlias         `xml:"alias"`
+	Address *DomainAddress       `xml:"address"`
+}
+
+type DomainChannel struct {
+	Type    string               `xml:"type,attr"`
+	Source  *DomainChardevSource `xml:"source"`
+	Target  *DomainChannelTarget `xml:"target"`
 	Alias   *DomainAlias         `xml:"alias"`
 	Address *DomainAddress       `xml:"address"`
 }
@@ -299,12 +331,12 @@ type DomainDeviceList struct {
 	Disks       []DomainDisk       `xml:"disk"`
 	Filesystems []DomainFilesystem `xml:"filesystem"`
 	Interfaces  []DomainInterface  `xml:"interface"`
-	Serials     []DomainChardev    `xml:"serial"`
-	Consoles    []DomainChardev    `xml:"console"`
+	Serials     []DomainSerial     `xml:"serial"`
+	Consoles    []DomainConsole    `xml:"console"`
 	Inputs      []DomainInput      `xml:"input"`
 	Graphics    []DomainGraphic    `xml:"graphics"`
 	Videos      []DomainVideo      `xml:"video"`
-	Channels    []DomainChardev    `xml:"channel"`
+	Channels    []DomainChannel    `xml:"channel"`
 	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
 	Sounds      []DomainSound      `xml:"sound"`
 }
