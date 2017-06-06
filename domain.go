@@ -98,6 +98,7 @@ type DomainDisk struct {
 	ReadOnly  *DomainDiskReadOnly  `xml:"readonly"`
 	Shareable *DomainDiskShareable `xml:"shareable"`
 	Address   *DomainAddress       `xml:"address"`
+	Boot      *DomainDeviceBoot    `xml:"boot"`
 }
 
 type DomainFilesystemDriver struct {
@@ -171,7 +172,7 @@ type DomainInterfaceLink struct {
 	State string `xml:"state,attr"`
 }
 
-type DomainInterfaceBoot struct {
+type DomainDeviceBoot struct {
 	Order uint `xml:"order,attr"`
 }
 
@@ -193,7 +194,7 @@ type DomainInterface struct {
 	Target  *DomainInterfaceTarget `xml:"target"`
 	Alias   *DomainInterfaceAlias  `xml:"alias"`
 	Link    *DomainInterfaceLink   `xml:"link"`
-	Boot    *DomainInterfaceBoot   `xml:"boot"`
+	Boot    *DomainDeviceBoot      `xml:"boot"`
 	Script  *DomainInterfaceScript `xml:"script"`
 	Driver  *DomainInterfaceDriver `xml:"driver"`
 	Address *DomainAddress         `xml:"address"`

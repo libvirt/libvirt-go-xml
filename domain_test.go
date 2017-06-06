@@ -87,6 +87,9 @@ var domainTestData = []struct {
 							Bus: "virtio",
 						},
 						Serial: "fishfood",
+						Boot: &DomainDeviceBoot{
+							Order: 1,
+						},
 					},
 					DomainDisk{
 						Type:   "block",
@@ -189,6 +192,7 @@ var domainTestData = []struct {
 			`      <source file="/var/lib/libvirt/images/demo.qcow2"></source>`,
 			`      <target dev="vda" bus="virtio"></target>`,
 			`      <serial>fishfood</serial>`,
+			`      <boot order="1"></boot>`,
 			`    </disk>`,
 			`    <disk type="block" device="disk">`,
 			`      <driver name="qemu" type="raw"></driver>`,
@@ -710,7 +714,7 @@ var domainTestData = []struct {
 						Link: &DomainInterfaceLink{
 							State: "up",
 						},
-						Boot: &DomainInterfaceBoot{
+						Boot: &DomainDeviceBoot{
 							Order: 1,
 						},
 						Driver: &DomainInterfaceDriver{
