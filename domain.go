@@ -521,6 +521,9 @@ type DomainFeatureList struct {
 	SMM        *DomainFeatureState  `xml:"smm"`
 }
 
+// NB, try to keep the order of fields in this struct
+// matching the order of XML elements that libvirt
+// will generate when dumping XML.
 type Domain struct {
 	XMLName       xml.Name           `xml:"domain"`
 	Type          string             `xml:"type,attr,omitempty"`
@@ -530,15 +533,15 @@ type Domain struct {
 	CurrentMemory *DomainMemory      `xml:"currentMemory"`
 	MaximumMemory *DomainMaxMemory   `xml:"maxMemory"`
 	VCPU          *DomainVCPU        `xml:"vcpu"`
-	CPU           *DomainCPU         `xml:"cpu"`
 	Resource      *DomainResource    `xml:"resource"`
-	Devices       *DomainDeviceList  `xml:"devices"`
-	OS            *DomainOS          `xml:"os"`
 	SysInfo       *DomainSysInfo     `xml:"sysinfo"`
+	OS            *DomainOS          `xml:"os"`
+	Features      *DomainFeatureList `xml:"features"`
+	CPU           *DomainCPU         `xml:"cpu"`
 	OnPoweroff    string             `xml:"on_poweroff,omitempty"`
 	OnReboot      string             `xml:"on_reboot,omitempty"`
 	OnCrash       string             `xml:"on_crash,omitempty"`
-	Features      *DomainFeatureList `xml:"features"`
+	Devices       *DomainDeviceList  `xml:"devices"`
 }
 
 func (d *Domain) Unmarshal(doc string) error {
