@@ -72,6 +72,7 @@ type DomainDiskDriver struct {
 	Cache       string `xml:"cache,attr,omitempty"`
 	IO          string `xml:"io,attr,omitempty"`
 	ErrorPolicy string `xml:"error_policy,attr,omitempty"`
+	Discard     string `xml:"discard,attr,omitempty"`
 }
 
 type DomainDiskTarget struct {
