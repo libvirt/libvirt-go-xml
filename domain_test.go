@@ -704,6 +704,41 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
+						Type: "direct",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "e1000",
+						},
+						Source: &DomainInterfaceSource{
+							Dev:  "eth0",
+							Mode: "bridge",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="direct">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="e1000"></model>`,
+			`      <source dev="eth0" mode="bridge"></source>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
 						Type: "user",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",

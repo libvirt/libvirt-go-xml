@@ -152,6 +152,7 @@ type DomainInterfaceModel struct {
 
 type DomainInterfaceSource struct {
 	Bridge  string `xml:"bridge,attr,omitempty"`
+	Dev     string `xml:"dev,attr,omitempty"`
 	Network string `xml:"network,attr,omitempty"`
 	Address string `xml:"address,attr,omitempty"`
 	Type    string `xml:"type,attr,omitempty"`
