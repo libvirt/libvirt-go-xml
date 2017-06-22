@@ -312,6 +312,7 @@ type DomainGraphicListener struct {
 }
 
 type DomainGraphic struct {
+	XMLName       xml.Name                `xml:"graphics"`
 	Type          string                  `xml:"type,attr"`
 	AutoPort      string                  `xml:"autoport,attr,omitempty"`
 	Port          int                     `xml:"port,attr,omitempty"`
