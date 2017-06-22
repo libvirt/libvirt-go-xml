@@ -85,6 +85,29 @@ type DomainDiskReadOnly struct {
 type DomainDiskShareable struct {
 }
 
+type DomainDiskIOTune struct {
+	TotalBytesSec          uint64 `xml:"total_bytes_sec"`
+	ReadBytesSec           uint64 `xml:"read_bytes_sec"`
+	WriteBytesSec          uint64 `xml:"write_bytes_sec"`
+	TotalIopsSec           uint64 `xml:"total_iops_sec"`
+	ReadIopsSec            uint64 `xml:"read_iops_sec"`
+	WriteIopsSec           uint64 `xml:"write_iops_sec"`
+	TotalBytesSecMax       uint64 `xml:"total_bytes_sec_max"`
+	ReadBytesSecMax        uint64 `xml:"read_bytes_sec_max"`
+	WriteBytesSecMax       uint64 `xml:"write_bytes_sec_max"`
+	TotalIopsSecMax        uint64 `xml:"total_iops_sec_max"`
+	ReadIopsSecMax         uint64 `xml:"read_iops_sec_max"`
+	WriteIopsSecMax        uint64 `xml:"write_iops_sec_max"`
+	TotalBytesSecMaxLength uint64 `xml:"total_bytes_sec_max_length"`
+	ReadBytesSecMaxLength  uint64 `xml:"read_bytes_sec_max_length"`
+	WriteBytesSecMaxLength uint64 `xml:"write_bytes_sec_max_length"`
+	TotalIopsSecMaxLength  uint64 `xml:"total_iops_sec_max_length"`
+	ReadIopsSecMaxLength   uint64 `xml:"read_iops_sec_max_length"`
+	WriteIopsSecMaxLength  uint64 `xml:"write_iops_sec_max_length"`
+	SizeIopsSec            uint64 `xml:"size_iops_sec"`
+	GroupName              string `xml:"group_name"`
+}
+
 type DomainDisk struct {
 	XMLName   xml.Name             `xml:"disk"`
 	Type      string               `xml:"type,attr"`
@@ -94,6 +117,7 @@ type DomainDisk struct {
 	Auth      *DomainDiskAuth      `xml:"auth"`
 	Source    *DomainDiskSource    `xml:"source"`
 	Target    *DomainDiskTarget    `xml:"target"`
+	IOTune    *DomainDiskIOTune    `xml:"iotune"`
 	Serial    string               `xml:"serial,omitempty"`
 	ReadOnly  *DomainDiskReadOnly  `xml:"readonly"`
 	Shareable *DomainDiskShareable `xml:"shareable"`
