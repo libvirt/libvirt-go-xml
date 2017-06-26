@@ -211,19 +211,24 @@ type DomainInterfaceDriver struct {
 	Queues uint   `xml:"queues,attr,omitempty"`
 }
 
+type DomainInterfaceVirtualport struct {
+	Type string `xml:"type,attr"`
+}
+
 type DomainInterface struct {
-	XMLName xml.Name               `xml:"interface"`
-	Type    string                 `xml:"type,attr"`
-	MAC     *DomainInterfaceMAC    `xml:"mac"`
-	Model   *DomainInterfaceModel  `xml:"model"`
-	Source  *DomainInterfaceSource `xml:"source"`
-	Target  *DomainInterfaceTarget `xml:"target"`
-	Alias   *DomainInterfaceAlias  `xml:"alias"`
-	Link    *DomainInterfaceLink   `xml:"link"`
-	Boot    *DomainDeviceBoot      `xml:"boot"`
-	Script  *DomainInterfaceScript `xml:"script"`
-	Driver  *DomainInterfaceDriver `xml:"driver"`
-	Address *DomainAddress         `xml:"address"`
+	XMLName     xml.Name                    `xml:"interface"`
+	Type        string                      `xml:"type,attr"`
+	MAC         *DomainInterfaceMAC         `xml:"mac"`
+	Model       *DomainInterfaceModel       `xml:"model"`
+	Source      *DomainInterfaceSource      `xml:"source"`
+	Target      *DomainInterfaceTarget      `xml:"target"`
+	Alias       *DomainInterfaceAlias       `xml:"alias"`
+	Link        *DomainInterfaceLink        `xml:"link"`
+	Boot        *DomainDeviceBoot           `xml:"boot"`
+	Script      *DomainInterfaceScript      `xml:"script"`
+	Driver      *DomainInterfaceDriver      `xml:"driver"`
+	Virtualport *DomainInterfaceVirtualport `xml:"virtualport"`
+	Address     *DomainAddress              `xml:"address"`
 }
 
 type DomainChardevSource struct {
