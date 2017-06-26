@@ -297,6 +297,16 @@ var domainTestData = []struct {
 							Port: &serialPort,
 						},
 					},
+					DomainSerial{
+						Type: "file",
+						Source: &DomainChardevSource{
+							Path:   "/tmp/serial.log",
+							Append: "off",
+						},
+						Target: &DomainSerialTarget{
+							Port: &serialPort,
+						},
+					},
 				},
 				Channels: []DomainChannel{
 					DomainChannel{
@@ -331,6 +341,10 @@ var domainTestData = []struct {
 			`  <devices>`,
 			`    <serial type="pty">`,
 			`      <target type="isa" port="0"></target>`,
+			`    </serial>`,
+			`    <serial type="file">`,
+			`      <source path="/tmp/serial.log" append="off"></source>`,
+			`      <target port="0"></target>`,
 			`    </serial>`,
 			`    <console type="pty">`,
 			`      <target type="virtio" port="0"></target>`,

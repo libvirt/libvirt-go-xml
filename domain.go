@@ -232,8 +232,9 @@ type DomainInterface struct {
 }
 
 type DomainChardevSource struct {
-	Mode string `xml:"mode,attr"`
-	Path string `xml:"path,attr"`
+	Mode   string `xml:"mode,attr,omitempty"`
+	Path   string `xml:"path,attr"`
+	Append string `xml:"append,attr,omitempty"`
 }
 
 type DomainChardevTarget struct {
