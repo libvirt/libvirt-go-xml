@@ -911,6 +911,50 @@ var domainTestData = []struct {
 			Type: "kvm",
 			Name: "test",
 			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Type: "vhostuser",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+						Bandwidth: &DomainInterfaceBandwidth{
+							Inbound: &DomainInterfaceBandwidthParams{
+								Average: 1000,
+								Burst:   10000,
+							},
+							Outbound: &DomainInterfaceBandwidthParams{
+								Average: 1000,
+								Burst:   10000,
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="vhostuser">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="virtio"></model>`,
+			`      <bandwidth>`,
+			`        <inbound average="1000" burst="10000"></inbound>`,
+			`        <outbound average="1000" burst="10000"></outbound>`,
+			`      </bandwidth>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
 				Filesystems: []DomainFilesystem{
 					DomainFilesystem{
 						Type:       "mount",
