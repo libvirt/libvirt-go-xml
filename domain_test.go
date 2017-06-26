@@ -51,6 +51,9 @@ var serialPort uint = 0
 var tabletBus uint = 0
 var tabletPort uint = 1
 
+var nicAverage int = 1000
+var nicBurst int = 10000
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -959,12 +962,12 @@ var domainTestData = []struct {
 						},
 						Bandwidth: &DomainInterfaceBandwidth{
 							Inbound: &DomainInterfaceBandwidthParams{
-								Average: 1000,
-								Burst:   10000,
+								Average: &nicAverage,
+								Burst:   &nicBurst,
 							},
 							Outbound: &DomainInterfaceBandwidthParams{
-								Average: 1000,
-								Burst:   10000,
+								Average: new(int),
+								Burst:   new(int),
 							},
 						},
 					},
@@ -980,7 +983,7 @@ var domainTestData = []struct {
 			`      <model type="virtio"></model>`,
 			`      <bandwidth>`,
 			`        <inbound average="1000" burst="10000"></inbound>`,
-			`        <outbound average="1000" burst="10000"></outbound>`,
+			`        <outbound average="0" burst="0"></outbound>`,
 			`      </bandwidth>`,
 			`    </interface>`,
 			`  </devices>`,
