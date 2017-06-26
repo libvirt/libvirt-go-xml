@@ -215,6 +215,18 @@ type DomainInterfaceVirtualport struct {
 	Type string `xml:"type,attr"`
 }
 
+type DomainInterfaceBandwidthParams struct {
+	Average int `xml:"average,attr,omitempty"`
+	Peak    int `xml:"peak,attr,omitempty"`
+	Burst   int `xml:"burst,attr,omitempty"`
+	Floor   int `xml:"floor,attr,omitempty"`
+}
+
+type DomainInterfaceBandwidth struct {
+	Inbound  *DomainInterfaceBandwidthParams `xml:"inbound"`
+	Outbound *DomainInterfaceBandwidthParams `xml:"outbound"`
+}
+
 type DomainInterface struct {
 	XMLName     xml.Name                    `xml:"interface"`
 	Type        string                      `xml:"type,attr"`
@@ -228,6 +240,7 @@ type DomainInterface struct {
 	Script      *DomainInterfaceScript      `xml:"script"`
 	Driver      *DomainInterfaceDriver      `xml:"driver"`
 	Virtualport *DomainInterfaceVirtualport `xml:"virtualport"`
+	Bandwidth   *DomainInterfaceBandwidth   `xml:"bandwidth"`
 	Address     *DomainAddress              `xml:"address"`
 }
 
