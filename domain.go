@@ -184,6 +184,8 @@ type DomainInterfaceSource struct {
 	Path    string `xml:"path,attr,omitempty"`
 	Mode    string `xml:"mode,attr,omitempty"`
 	Port    uint   `xml:"port,attr,omitempty"`
+	Service string `xml:"service,attr,omitempty"`
+	Host    string `xml:"host,attr,omitempty"`
 }
 
 type DomainInterfaceTarget struct {
@@ -384,6 +386,25 @@ type DomainSound struct {
 	Address *DomainAddress    `xml:"address"`
 }
 
+type DomainRNGRate struct {
+	Bytes  uint `xml:"bytes,attr"`
+	Period uint `xml:"period,attr,omitempty"`
+}
+
+type DomainRNGBackend struct {
+	Device  string                  `xml:",chardata"`
+	Model   string                  `xml:"model,attr"`
+	Type    string                  `xml:"type,attr,omitempty"`
+	Sources []DomainInterfaceSource `xml:"source"`
+}
+
+type DomainRNG struct {
+	XMLName xml.Name          `xml:"rng"`
+	Model   string            `xml:"model,attr"`
+	Rate    *DomainRNGRate    `xml:"rate"`
+	Backend *DomainRNGBackend `xml:"backend"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Controllers []DomainController `xml:"controller"`
@@ -398,6 +419,7 @@ type DomainDeviceList struct {
 	Channels    []DomainChannel    `xml:"channel"`
 	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
 	Sounds      []DomainSound      `xml:"sound"`
+	RNGs        []DomainRNG        `xml:"rng"`
 }
 
 type DomainMemory struct {
@@ -728,6 +750,18 @@ func (d *DomainSound) Unmarshal(doc string) error {
 }
 
 func (d *DomainSound) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainRNG) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainRNG) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err

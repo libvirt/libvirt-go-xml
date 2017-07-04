@@ -333,6 +333,30 @@ var domainTestData = []struct {
 						},
 					},
 				},
+				RNGs: []DomainRNG{
+					DomainRNG{
+						Model: "virtio",
+						Rate: &DomainRNGRate{
+							Period: 2000,
+							Bytes:  1234,
+						},
+						Backend: &DomainRNGBackend{
+							Model: "egd",
+							Type:  "udp",
+							Sources: []DomainInterfaceSource{
+								DomainInterfaceSource{
+									Mode:    "bind",
+									Service: "1234",
+								},
+								DomainInterfaceSource{
+									Mode:    "connect",
+									Host:    "1.2.3.4",
+									Service: "1234",
+								},
+							},
+						},
+					},
+				},
 			},
 		},
 		Expected: []string{
@@ -368,6 +392,13 @@ var domainTestData = []struct {
 			`      <codec type="duplex"></codec>`,
 			`      <address type="pci" domain="0" bus="0" slot="8" function="0"></address>`,
 			`    </sound>`,
+			`    <rng model="virtio">`,
+			`      <rate bytes="1234" period="2000"></rate>`,
+			`      <backend model="egd" type="udp">`,
+			`        <source mode="bind" service="1234"></source>`,
+			`        <source mode="connect" service="1234" host="1.2.3.4"></source>`,
+			`      </backend>`,
+			`    </rng>`,
 			`  </devices>`,
 			`</domain>`,
 		},
@@ -1332,6 +1363,60 @@ var domainTestData = []struct {
 			`  <codec type="duplex"></codec>`,
 			`  <address type="pci" domain="0" bus="0" slot="8" function="0"></address>`,
 			`</sound>`,
+		},
+	},
+	{
+		Object: &DomainRNG{
+			Model: "virtio",
+			Rate: &DomainRNGRate{
+				Period: 2000,
+				Bytes:  1234,
+			},
+			Backend: &DomainRNGBackend{
+				Device: "/dev/random",
+				Model:  "random",
+			},
+		},
+
+		Expected: []string{
+			`<rng model="virtio">`,
+			`  <rate bytes="1234" period="2000"></rate>`,
+			`  <backend model="random">/dev/random</backend>`,
+			`</rng>`,
+		},
+	},
+	{
+		Object: &DomainRNG{
+			Model: "virtio",
+			Rate: &DomainRNGRate{
+				Period: 2000,
+				Bytes:  1234,
+			},
+			Backend: &DomainRNGBackend{
+				Model: "egd",
+				Type:  "udp",
+				Sources: []DomainInterfaceSource{
+					DomainInterfaceSource{
+						Mode:    "bind",
+						Service: "1234",
+					},
+					DomainInterfaceSource{
+						Mode:    "connect",
+						Host:    "1.2.3.4",
+						Service: "1234",
+					},
+				},
+			},
+		},
+
+		Expected: []string{
+			`<rng model="virtio">`,
+			`  <rate bytes="1234" period="2000"></rate>`,
+			`  <backend model="egd" type="udp">`,
+			`    <source mode="bind" service="1234"></source>`,
+			`    <source mode="connect" service="1234" host="1.2.3.4"></source>`,
+			`  </backend>`,
+			`</rng>`,
 		},
 	},
 }
