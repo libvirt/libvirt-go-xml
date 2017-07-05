@@ -218,10 +218,10 @@ type DomainInterfaceVirtualport struct {
 }
 
 type DomainInterfaceBandwidthParams struct {
-	Average int `xml:"average,attr,omitempty"`
-	Peak    int `xml:"peak,attr,omitempty"`
-	Burst   int `xml:"burst,attr,omitempty"`
-	Floor   int `xml:"floor,attr,omitempty"`
+	Average *int `xml:"average,attr,omitempty"`
+	Peak    *int `xml:"peak,attr,omitempty"`
+	Burst   *int `xml:"burst,attr,omitempty"`
+	Floor   *int `xml:"floor,attr,omitempty"`
 }
 
 type DomainInterfaceBandwidth struct {
