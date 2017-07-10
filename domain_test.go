@@ -1141,6 +1141,33 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Type: "qemu",
+			Name: "test",
+			QEMUCommandline: &DomainQEMUCommandline{
+				Args: []DomainQEMUCommandlineArg{
+					DomainQEMUCommandlineArg{Value: "-newarg"},
+					DomainQEMUCommandlineArg{Value: "-oldarg"},
+				},
+				Envs: []DomainQEMUCommandlineEnv{
+					DomainQEMUCommandlineEnv{Name: "QEMU_ENV", Value: "VAL"},
+					DomainQEMUCommandlineEnv{Name: "QEMU_VAR", Value: "VAR"},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="qemu">`,
+			`  <name>test</name>`,
+			`  <commandline xmlns="http://libvirt.org/schemas/domain/qemu/1.0">`,
+			`    <arg value="-newarg"></arg>`,
+			`    <arg value="-oldarg"></arg>`,
+			`    <env name="QEMU_ENV" value="VAL"></env>`,
+			`    <env name="QEMU_VAR" value="VAR"></env>`,
+			`  </commandline>`,
+			`</domain>`,
+		},
+	},
 
 	/* Tests for sub-documents that can be hotplugged */
 	{
