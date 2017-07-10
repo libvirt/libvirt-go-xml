@@ -1205,6 +1205,7 @@ var domainTestData = []struct {
 				Bus: "virtio",
 			},
 			Serial: "fishfood",
+			WWN:    "0123456789abcdef",
 		},
 		Expected: []string{
 			`<disk type="file" device="cdrom">`,
@@ -1212,6 +1213,7 @@ var domainTestData = []struct {
 			`  <source file="/var/lib/libvirt/images/demo.qcow2"></source>`,
 			`  <target dev="vda" bus="virtio"></target>`,
 			`  <serial>fishfood</serial>`,
+			`  <wwn>0123456789abcdef</wwn>`,
 			`</disk>`,
 		},
 	},

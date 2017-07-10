@@ -124,6 +124,7 @@ type DomainDisk struct {
 	Shareable *DomainDiskShareable `xml:"shareable"`
 	Address   *DomainAddress       `xml:"address"`
 	Boot      *DomainDeviceBoot    `xml:"boot"`
+	WWN       string               `xml:"wwn,omitempty"`
 }
 
 type DomainFilesystemDriver struct {
