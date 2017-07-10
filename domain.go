@@ -533,6 +533,12 @@ type DomainCPU struct {
 	Features []DomainCPUFeature `xml:"feature"`
 }
 
+type DomainClock struct {
+	Offset     string `xml:"offset,attr,omitempty"`
+	Basis      string `xml:"basis,attr,omitempty"`
+	Adjustment int    `xml:"adjustment,attr,omitempty"`
+}
+
 type DomainFeature struct {
 }
 
@@ -623,6 +629,7 @@ type Domain struct {
 	OS              *DomainOS          `xml:"os"`
 	Features        *DomainFeatureList `xml:"features"`
 	CPU             *DomainCPU         `xml:"cpu"`
+	Clock           *DomainClock       `xml:"clock,omitempty"`
 	OnPoweroff      string             `xml:"on_poweroff,omitempty"`
 	OnReboot        string             `xml:"on_reboot,omitempty"`
 	OnCrash         string             `xml:"on_crash,omitempty"`

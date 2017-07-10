@@ -491,6 +491,11 @@ var domainTestData = []struct {
 					},
 				},
 			},
+			Clock: &DomainClock{
+				Offset:     "variable",
+				Basis:      "utc",
+				Adjustment: 28794,
+			},
 		},
 		Expected: []string{
 			`<domain type="kvm">`,
@@ -524,6 +529,7 @@ var domainTestData = []struct {
 			`    <initarg>--unit</initarg>`,
 			`    <initarg>emergency.service</initarg>`,
 			`  </os>`,
+			`  <clock offset="variable" basis="utc" adjustment="28794"></clock>`,
 			`</domain>`,
 		},
 	},
