@@ -67,6 +67,20 @@ var networkTestData = []struct {
 			},
 			Forward: &NetworkForward{
 				Mode: "nat",
+				NAT: &NetworkForwardNAT{
+					Addresses: []NetworkForwardNATAddress{
+						NetworkForwardNATAddress{
+							Start: "1.2.3.4",
+							End:   "1.2.3.10",
+						},
+					},
+					Ports: []NetworkForwardNATPort{
+						NetworkForwardNATPort{
+							Start: 500,
+							End:   1000,
+						},
+					},
+				},
 			},
 			IPs: []NetworkIP{
 				NetworkIP{
@@ -89,9 +103,9 @@ var networkTestData = []struct {
 					},
 				},
 				NetworkIP{
-					Family: "ipv6",
-					Address:"2001:db8:ca2:2::1",
-					Prefix: "64",
+					Family:  "ipv6",
+					Address: "2001:db8:ca2:2::1",
+					Prefix:  "64",
 					DHCP: &NetworkDHCP{
 						Hosts: []NetworkDHCPHost{
 							NetworkDHCPHost{
@@ -99,8 +113,8 @@ var networkTestData = []struct {
 								Name: "paul",
 							},
 							NetworkDHCPHost{
-								ID:  "0:1:0:1:18:aa:62:fe:0:16:3e:44:55:66",
-								IP:  "2001:db8:ca2:2:3::2",
+								ID: "0:1:0:1:18:aa:62:fe:0:16:3e:44:55:66",
+								IP: "2001:db8:ca2:2:3::2",
 							},
 						},
 					},
@@ -111,7 +125,12 @@ var networkTestData = []struct {
 			`<network>`,
 			`  <name>test</name>`,
 			`  <bridge name="virbr0"></bridge>`,
-			`  <forward mode="nat"></forward>`,
+			`  <forward mode="nat">`,
+			`    <nat>`,
+			`      <address start="1.2.3.4" end="1.2.3.10"></address>`,
+			`      <port start="500" end="1000"></port>`,
+			`    </nat>`,
+			`  </forward>`,
 			`  <ip address="192.168.122.1" netmask="255.255.255.0">`,
 			`    <dhcp>`,
 			`      <range start="192.168.122.2" end="192.168.122.254"></range>`,

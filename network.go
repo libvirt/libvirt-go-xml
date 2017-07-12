@@ -41,9 +41,25 @@ type NetworkDomain struct {
 	LocalOnly string `xml:"localOnly,attr,omitempty"`
 }
 
+type NetworkForwardNATAddress struct {
+	Start string `xml:"start,attr"`
+	End   string `xml:"end,attr"`
+}
+
+type NetworkForwardNATPort struct {
+	Start uint `xml:"start,attr"`
+	End   uint `xml:"end,attr"`
+}
+
+type NetworkForwardNAT struct {
+	Addresses []NetworkForwardNATAddress `xml:"address"`
+	Ports     []NetworkForwardNATPort    `xml:"port"`
+}
+
 type NetworkForward struct {
-	Mode string `xml:"mode,attr,omitempty"`
-	Dev  string `xml:"dev,attr,omitempty"`
+	Mode string             `xml:"mode,attr,omitempty"`
+	Dev  string             `xml:"dev,attr,omitempty"`
+	NAT  *NetworkForwardNAT `xml:"nat"`
 }
 
 type NetworkMAC struct {
