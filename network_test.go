@@ -120,6 +120,50 @@ var networkTestData = []struct {
 					},
 				},
 			},
+			DNS: &NetworkDNS{
+				Enable:            "yes",
+				ForwardPlainNames: "no",
+				Forwarders: []NetworkDNSForwarder{
+					NetworkDNSForwarder{
+						Addr: "8.8.8.8",
+					},
+					NetworkDNSForwarder{
+						Domain: "example.com",
+						Addr:   "8.8.4.4",
+					},
+					NetworkDNSForwarder{
+						Domain: "www.example.com",
+					},
+				},
+				TXTs: []NetworkDNSTXT{
+					NetworkDNSTXT{
+						Name:  "example",
+						Value: "example value",
+					},
+				},
+				Host: &NetworkDNSHost{
+					IP: "192.168.122.2",
+					Hostnames: []NetworkDNSHostHostname{
+						NetworkDNSHostHostname{
+							Hostname: "myhost",
+						},
+						NetworkDNSHostHostname{
+							Hostname: "myhostalias",
+						},
+					},
+				},
+				SRVs: []NetworkDNSSRV{
+					NetworkDNSSRV{
+						Service:  "name",
+						Protocol: "tcp",
+						Domain:   "test-domain-name",
+						Target:   ".",
+						Port:     1024,
+						Priority: 10,
+						Weight:   10,
+					},
+				},
+			},
 		},
 		Expected: []string{
 			`<network>`,
@@ -143,6 +187,17 @@ var networkTestData = []struct {
 			`      <host id="0:1:0:1:18:aa:62:fe:0:16:3e:44:55:66" ip="2001:db8:ca2:2:3::2"></host>`,
 			`    </dhcp>`,
 			`  </ip>`,
+			`  <dns enable="yes" forwardPlainNames="no">`,
+			`    <forwarder addr="8.8.8.8"></forwarder>`,
+			`    <forwarder domain="example.com" addr="8.8.4.4"></forwarder>`,
+			`    <forwarder domain="www.example.com"></forwarder>`,
+			`    <txt name="example" value="example value"></txt>`,
+			`    <host ip="192.168.122.2">`,
+			`      <hostname>myhost</hostname>`,
+			`      <hostname>myhostalias</hostname>`,
+			`    </host>`,
+			`    <srv service="name" protocol="tcp" target="." port="1024" priority="10" weight="10" domain="test-domain-name"></srv>`,
+			`  </dns>`,
 			`</network>`,
 		},
 	},

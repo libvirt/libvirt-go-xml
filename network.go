@@ -100,6 +100,44 @@ type NetworkRoute struct {
 	Gateway string `xml:"gateway,attr,omitempty"`
 }
 
+type NetworkDNSForwarder struct {
+	Domain string `xml:"domain,attr,omitempty"`
+	Addr   string `xml:"addr,attr,omitempty"`
+}
+
+type NetworkDNSTXT struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value,attr"`
+}
+
+type NetworkDNSHostHostname struct {
+	Hostname string `xml:",chardata"`
+}
+
+type NetworkDNSHost struct {
+	IP        string                   `xml:"ip,attr"`
+	Hostnames []NetworkDNSHostHostname `xml:"hostname"`
+}
+
+type NetworkDNSSRV struct {
+	Service  string `xml:"service,attr"`
+	Protocol string `xml:"protocol,attr"`
+	Target   string `xml:"target,attr,omitempty"`
+	Port     uint   `xml:"port,attr,omitempty"`
+	Priority uint   `xml:"priority,attr,omitempty"`
+	Weight   uint   `xml:"weight,attr,omitempty"`
+	Domain   string `xml:"domain,attr,omitempty"`
+}
+
+type NetworkDNS struct {
+	Enable            string                `xml:"enable,attr,omitempty"`
+	ForwardPlainNames string                `xml:"forwardPlainNames,attr,omitempty"`
+	Forwarders        []NetworkDNSForwarder `xml:"forwarder"`
+	TXTs              []NetworkDNSTXT       `xml:"txt"`
+	Host              *NetworkDNSHost       `xml:"host"`
+	SRVs              []NetworkDNSSRV       `xml:"srv"`
+}
+
 type Network struct {
 	XMLName             xml.Name        `xml:"network"`
 	IPv6                string          `xml:"ipv6,attr,omitempty"`
@@ -112,6 +150,7 @@ type Network struct {
 	Domain              *NetworkDomain  `xml:"domain"`
 	IPs                 []NetworkIP     `xml:"ip"`
 	Routes              []NetworkRoute  `xml:"route"`
+	DNS                 *NetworkDNS     `xml:"dns"`
 }
 
 func (s *Network) Unmarshal(doc string) error {
