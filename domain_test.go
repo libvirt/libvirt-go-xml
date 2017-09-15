@@ -37,6 +37,13 @@ type Address struct {
 	Function HexUint
 }
 
+type SCSIAddress struct {
+	Controller uint
+	Bus        HexUint
+	Target     uint
+	Unit       uint
+}
+
 var uhciIndex uint = 0
 var uhciAddr = Address{0, 0, 1, 2}
 
@@ -46,6 +53,7 @@ var videoAddr = Address{0, 0, 5, 0}
 var fsAddr = Address{0, 0, 6, 0}
 var balloonAddr = Address{0, 0, 7, 0}
 var duplexAddr = Address{0, 0, 8, 0}
+var hostdevSCSI = SCSIAddress{0, 0, 3, 0}
 
 var serialPort uint = 0
 var tabletBus HexUint = 0
@@ -1455,6 +1463,42 @@ var domainTestData = []struct {
 			`    <source mode="connect" service="1234" host="1.2.3.4"></source>`,
 			`  </backend>`,
 			`</rng>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			Mode:  "subsystem",
+			Type:  "scsi",
+			SGIO:  "unfiltered",
+			RawIO: "yes",
+			Source: &DomainHostdevSource{
+				Adapter: &DomainHostdevAdapter{
+					Name: "scsi_host0",
+				},
+				Address: &DomainAddress{
+					Type:   "scsi",
+					Bus:    &hostdevSCSI.Bus,
+					Target: &hostdevSCSI.Target,
+					Unit:   &hostdevSCSI.Unit,
+				},
+			},
+			Address: &DomainAddress{
+				Type:       "drive",
+				Controller: &hostdevSCSI.Controller,
+				Bus:        &hostdevSCSI.Bus,
+				Target:     &hostdevSCSI.Target,
+				Unit:       &hostdevSCSI.Unit,
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="subsystem" type="scsi" sgio="unfiltered" rawio="yes">`,
+			`  <source>`,
+			`    <adapter name="scsi_host0"></adapter>`,
+			`    <address type="scsi" bus="0" target="3" unit="0"></address>`,
+			`  </source>`,
+			`  <address type="drive" controller="0" bus="0" target="3" unit="0"></address>`,
+			`</hostdev>`,
 		},
 	},
 }
