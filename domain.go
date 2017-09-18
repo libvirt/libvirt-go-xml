@@ -556,6 +556,18 @@ type DomainCPU struct {
 	Vendor   string             `xml:"vendor,omitempty"`
 	Topology *DomainCPUTopology `xml:"topology"`
 	Features []DomainCPUFeature `xml:"feature"`
+	Numa     *DomainNuma        `xml:"numa,omitempty"`
+}
+
+type DomainNuma struct {
+	Cell []DomainCell `xml:"cell"`
+}
+
+type DomainCell struct {
+	ID     string `xml:"id,attr"`
+	CPUs   string `xml:"cpus,attr"`
+	Memory string `xml:"memory,attr"`
+	Unit   string `xml:"unit,attr"`
 }
 
 type DomainClock struct {
