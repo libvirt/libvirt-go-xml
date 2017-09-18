@@ -534,9 +534,26 @@ type DomainCPU struct {
 }
 
 type DomainClock struct {
-	Offset     string `xml:"offset,attr,omitempty"`
-	Basis      string `xml:"basis,attr,omitempty"`
-	Adjustment int    `xml:"adjustment,attr,omitempty"`
+	Offset     string        `xml:"offset,attr,omitempty"`
+	Basis      string        `xml:"basis,attr,omitempty"`
+	Adjustment int           `xml:"adjustment,attr,omitempty"`
+	Timer      []DomainTimer `xml:"timer,omitempty"`
+}
+
+type DomainTimer struct {
+	Name       string         `xml:"name,attr"`
+	Track      string         `xml:"track,attr,omitempty"`
+	TickPolicy string         `xml:"tickpolicy,attr,omitempty"`
+	CatchUp    *DomainCatchUp `xml:"catchup,omitempty"`
+	Frequency  uint32         `xml:"frequency,attr,omitempty"`
+	Mode       string         `xml:"mode,attr,omitempty"`
+	Present    string         `xml:"present,attr,omitempty"`
+}
+
+type DomainCatchUp struct {
+	Threshold uint `xml:"threshold,attr,omitempty"`
+	Slew      uint `xml:"slew,attr,omitempty"`
+	Limit     uint `xml:"limit,attr,omitempty"`
 }
 
 type DomainFeature struct {

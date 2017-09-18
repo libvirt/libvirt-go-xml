@@ -498,6 +498,20 @@ var domainTestData = []struct {
 				Offset:     "variable",
 				Basis:      "utc",
 				Adjustment: 28794,
+				Timer: []DomainTimer{
+					DomainTimer{
+						Name:       "rtc",
+						Track:      "boot",
+						TickPolicy: "catchup",
+						CatchUp: &DomainCatchUp{
+							Threshold: 123,
+							Slew:      120,
+							Limit:     10000,
+						},
+						Frequency: 120,
+						Mode:      "auto",
+					},
+				},
 			},
 		},
 		Expected: []string{
@@ -532,7 +546,11 @@ var domainTestData = []struct {
 			`    <initarg>--unit</initarg>`,
 			`    <initarg>emergency.service</initarg>`,
 			`  </os>`,
-			`  <clock offset="variable" basis="utc" adjustment="28794"></clock>`,
+			`  <clock offset="variable" basis="utc" adjustment="28794">`,
+			`    <timer name="rtc" track="boot" tickpolicy="catchup" frequency="120" mode="auto">`,
+			`      <catchup threshold="123" slew="120" limit="10000"></catchup>`,
+			`    </timer>`,
+			`  </clock>`,
 			`</domain>`,
 		},
 	},
