@@ -659,6 +659,11 @@ var domainTestData = []struct {
 				Features: []DomainCPUFeature{
 					DomainCPUFeature{Policy: "disable", Name: "lahf_lm"},
 				},
+				Numa: &DomainNuma{
+					[]DomainCell{
+						{ID: "0", CPUs: "0-3", Memory: "512000", Unit: "KiB"},
+					},
+				},
 			},
 			Devices: &DomainDeviceList{
 				Emulator: "/bin/qemu-kvm",
@@ -672,6 +677,9 @@ var domainTestData = []struct {
 			`    <vendor>Intel</vendor>`,
 			`    <topology sockets="1" cores="2" threads="1"></topology>`,
 			`    <feature policy="disable" name="lahf_lm"></feature>`,
+			`    <numa>`,
+			`      <cell id="0" cpus="0-3" memory="512000" unit="KiB"></cell>`,
+			`    </numa>`,
 			`  </cpu>`,
 			`  <devices>`,
 			`    <emulator>/bin/qemu-kvm</emulator>`,
