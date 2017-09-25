@@ -62,6 +62,10 @@ var tabletPort uint = 1
 var nicAverage int = 1000
 var nicBurst int = 10000
 
+var vcpuId0 uint = 0
+var vcpuOrder0 uint = 1
+var vcpuId1 uint = 1
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -635,6 +639,22 @@ var domainTestData = []struct {
 				Current:   "1",
 				Value:     2,
 			},
+			VCPUs: &DomainVCPUs{
+				VCPU: []DomainVCPUsVCPU{
+					DomainVCPUsVCPU{
+						Id:           &vcpuId0,
+						Enabled:      "yes",
+						Hotpluggable: "no",
+						Order:        &vcpuOrder0,
+					},
+					DomainVCPUsVCPU{
+						Id:           &vcpuId1,
+						Enabled:      "no",
+						Hotpluggable: "yes",
+						Order:        nil,
+					},
+				},
+			},
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
@@ -656,6 +676,10 @@ var domainTestData = []struct {
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
 			`  <vcpu placement="static" cpuset="1-4,^3,6" current="1">2</vcpu>`,
+			`  <vcpus>`,
+			`    <vcpu id="0" enabled="yes" hotpluggable="no" order="1"></vcpu>`,
+			`    <vcpu id="1" enabled="no" hotpluggable="yes"></vcpu>`,
+			`  </vcpus>`,
 			`  <devices>`,
 			`    <interface type="network">`,
 			`      <mac address="00:11:22:33:44:55"></mac>`,

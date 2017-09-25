@@ -533,6 +533,17 @@ type DomainVCPU struct {
 	Value     int    `xml:",chardata"`
 }
 
+type DomainVCPUsVCPU struct {
+	Id           *uint  `xml:"id,attr,omitempty"`
+	Enabled      string `xml:"enabled,attr,omitempty"`
+	Hotpluggable string `xml:"hotpluggable,attr,omitempty"`
+	Order        *uint  `xml:"order,attr,omitempty"`
+}
+
+type DomainVCPUs struct {
+	VCPU []DomainVCPUsVCPU `xml:"vcpu"`
+}
+
 type DomainCPUModel struct {
 	Fallback string `xml:"fallback,attr,omitempty"`
 	Value    string `xml:",chardata"`
@@ -678,6 +689,7 @@ type Domain struct {
 	CurrentMemory   *DomainMemory      `xml:"currentMemory"`
 	MaximumMemory   *DomainMaxMemory   `xml:"maxMemory"`
 	VCPU            *DomainVCPU        `xml:"vcpu"`
+	VCPUs           *DomainVCPUs       `xml:"vcpus"`
 	Resource        *DomainResource    `xml:"resource"`
 	SysInfo         *DomainSysInfo     `xml:"sysinfo"`
 	OS              *DomainOS          `xml:"os"`
