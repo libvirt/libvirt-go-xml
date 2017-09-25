@@ -178,16 +178,22 @@ type DomainInterfaceModel struct {
 }
 
 type DomainInterfaceSource struct {
-	Bridge  string `xml:"bridge,attr,omitempty"`
-	Dev     string `xml:"dev,attr,omitempty"`
-	Network string `xml:"network,attr,omitempty"`
+	Bridge  string                      `xml:"bridge,attr,omitempty"`
+	Dev     string                      `xml:"dev,attr,omitempty"`
+	Network string                      `xml:"network,attr,omitempty"`
+	Address string                      `xml:"address,attr,omitempty"`
+	Type    string                      `xml:"type,attr,omitempty"`
+	Path    string                      `xml:"path,attr,omitempty"`
+	Mode    string                      `xml:"mode,attr,omitempty"`
+	Port    uint                        `xml:"port,attr,omitempty"`
+	Service string                      `xml:"service,attr,omitempty"`
+	Host    string                      `xml:"host,attr,omitempty"`
+	Local   *DomainInterfaceSourceLocal `xml:"local,omitempty"`
+}
+
+type DomainInterfaceSourceLocal struct {
 	Address string `xml:"address,attr,omitempty"`
-	Type    string `xml:"type,attr,omitempty"`
-	Path    string `xml:"path,attr,omitempty"`
-	Mode    string `xml:"mode,attr,omitempty"`
 	Port    uint   `xml:"port,attr,omitempty"`
-	Service string `xml:"service,attr,omitempty"`
-	Host    string `xml:"host,attr,omitempty"`
 }
 
 type DomainInterfaceTarget struct {
