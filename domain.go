@@ -188,7 +188,7 @@ type DomainInterfaceSource struct {
 	Port    uint                        `xml:"port,attr,omitempty"`
 	Service string                      `xml:"service,attr,omitempty"`
 	Host    string                      `xml:"host,attr,omitempty"`
-	Local   *DomainInterfaceSourceLocal `xml:"local,omitempty"`
+	Local   *DomainInterfaceSourceLocal `xml:"local"`
 }
 
 type DomainInterfaceSourceLocal struct {
