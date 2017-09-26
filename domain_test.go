@@ -858,6 +858,47 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
+						Type: "udp",
+						MAC: &DomainInterfaceMAC{
+							Address: "52:54:00:39:97:ac",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							Address: "127.0.0.1",
+							Port:    1234,
+							Local: &DomainInterfaceSourceLocal{
+								Address: "127.0.0.1",
+								Port:    1235,
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="udp">`,
+			`      <mac address="52:54:00:39:97:ac"></mac>`,
+			`      <model type="virtio"></model>`,
+			`      <source address="127.0.0.1" port="1234">`,
+			`        <local address="127.0.0.1" port="1235"></local>`,
+			`      </source>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
 						Type: "direct",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
