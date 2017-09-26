@@ -435,6 +435,33 @@ var domainTestData = []struct {
 				Value: 16384,
 				Slots: 2,
 			},
+			MemoryBacking: &DomainMemoryBacking{
+				MemoryHugePages: &DomainMemoryHugepages{
+					Hugepages: []DomainMemoryHugepage{
+						{
+							Size:    1,
+							Unit:    "G",
+							Nodeset: "0-3,5",
+						},
+						{
+							Size:    2,
+							Unit:    "M",
+							Nodeset: "4",
+						},
+					},
+				},
+				MemoryNosharepages: &DomainMemoryNosharepages{},
+				MemoryLocked:       &DomainMemoryLocked{},
+				MemorySource: &DomainMemorySource{
+					Type: "file",
+				},
+				MemoryAccess: &DomainMemoryAccess{
+					Mode: "shared",
+				},
+				MemoryAllocation: &DomainMemoryAllocation{
+					Mode: "immediate",
+				},
+			},
 			OS: &DomainOS{
 				Type: &DomainOSType{
 					Arch:    "x86_64",
@@ -532,6 +559,17 @@ var domainTestData = []struct {
 			`  <memory unit="KiB">8192</memory>`,
 			`  <currentMemory unit="KiB">4096</currentMemory>`,
 			`  <maxMemory unit="KiB" slots="2">16384</maxMemory>`,
+			`  <memoryBacking>`,
+			`    <hugepages>`,
+			`      <page size="1" unit="G" nodeset="0-3,5"></page>`,
+			`      <page size="2" unit="M" nodeset="4"></page>`,
+			`    </hugepages>`,
+			`    <nosharepages></nosharepages>`,
+			`    <locked></locked>`,
+			`    <source type="file"></source>`,
+			`    <access mode="shared"></access>`,
+			`    <allocation mode="immediate"></allocation>`,
+			`  </memoryBacking>`,
 			`  <sysinfo type="smbios">`,
 			`    <system>`,
 			`      <entry name="manufacturer">manufacturer</entry>`,
