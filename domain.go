@@ -436,6 +436,22 @@ type DomainHostdev struct {
 	Address *DomainAddress       `xml:"address"`
 }
 
+type DomainMemorydevTargetNode struct {
+	Value uint `xml:",chardata"`
+}
+
+type DomainMemorydevTarget struct {
+	Size *DomainMemory              `xml:"size"`
+	Node *DomainMemorydevTargetNode `xml:"node"`
+}
+
+type DomainMemorydev struct {
+	XMLName xml.Name               `xml:"memory"`
+	Model   string                 `xml:"model,attr"`
+	Access  string                 `xml:"access,attr"`
+	Target  *DomainMemorydevTarget `xml:"target"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Controllers []DomainController `xml:"controller"`
@@ -452,6 +468,7 @@ type DomainDeviceList struct {
 	Sounds      []DomainSound      `xml:"sound"`
 	RNGs        []DomainRNG        `xml:"rng"`
 	Hostdevs    []DomainHostdev    `xml:"hostdev"`
+	Memorydevs  []DomainMemorydev  `xml:"memory"`
 }
 
 type DomainMemory struct {
@@ -908,6 +925,18 @@ func (d *DomainHostdev) Unmarshal(doc string) error {
 }
 
 func (d *DomainHostdev) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainMemorydev) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainMemorydev) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err

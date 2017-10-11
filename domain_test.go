@@ -372,6 +372,21 @@ var domainTestData = []struct {
 						},
 					},
 				},
+				Memorydevs: []DomainMemorydev{
+					DomainMemorydev{
+						Model:  "dimm",
+						Access: "private",
+						Target: &DomainMemorydevTarget{
+							Size: &DomainMemory{
+								Value: 1,
+								Unit:  "GiB",
+							},
+							Node: &DomainMemorydevTargetNode{
+								Value: 0,
+							},
+						},
+					},
+				},
 			},
 		},
 		Expected: []string{
@@ -414,6 +429,12 @@ var domainTestData = []struct {
 			`        <source mode="connect" service="1234" host="1.2.3.4"></source>`,
 			`      </backend>`,
 			`    </rng>`,
+			`    <memory model="dimm" access="private">`,
+			`      <target>`,
+			`        <size unit="GiB">1</size>`,
+			`        <node>0</node>`,
+			`      </target>`,
+			`    </memory>`,
 			`  </devices>`,
 			`</domain>`,
 		},
@@ -1628,6 +1649,30 @@ var domainTestData = []struct {
 			`  </source>`,
 			`  <address type="drive" controller="0" bus="0" target="3" unit="0"></address>`,
 			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainMemorydev{
+			Model:  "dimm",
+			Access: "private",
+			Target: &DomainMemorydevTarget{
+				Size: &DomainMemory{
+					Value: 1,
+					Unit:  "GiB",
+				},
+				Node: &DomainMemorydevTargetNode{
+					Value: 0,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<memory model="dimm" access="private">`,
+			`  <target>`,
+			`    <size unit="GiB">1</size>`,
+			`    <node>0</node>`,
+			`  </target>`,
+			`</memory>`,
 		},
 	},
 }
