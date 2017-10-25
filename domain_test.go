@@ -1335,6 +1335,26 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Name: "test",
+			CPUTune: &DomainCPUTune{
+				Shares: &DomainCPUTuneShares{Value: 1024},
+				Period: &DomainCPUTunePeriod{Value: 500000},
+				Quota:  &DomainCPUTuneQuota{Value: -1},
+			},
+		},
+		Expected: []string{
+			`<domain>`,
+			`  <name>test</name>`,
+			`  <cputune>`,
+			`    <shares>1024</shares>`,
+			`    <period>500000</period>`,
+			`    <quota>-1</quota>`,
+			`  </cputune>`,
+			`</domain>`,
+		},
+	},
 
 	/* Tests for sub-documents that can be hotplugged */
 	{

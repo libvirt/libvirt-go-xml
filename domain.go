@@ -722,6 +722,24 @@ type DomainFeatureList struct {
 	SMM        *DomainFeatureState  `xml:"smm"`
 }
 
+type DomainCPUTuneShares struct {
+	Value uint `xml:",chardata"`
+}
+
+type DomainCPUTunePeriod struct {
+	Value uint64 `xml:",chardata"`
+}
+
+type DomainCPUTuneQuota struct {
+	Value int64 `xml:",chardata"`
+}
+
+type DomainCPUTune struct {
+	Shares *DomainCPUTuneShares `xml:"shares"`
+	Period *DomainCPUTunePeriod `xml:"period"`
+	Quota  *DomainCPUTuneQuota  `xml:"quota"`
+}
+
 type DomainQEMUCommandlineArg struct {
 	Value string `xml:"value,attr"`
 }
@@ -751,6 +769,7 @@ type Domain struct {
 	MemoryBacking   *DomainMemoryBacking `xml:"memoryBacking"`
 	VCPU            *DomainVCPU          `xml:"vcpu"`
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`
+	CPUTune         *DomainCPUTune       `xml:"cputune"`
 	Resource        *DomainResource      `xml:"resource"`
 	SysInfo         *DomainSysInfo       `xml:"sysinfo"`
 	OS              *DomainOS            `xml:"os"`
