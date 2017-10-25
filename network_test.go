@@ -100,6 +100,12 @@ var networkTestData = []struct {
 								IP:   "192.168.122.10",
 							},
 						},
+						Bootp: []NetworkBootp{
+							NetworkBootp{
+								File:   "pxelinux.0",
+								Server: "192.168.122.1",
+							},
+						},
 					},
 				},
 				NetworkIP{
@@ -179,6 +185,7 @@ var networkTestData = []struct {
 			`    <dhcp>`,
 			`      <range start="192.168.122.2" end="192.168.122.254"></range>`,
 			`      <host mac="00:16:3e:77:e2:ed" name="foo.example.com" ip="192.168.122.10"></host>`,
+			`      <bootp file="pxelinux.0" server="192.168.122.1"></bootp>`,
 			`    </dhcp>`,
 			`  </ip>`,
 			`  <ip address="2001:db8:ca2:2::1" family="ipv6" prefix="64">`,

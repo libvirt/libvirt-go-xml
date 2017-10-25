@@ -78,9 +78,15 @@ type NetworkDHCPHost struct {
 	IP   string `xml:"ip,attr,omitempty"`
 }
 
+type NetworkBootp struct {
+	File   string `xml:"file,attr,omitempty"`
+	Server string `xml:"server,attr,omitempty"`
+}
+
 type NetworkDHCP struct {
 	Ranges []NetworkDHCPRange `xml:"range"`
 	Hosts  []NetworkDHCPHost  `xml:"host"`
+	Bootp  []NetworkBootp     `xml:"bootp"`
 }
 
 type NetworkIP struct {
