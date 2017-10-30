@@ -66,6 +66,9 @@ var vcpuId0 uint = 0
 var vcpuOrder0 uint = 1
 var vcpuId1 uint = 1
 
+var memorydevAddressSlot HexUint = 0
+var memorydevAddressBase HexUint = 4294967296
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -385,6 +388,11 @@ var domainTestData = []struct {
 								Value: 0,
 							},
 						},
+						Address: &DomainAddress{
+							Type: "dimm",
+							Slot: &memorydevAddressSlot,
+							Base: &memorydevAddressBase,
+						},
 					},
 				},
 			},
@@ -434,6 +442,7 @@ var domainTestData = []struct {
 			`        <size unit="GiB">1</size>`,
 			`        <node>0</node>`,
 			`      </target>`,
+			`      <address type="dimm" slot="0" base="4294967296"></address>`,
 			`    </memory>`,
 			`  </devices>`,
 			`</domain>`,

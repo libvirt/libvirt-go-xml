@@ -297,6 +297,7 @@ type DomainAddress struct {
 	Function   *HexUint `xml:"function,attr"`
 	Target     *uint    `xml:"target,attr"`
 	Unit       *uint    `xml:"unit,attr"`
+	Base       *HexUint `xml:"base,attr"`
 }
 
 type DomainConsole struct {
@@ -450,6 +451,7 @@ type DomainMemorydev struct {
 	Model   string                 `xml:"model,attr"`
 	Access  string                 `xml:"access,attr"`
 	Target  *DomainMemorydevTarget `xml:"target"`
+	Address *DomainAddress         `xml:"address"`
 }
 
 type DomainDeviceList struct {
