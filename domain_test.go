@@ -31,33 +31,33 @@ import (
 	"testing"
 )
 
-type Address struct {
-	Domain   HexUint
-	Bus      HexUint
-	Slot     HexUint
-	Function HexUint
+type PCIAddress struct {
+	Domain   uint
+	Bus      uint
+	Slot     uint
+	Function uint
 }
 
-type SCSIAddress struct {
+type DriveAddress struct {
 	Controller uint
-	Bus        HexUint
+	Bus        uint
 	Target     uint
 	Unit       uint
 }
 
 var uhciIndex uint = 0
-var uhciAddr = Address{0, 0, 1, 2}
+var uhciAddr = PCIAddress{0, 0, 1, 2}
 
-var diskAddr = Address{0, 0, 3, 0}
-var ifaceAddr = Address{0, 0, 4, 0}
-var videoAddr = Address{0, 0, 5, 0}
-var fsAddr = Address{0, 0, 6, 0}
-var balloonAddr = Address{0, 0, 7, 0}
-var duplexAddr = Address{0, 0, 8, 0}
-var hostdevSCSI = SCSIAddress{0, 0, 3, 0}
+var diskAddr = PCIAddress{0, 0, 3, 0}
+var ifaceAddr = PCIAddress{0, 0, 4, 0}
+var videoAddr = PCIAddress{0, 0, 5, 0}
+var fsAddr = PCIAddress{0, 0, 6, 0}
+var balloonAddr = PCIAddress{0, 0, 7, 0}
+var duplexAddr = PCIAddress{0, 0, 8, 0}
+var hostdevSCSI = DriveAddress{0, 0, 3, 0}
 
 var serialPort uint = 0
-var tabletBus HexUint = 0
+var tabletBus uint = 0
 var tabletPort uint = 1
 
 var nicAverage int = 1000
@@ -67,8 +67,8 @@ var vcpuId0 uint = 0
 var vcpuOrder0 uint = 1
 var vcpuId1 uint = 1
 
-var memorydevAddressSlot HexUint = 0
-var memorydevAddressBase HexUint = 4294967296
+var memorydevAddressSlot uint = 0
+var memorydevAddressBase uint64 = 4294967296
 
 var domainTestData = []struct {
 	Object   Document
@@ -125,11 +125,12 @@ var domainTestData = []struct {
 							Bus: "virtio",
 						},
 						Address: &DomainAddress{
-							Type:     "pci",
-							Domain:   &diskAddr.Domain,
-							Bus:      &diskAddr.Bus,
-							Slot:     &diskAddr.Slot,
-							Function: &diskAddr.Function,
+							PCI: &DomainAddressPCI{
+								Domain:   &diskAddr.Domain,
+								Bus:      &diskAddr.Bus,
+								Slot:     &diskAddr.Slot,
+								Function: &diskAddr.Function,
+							},
 						},
 					},
 					DomainDisk{
@@ -217,7 +218,7 @@ var domainTestData = []struct {
 			`      <driver name="qemu" type="raw"></driver>`,
 			`      <source dev="/dev/sda1"></source>`,
 			`      <target dev="vdb" bus="virtio"></target>`,
-			`      <address type="pci" domain="0" bus="0" slot="3" function="0"></address>`,
+			`      <address type="pci" domain="0x0" bus="0x0" slot="0x3" function="0x0"></address>`,
 			`    </disk>`,
 			`    <disk type="network" device="disk">`,
 			`      <auth username="fred">`,
@@ -256,9 +257,10 @@ var domainTestData = []struct {
 						Type: "tablet",
 						Bus:  "usb",
 						Address: &DomainAddress{
-							Type: "usb",
-							Bus:  &tabletBus,
-							Port: &tabletPort,
+							USB: &DomainAddressUSB{
+								Bus:  &tabletBus,
+								Port: &tabletPort,
+							},
 						},
 					},
 					DomainInput{
@@ -276,11 +278,12 @@ var domainTestData = []struct {
 							VGAMem: 256,
 						},
 						Address: &DomainAddress{
-							Type:     "pci",
-							Domain:   &videoAddr.Domain,
-							Bus:      &videoAddr.Bus,
-							Slot:     &videoAddr.Slot,
-							Function: &videoAddr.Function,
+							PCI: &DomainAddressPCI{
+								Domain:   &videoAddr.Domain,
+								Bus:      &videoAddr.Bus,
+								Slot:     &videoAddr.Slot,
+								Function: &videoAddr.Function,
+							},
 						},
 					},
 				},
@@ -292,11 +295,12 @@ var domainTestData = []struct {
 				MemBalloon: &DomainMemBalloon{
 					Model: "virtio",
 					Address: &DomainAddress{
-						Type:     "pci",
-						Domain:   &balloonAddr.Domain,
-						Bus:      &balloonAddr.Bus,
-						Slot:     &balloonAddr.Slot,
-						Function: &balloonAddr.Function,
+						PCI: &DomainAddressPCI{
+							Domain:   &balloonAddr.Domain,
+							Bus:      &balloonAddr.Bus,
+							Slot:     &balloonAddr.Slot,
+							Function: &balloonAddr.Function,
+						},
 					},
 				},
 				Consoles: []DomainConsole{
@@ -344,11 +348,12 @@ var domainTestData = []struct {
 							Type: "duplex",
 						},
 						Address: &DomainAddress{
-							Type:     "pci",
-							Domain:   &duplexAddr.Domain,
-							Bus:      &duplexAddr.Bus,
-							Slot:     &duplexAddr.Slot,
-							Function: &duplexAddr.Function,
+							PCI: &DomainAddressPCI{
+								Domain:   &duplexAddr.Domain,
+								Bus:      &duplexAddr.Bus,
+								Slot:     &duplexAddr.Slot,
+								Function: &duplexAddr.Function,
+							},
 						},
 					},
 				},
@@ -390,9 +395,10 @@ var domainTestData = []struct {
 							},
 						},
 						Address: &DomainAddress{
-							Type: "dimm",
-							Slot: &memorydevAddressSlot,
-							Base: &memorydevAddressBase,
+							DIMM: &DomainAddressDIMM{
+								Slot: &memorydevAddressSlot,
+								Base: &memorydevAddressBase,
+							},
 						},
 					},
 				},
@@ -419,17 +425,17 @@ var domainTestData = []struct {
 			`    <graphics type="vnc"></graphics>`,
 			`    <video>`,
 			`      <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
-			`      <address type="pci" domain="0" bus="0" slot="5" function="0"></address>`,
+			`      <address type="pci" domain="0x0" bus="0x0" slot="0x5" function="0x0"></address>`,
 			`    </video>`,
 			`    <channel type="pty">`,
 			`      <target type="virtio" name="org.redhat.spice" state="connected"></target>`,
 			`    </channel>`,
 			`    <memballoon model="virtio">`,
-			`      <address type="pci" domain="0" bus="0" slot="7" function="0"></address>`,
+			`      <address type="pci" domain="0x0" bus="0x0" slot="0x7" function="0x0"></address>`,
 			`    </memballoon>`,
 			`    <sound model="ich6">`,
 			`      <codec type="duplex"></codec>`,
-			`      <address type="pci" domain="0" bus="0" slot="8" function="0"></address>`,
+			`      <address type="pci" domain="0x0" bus="0x0" slot="0x8" function="0x0"></address>`,
 			`    </sound>`,
 			`    <rng model="virtio">`,
 			`      <rate bytes="1234" period="2000"></rate>`,
@@ -443,7 +449,7 @@ var domainTestData = []struct {
 			`        <size unit="GiB">1</size>`,
 			`        <node>0</node>`,
 			`      </target>`,
-			`      <address type="dimm" slot="0" base="4294967296"></address>`,
+			`      <address type="dimm" slot="0" base="0x100000000"></address>`,
 			`    </memory>`,
 			`  </devices>`,
 			`</domain>`,
@@ -1054,11 +1060,12 @@ var domainTestData = []struct {
 							Path: "/etc/qemu-ifup",
 						},
 						Address: &DomainAddress{
-							Type:     "pci",
-							Domain:   &ifaceAddr.Domain,
-							Bus:      &ifaceAddr.Bus,
-							Slot:     &ifaceAddr.Slot,
-							Function: &ifaceAddr.Function,
+							PCI: &DomainAddressPCI{
+								Domain:   &ifaceAddr.Domain,
+								Bus:      &ifaceAddr.Bus,
+								Slot:     &ifaceAddr.Slot,
+								Function: &ifaceAddr.Function,
+							},
 						},
 					},
 				},
@@ -1072,7 +1079,7 @@ var domainTestData = []struct {
 			`      <mac address="52:54:00:39:97:ac"></mac>`,
 			`      <model type="virtio"></model>`,
 			`      <script path="/etc/qemu-ifup"></script>`,
-			`      <address type="pci" domain="0" bus="0" slot="4" function="0"></address>`,
+			`      <address type="pci" domain="0x0" bus="0x0" slot="0x4" function="0x0"></address>`,
 			`    </interface>`,
 			`  </devices>`,
 			`</domain>`,
@@ -1178,11 +1185,12 @@ var domainTestData = []struct {
 							Dir: "user-test-mount",
 						},
 						Address: &DomainAddress{
-							Type:     "pci",
-							Domain:   &fsAddr.Domain,
-							Bus:      &fsAddr.Bus,
-							Slot:     &fsAddr.Slot,
-							Function: &fsAddr.Function,
+							PCI: &DomainAddressPCI{
+								Domain:   &fsAddr.Domain,
+								Bus:      &fsAddr.Bus,
+								Slot:     &fsAddr.Slot,
+								Function: &fsAddr.Function,
+							},
 						},
 					},
 					DomainFilesystem{
@@ -1210,7 +1218,7 @@ var domainTestData = []struct {
 			`      <driver type="path" wrpolicy="immediate"></driver>`,
 			`      <source dir="/home/user/test"></source>`,
 			`      <target dir="user-test-mount"></target>`,
-			`      <address type="pci" domain="0" bus="0" slot="6" function="0"></address>`,
+			`      <address type="pci" domain="0x0" bus="0x0" slot="0x6" function="0x0"></address>`,
 			`    </filesystem>`,
 			`    <filesystem type="file" accessmode="passthrough">`,
 			`      <driver type="raw" name="loop"></driver>`,
@@ -1291,11 +1299,12 @@ var domainTestData = []struct {
 						Index: &uhciIndex,
 						Model: "piix3-uhci",
 						Address: &DomainAddress{
-							Type:     "pci",
-							Domain:   &uhciAddr.Domain,
-							Bus:      &uhciAddr.Bus,
-							Slot:     &uhciAddr.Slot,
-							Function: &uhciAddr.Function,
+							PCI: &DomainAddressPCI{
+								Domain:   &uhciAddr.Domain,
+								Bus:      &uhciAddr.Bus,
+								Slot:     &uhciAddr.Slot,
+								Function: &uhciAddr.Function,
+							},
 						},
 					},
 					DomainController{
@@ -1311,7 +1320,7 @@ var domainTestData = []struct {
 			`  <name>test</name>`,
 			`  <devices>`,
 			`    <controller type="usb" index="0" model="piix3-uhci">`,
-			`      <address type="pci" domain="0" bus="0" slot="1" function="2"></address>`,
+			`      <address type="pci" domain="0x0" bus="0x0" slot="0x1" function="0x2"></address>`,
 			`    </controller>`,
 			`    <controller type="usb" model="ehci"></controller>`,
 			`  </devices>`,
@@ -1373,16 +1382,17 @@ var domainTestData = []struct {
 			Index: &uhciIndex,
 			Model: "piix3-uhci",
 			Address: &DomainAddress{
-				Type:     "pci",
-				Domain:   &uhciAddr.Domain,
-				Bus:      &uhciAddr.Bus,
-				Slot:     &uhciAddr.Slot,
-				Function: &uhciAddr.Function,
+				PCI: &DomainAddressPCI{
+					Domain:   &uhciAddr.Domain,
+					Bus:      &uhciAddr.Bus,
+					Slot:     &uhciAddr.Slot,
+					Function: &uhciAddr.Function,
+				},
 			},
 		},
 		Expected: []string{
 			`<controller type="usb" index="0" model="piix3-uhci">`,
-			`  <address type="pci" domain="0" bus="0" slot="1" function="2"></address>`,
+			`  <address type="pci" domain="0x0" bus="0x0" slot="0x1" function="0x2"></address>`,
 			`</controller>`,
 		},
 	},
@@ -1429,11 +1439,12 @@ var domainTestData = []struct {
 				Dir: "user-test-mount",
 			},
 			Address: &DomainAddress{
-				Type:     "pci",
-				Domain:   &fsAddr.Domain,
-				Bus:      &fsAddr.Bus,
-				Slot:     &fsAddr.Slot,
-				Function: &fsAddr.Function,
+				PCI: &DomainAddressPCI{
+					Domain:   &fsAddr.Domain,
+					Bus:      &fsAddr.Bus,
+					Slot:     &fsAddr.Slot,
+					Function: &fsAddr.Function,
+				},
 			},
 		},
 
@@ -1442,7 +1453,7 @@ var domainTestData = []struct {
 			`  <driver type="path" wrpolicy="immediate"></driver>`,
 			`  <source dir="/home/user/test"></source>`,
 			`  <target dir="user-test-mount"></target>`,
-			`  <address type="pci" domain="0" bus="0" slot="6" function="0"></address>`,
+			`  <address type="pci" domain="0x0" bus="0x0" slot="0x6" function="0x0"></address>`,
 			`</filesystem>`,
 		},
 	},
@@ -1498,9 +1509,10 @@ var domainTestData = []struct {
 			Type: "tablet",
 			Bus:  "usb",
 			Address: &DomainAddress{
-				Type: "usb",
-				Bus:  &tabletBus,
-				Port: &tabletPort,
+				USB: &DomainAddressUSB{
+					Bus:  &tabletBus,
+					Port: &tabletPort,
+				},
 			},
 		},
 
@@ -1520,18 +1532,19 @@ var domainTestData = []struct {
 				VGAMem: 256,
 			},
 			Address: &DomainAddress{
-				Type:     "pci",
-				Domain:   &videoAddr.Domain,
-				Bus:      &videoAddr.Bus,
-				Slot:     &videoAddr.Slot,
-				Function: &videoAddr.Function,
+				PCI: &DomainAddressPCI{
+					Domain:   &videoAddr.Domain,
+					Bus:      &videoAddr.Bus,
+					Slot:     &videoAddr.Slot,
+					Function: &videoAddr.Function,
+				},
 			},
 		},
 
 		Expected: []string{
 			`<video>`,
 			`  <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
-			`  <address type="pci" domain="0" bus="0" slot="5" function="0"></address>`,
+			`  <address type="pci" domain="0x0" bus="0x0" slot="0x5" function="0x0"></address>`,
 			`</video>`,
 		},
 	},
@@ -1555,17 +1568,18 @@ var domainTestData = []struct {
 		Object: &DomainMemBalloon{
 			Model: "virtio",
 			Address: &DomainAddress{
-				Type:     "pci",
-				Domain:   &balloonAddr.Domain,
-				Bus:      &balloonAddr.Bus,
-				Slot:     &balloonAddr.Slot,
-				Function: &balloonAddr.Function,
+				PCI: &DomainAddressPCI{
+					Domain:   &balloonAddr.Domain,
+					Bus:      &balloonAddr.Bus,
+					Slot:     &balloonAddr.Slot,
+					Function: &balloonAddr.Function,
+				},
 			},
 		},
 
 		Expected: []string{
 			`<memballoon model="virtio">`,
-			`  <address type="pci" domain="0" bus="0" slot="7" function="0"></address>`,
+			`  <address type="pci" domain="0x0" bus="0x0" slot="0x7" function="0x0"></address>`,
 			`</memballoon>`,
 		},
 	},
@@ -1576,18 +1590,19 @@ var domainTestData = []struct {
 				Type: "duplex",
 			},
 			Address: &DomainAddress{
-				Type:     "pci",
-				Domain:   &duplexAddr.Domain,
-				Bus:      &duplexAddr.Bus,
-				Slot:     &duplexAddr.Slot,
-				Function: &duplexAddr.Function,
+				PCI: &DomainAddressPCI{
+					Domain:   &duplexAddr.Domain,
+					Bus:      &duplexAddr.Bus,
+					Slot:     &duplexAddr.Slot,
+					Function: &duplexAddr.Function,
+				},
 			},
 		},
 
 		Expected: []string{
 			`<sound model="ich6">`,
 			`  <codec type="duplex"></codec>`,
-			`  <address type="pci" domain="0" bus="0" slot="8" function="0"></address>`,
+			`  <address type="pci" domain="0x0" bus="0x0" slot="0x8" function="0x0"></address>`,
 			`</sound>`,
 		},
 	},
@@ -1656,18 +1671,20 @@ var domainTestData = []struct {
 					Name: "scsi_host0",
 				},
 				Address: &DomainAddress{
-					Type:   "scsi",
-					Bus:    &hostdevSCSI.Bus,
-					Target: &hostdevSCSI.Target,
-					Unit:   &hostdevSCSI.Unit,
+					Drive: &DomainAddressDrive{
+						Bus:    &hostdevSCSI.Bus,
+						Target: &hostdevSCSI.Target,
+						Unit:   &hostdevSCSI.Unit,
+					},
 				},
 			},
 			Address: &DomainAddress{
-				Type:       "drive",
-				Controller: &hostdevSCSI.Controller,
-				Bus:        &hostdevSCSI.Bus,
-				Target:     &hostdevSCSI.Target,
-				Unit:       &hostdevSCSI.Unit,
+				Drive: &DomainAddressDrive{
+					Controller: &hostdevSCSI.Controller,
+					Bus:        &hostdevSCSI.Bus,
+					Target:     &hostdevSCSI.Target,
+					Unit:       &hostdevSCSI.Unit,
+				},
 			},
 		},
 
@@ -1675,7 +1692,7 @@ var domainTestData = []struct {
 			`<hostdev mode="subsystem" type="scsi" sgio="unfiltered" rawio="yes">`,
 			`  <source>`,
 			`    <adapter name="scsi_host0"></adapter>`,
-			`    <address type="scsi" bus="0" target="3" unit="0"></address>`,
+			`    <address type="drive" bus="0" target="3" unit="0"></address>`,
 			`  </source>`,
 			`  <address type="drive" controller="0" bus="0" target="3" unit="0"></address>`,
 			`</hostdev>`,

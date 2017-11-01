@@ -28,6 +28,7 @@ package libvirtxml
 import (
 	"encoding/xml"
 	"strconv"
+	"strings"
 )
 
 type DomainController struct {
@@ -287,17 +288,35 @@ type DomainAlias struct {
 	Name string `xml:"name,attr"`
 }
 
+type DomainAddressPCI struct {
+	Domain   *uint `xml:"domain,attr"`
+	Bus      *uint `xml:"bus,attr"`
+	Slot     *uint `xml:"slot,attr"`
+	Function *uint `xml:"function,attr"`
+}
+
+type DomainAddressUSB struct {
+	Bus  *uint `xml:"bus,attr"`
+	Port *uint `xml:"port,attr"`
+}
+
+type DomainAddressDrive struct {
+	Controller *uint `xml:"controller,attr"`
+	Bus        *uint `xml:"bus,attr"`
+	Target     *uint `xml:"target,attr"`
+	Unit       *uint `xml:"unit,attr"`
+}
+
+type DomainAddressDIMM struct {
+	Slot *uint   `xml:"slot,attr"`
+	Base *uint64 `xml:"base,attr"`
+}
+
 type DomainAddress struct {
-	Type       string   `xml:"type,attr"`
-	Controller *uint    `xml:"controller,attr"`
-	Domain     *HexUint `xml:"domain,attr"`
-	Bus        *HexUint `xml:"bus,attr"`
-	Port       *uint    `xml:"port,attr"`
-	Slot       *HexUint `xml:"slot,attr"`
-	Function   *HexUint `xml:"function,attr"`
-	Target     *uint    `xml:"target,attr"`
-	Unit       *uint    `xml:"unit,attr"`
-	Base       *HexUint `xml:"base,attr"`
+	USB   *DomainAddressUSB
+	PCI   *DomainAddressPCI
+	Drive *DomainAddressDrive
+	DIMM  *DomainAddressDIMM
 }
 
 type DomainConsole struct {
@@ -965,10 +984,219 @@ func (d *DomainMemorydev) Marshal() (string, error) {
 	return string(doc), nil
 }
 
-type HexUint uint
+func marshallUintAttr(start *xml.StartElement, name string, val *uint, base int) {
+	prefix := ""
+	if base == 16 {
+		prefix = "0x"
+	}
+	if val != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: name}, prefix + strconv.FormatUint(uint64(*val), base),
+		})
+	}
+}
 
-func (h *HexUint) UnmarshalXMLAttr(attr xml.Attr) error {
-	val, err := strconv.ParseUint(attr.Value, 0, 64)
-	*h = HexUint(val)
-	return err
+func marshallUint64Attr(start *xml.StartElement, name string, val *uint64, base int) {
+	prefix := ""
+	if base == 16 {
+		prefix = "0x"
+	}
+	if val != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: name}, prefix + strconv.FormatUint(*val, base),
+		})
+	}
+}
+
+func (a *DomainAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "pci",
+	})
+	marshallUintAttr(&start, "domain", a.Domain, 16)
+	marshallUintAttr(&start, "bus", a.Bus, 16)
+	marshallUintAttr(&start, "slot", a.Slot, 16)
+	marshallUintAttr(&start, "function", a.Function, 16)
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainAddressUSB) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "usb",
+	})
+	marshallUintAttr(&start, "bus", a.Bus, 10)
+	marshallUintAttr(&start, "port", a.Port, 10)
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainAddressDrive) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "drive",
+	})
+	marshallUintAttr(&start, "controller", a.Controller, 10)
+	marshallUintAttr(&start, "bus", a.Bus, 10)
+	marshallUintAttr(&start, "target", a.Target, 10)
+	marshallUintAttr(&start, "unit", a.Unit, 10)
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainAddressDIMM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "dimm",
+	})
+	marshallUintAttr(&start, "slot", a.Slot, 10)
+	marshallUint64Attr(&start, "base", a.Base, 16)
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.USB != nil {
+		return a.USB.MarshalXML(e, start)
+	} else if a.PCI != nil {
+		return a.PCI.MarshalXML(e, start)
+	} else if a.Drive != nil {
+		return a.Drive.MarshalXML(e, start)
+	} else if a.DIMM != nil {
+		return a.DIMM.MarshalXML(e, start)
+	} else {
+		return nil
+	}
+}
+
+func unmarshallUint64Attr(valstr string, valptr **uint64, base int) error {
+	if base == 16 {
+		valstr = strings.TrimPrefix(valstr, "0x")
+	}
+	val, err := strconv.ParseUint(valstr, base, 64)
+	if err != nil {
+		return err
+	}
+	*valptr = &val
+	return nil
+}
+
+func unmarshallUintAttr(valstr string, valptr **uint, base int) error {
+	if base == 16 {
+		valstr = strings.TrimPrefix(valstr, "0x")
+	}
+	val, err := strconv.ParseUint(valstr, base, 64)
+	if err != nil {
+		return err
+	}
+	vali := uint(val)
+	*valptr = &vali
+	return nil
+}
+
+func (a *DomainAddressUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "bus" {
+			if err := unmarshallUintAttr(attr.Value, &a.Bus, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "port" {
+			if err := unmarshallUintAttr(attr.Value, &a.Port, 10); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (a *DomainAddressPCI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "domain" {
+			if err := unmarshallUintAttr(attr.Value, &a.Domain, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "bus" {
+			if err := unmarshallUintAttr(attr.Value, &a.Bus, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "slot" {
+			if err := unmarshallUintAttr(attr.Value, &a.Slot, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "function" {
+			if err := unmarshallUintAttr(attr.Value, &a.Function, 0); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (a *DomainAddressDrive) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "controller" {
+			if err := unmarshallUintAttr(attr.Value, &a.Controller, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "bus" {
+			if err := unmarshallUintAttr(attr.Value, &a.Bus, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "target" {
+			if err := unmarshallUintAttr(attr.Value, &a.Target, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "unit" {
+			if err := unmarshallUintAttr(attr.Value, &a.Unit, 10); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (a *DomainAddressDIMM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "slot" {
+			if err := unmarshallUintAttr(attr.Value, &a.Slot, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "base" {
+			if err := unmarshallUint64Attr(attr.Value, &a.Base, 16); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	var typ string
+	d.Skip()
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "type" {
+			typ = attr.Value
+			break
+		}
+	}
+	if typ == "" {
+		return nil
+	}
+
+	if typ == "usb" {
+		a.USB = &DomainAddressUSB{}
+		return a.USB.UnmarshalXML(d, start)
+	} else if typ == "pci" {
+		a.PCI = &DomainAddressPCI{}
+		return a.PCI.UnmarshalXML(d, start)
+	} else if typ == "drive" {
+		a.Drive = &DomainAddressDrive{}
+		return a.Drive.UnmarshalXML(d, start)
+	} else if typ == "dimm" {
+		a.DIMM = &DomainAddressDIMM{}
+		return a.DIMM.UnmarshalXML(d, start)
+	}
+
+	return nil
 }
