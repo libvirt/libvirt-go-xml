@@ -26,6 +26,7 @@
 package libvirtxml
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -1714,6 +1715,29 @@ func TestDomain(t *testing.T) {
 		}
 
 		expect := strings.Join(test.Expected, "\n")
+
+		if doc != expect {
+			t.Fatal("Bad xml:\n", string(doc), "\n does not match\n", expect, "\n")
+		}
+
+		typ := reflect.ValueOf(test.Object).Elem().Type()
+
+		newobj := reflect.New(typ)
+
+		newdocobj, ok := newobj.Interface().(Document)
+		if !ok {
+			t.Fatal("Could not clone %s", newobj.Interface())
+		}
+
+		err = newdocobj.Unmarshal(expect)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		doc, err = test.Object.Marshal()
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if doc != expect {
 			t.Fatal("Bad xml:\n", string(doc), "\n does not match\n", expect, "\n")

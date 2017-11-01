@@ -968,7 +968,7 @@ func (d *DomainMemorydev) Marshal() (string, error) {
 type HexUint uint
 
 func (h *HexUint) UnmarshalXMLAttr(attr xml.Attr) error {
-	val, err := strconv.ParseUint(attr.Value, 0, 32)
+	val, err := strconv.ParseUint(attr.Value, 0, 64)
 	*h = HexUint(val)
 	return err
 }
