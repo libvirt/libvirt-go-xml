@@ -791,6 +791,8 @@ type Domain struct {
 	VCPU            *DomainVCPU          `xml:"vcpu"`
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`
 	CPUTune         *DomainCPUTune       `xml:"cputune"`
+	Bootloader      string               `xml:"bootloader,omitempty"`
+	BootloaderArgs  string               `xml:"bootloader_args,omitempty"`
 	Resource        *DomainResource      `xml:"resource"`
 	SysInfo         *DomainSysInfo       `xml:"sysinfo"`
 	OS              *DomainOS            `xml:"os"`

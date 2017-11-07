@@ -1722,6 +1722,22 @@ var domainTestData = []struct {
 			`</memory>`,
 		},
 	},
+	/* Host Bootloader -- bhyve, Xen */
+	{
+		Object: &Domain{
+			Type: "bhyve",
+			Name: "test",
+			Bootloader: "/usr/local/sbin/grub-bhyve",
+			BootloaderArgs: "-r cd0 -m /tmp/test-device.map -M 1024M linuxguest",
+		},
+		Expected: []string{
+			`<domain type="bhyve">`,
+			`  <name>test</name>`,
+			`  <bootloader>/usr/local/sbin/grub-bhyve</bootloader>`,
+			`  <bootloader_args>-r cd0 -m /tmp/test-device.map -M 1024M linuxguest</bootloader_args>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {
