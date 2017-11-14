@@ -330,6 +330,21 @@ var domainTestData = []struct {
 							Port: &serialPort,
 						},
 					},
+					DomainSerial{
+						Type: "tcp",
+						Source: &DomainChardevSource{
+							Mode:    "bind",
+							Host:    "127.0.0.1",
+							Service: "1234",
+							TLS:     "yes",
+						},
+						Protocol: &DomainSerialProtocol{
+							Type: "telnet",
+						},
+						Target: &DomainSerialTarget{
+							Port: &serialPort,
+						},
+					},
 				},
 				Channels: []DomainChannel{
 					DomainChannel{
@@ -413,6 +428,11 @@ var domainTestData = []struct {
 			`    </serial>`,
 			`    <serial type="file">`,
 			`      <source path="/tmp/serial.log" append="off"></source>`,
+			`      <target port="0"></target>`,
+			`    </serial>`,
+			`    <serial type="tcp">`,
+			`      <source mode="bind" host="127.0.0.1" service="1234" tls="yes"></source>`,
+			`      <protocol type="telnet"></protocol>`,
 			`      <target port="0"></target>`,
 			`    </serial>`,
 			`    <console type="pty">`,
@@ -1725,9 +1745,9 @@ var domainTestData = []struct {
 	/* Host Bootloader -- bhyve, Xen */
 	{
 		Object: &Domain{
-			Type: "bhyve",
-			Name: "test",
-			Bootloader: "/usr/local/sbin/grub-bhyve",
+			Type:           "bhyve",
+			Name:           "test",
+			Bootloader:     "/usr/local/sbin/grub-bhyve",
 			BootloaderArgs: "-r cd0 -m /tmp/test-device.map -M 1024M linuxguest",
 		},
 		Expected: []string{

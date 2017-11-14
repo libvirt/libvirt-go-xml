@@ -256,9 +256,12 @@ type DomainInterface struct {
 }
 
 type DomainChardevSource struct {
-	Mode   string `xml:"mode,attr,omitempty"`
-	Path   string `xml:"path,attr"`
-	Append string `xml:"append,attr,omitempty"`
+	Mode    string `xml:"mode,attr,omitempty"`
+	Path    string `xml:"path,attr,omitempty"`
+	Append  string `xml:"append,attr,omitempty"`
+	Host    string `xml:"host,attr,omitempty"`
+	Service string `xml:"service,attr,omitempty"`
+	TLS     string `xml:"tls,attr,omitempty"`
 }
 
 type DomainChardevTarget struct {
@@ -329,12 +332,17 @@ type DomainConsole struct {
 }
 
 type DomainSerial struct {
-	XMLName xml.Name             `xml:"serial"`
-	Type    string               `xml:"type,attr"`
-	Source  *DomainChardevSource `xml:"source"`
-	Target  *DomainSerialTarget  `xml:"target"`
-	Alias   *DomainAlias         `xml:"alias"`
-	Address *DomainAddress       `xml:"address"`
+	XMLName  xml.Name              `xml:"serial"`
+	Type     string                `xml:"type,attr"`
+	Source   *DomainChardevSource  `xml:"source"`
+	Protocol *DomainSerialProtocol `xml:"protocol"`
+	Target   *DomainSerialTarget   `xml:"target"`
+	Alias    *DomainAlias          `xml:"alias"`
+	Address  *DomainAddress        `xml:"address"`
+}
+
+type DomainSerialProtocol struct {
+	Type string `xml:"type,attr"`
 }
 
 type DomainChannel struct {
