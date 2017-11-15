@@ -65,6 +65,14 @@ var networkTestData = []struct {
 			Bridge: &NetworkBridge{
 				Name: "virbr0",
 			},
+			VirtualPort: &VirtualPort{
+				Type: "openvswitch",
+				Parameters: []VirtualPortParameters{
+					VirtualPortParameters{
+						InterfaceID: "09b11c53-8b5c-4eeb-8f00-d84eaa0aaa4f",
+					},
+				},
+			},
 			Forward: &NetworkForward{
 				Mode: "nat",
 				NAT: &NetworkForwardNAT{
@@ -175,6 +183,9 @@ var networkTestData = []struct {
 			`<network>`,
 			`  <name>test</name>`,
 			`  <bridge name="virbr0"></bridge>`,
+			`  <virtualport type="openvswitch">`,
+			`    <parameters interfaceid="09b11c53-8b5c-4eeb-8f00-d84eaa0aaa4f"></parameters>`,
+			`  </virtualport>`,
 			`  <forward mode="nat">`,
 			`    <nat>`,
 			`      <address start="1.2.3.4" end="1.2.3.10"></address>`,

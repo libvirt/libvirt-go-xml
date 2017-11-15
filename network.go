@@ -36,6 +36,16 @@ type NetworkBridge struct {
 	MACTableManager string `xml:"macTableManager,attr,omitempty"`
 }
 
+type VirtualPortParameters struct {
+	InterfaceID string `xml:"interfaceid,attr,omitempty"`
+	ProfileID   string `xml:"profileid,attr,omitempty"`
+}
+
+type VirtualPort struct {
+	Type       string                  `xml:"type,attr,omitempty"`
+	Parameters []VirtualPortParameters `xml:"parameters,omitempty"`
+}
+
 type NetworkDomain struct {
 	Name      string `xml:"name,attr,omitempty"`
 	LocalOnly string `xml:"localOnly,attr,omitempty"`
@@ -152,6 +162,7 @@ type Network struct {
 	UUID                string          `xml:"uuid,omitempty"`
 	MAC                 *NetworkMAC     `xml:"mac"`
 	Bridge              *NetworkBridge  `xml:"bridge"`
+	VirtualPort         *VirtualPort    `xml:"virtualport"`
 	Forward             *NetworkForward `xml:"forward"`
 	Domain              *NetworkDomain  `xml:"domain"`
 	IPs                 []NetworkIP     `xml:"ip"`
