@@ -315,11 +315,16 @@ type DomainAddressDIMM struct {
 	Base *uint64 `xml:"base,attr"`
 }
 
+type DomainAddressISA struct {
+	Iobase *uint `xml:"iobase,attr"`
+}
+
 type DomainAddress struct {
 	USB   *DomainAddressUSB
 	PCI   *DomainAddressPCI
 	Drive *DomainAddressDrive
 	DIMM  *DomainAddressDIMM
+	ISA   *DomainAddressISA
 }
 
 type DomainConsole struct {
@@ -411,6 +416,12 @@ type DomainMemBalloon struct {
 	Address *DomainAddress `xml:"address"`
 }
 
+type DomainPanic struct {
+	XMLName xml.Name       `xml:"panic"`
+	Model   string         `xml:"model,attr"`
+	Address *DomainAddress `xml:"address"`
+}
+
 type DomainSoundCodec struct {
 	Type string `xml:"type,attr"`
 }
@@ -494,6 +505,7 @@ type DomainDeviceList struct {
 	Videos      []DomainVideo      `xml:"video"`
 	Channels    []DomainChannel    `xml:"channel"`
 	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
+	Panics      []DomainPanic      `xml:"panic"`
 	Sounds      []DomainSound      `xml:"sound"`
 	RNGs        []DomainRNG        `xml:"rng"`
 	Hostdevs    []DomainHostdev    `xml:"hostdev"`
@@ -1066,6 +1078,16 @@ func (a *DomainAddressDIMM) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 	return nil
 }
 
+func (a *DomainAddressISA) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "isa",
+	})
+	marshallUintAttr(&start, "iobase", a.Iobase, 16)
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
 		return a.USB.MarshalXML(e, start)
@@ -1075,6 +1097,8 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return a.Drive.MarshalXML(e, start)
 	} else if a.DIMM != nil {
 		return a.DIMM.MarshalXML(e, start)
+	} else if a.ISA != nil {
+		return a.ISA.MarshalXML(e, start)
 	} else {
 		return nil
 	}
@@ -1181,6 +1205,17 @@ func (a *DomainAddressDIMM) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	return nil
 }
 
+func (a *DomainAddressISA) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "iobase" {
+			if err := unmarshallUintAttr(attr.Value, &a.Iobase, 16); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
 	d.Skip()
@@ -1206,6 +1241,9 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "dimm" {
 		a.DIMM = &DomainAddressDIMM{}
 		return a.DIMM.UnmarshalXML(d, start)
+	} else if typ == "isa" {
+		a.ISA = &DomainAddressISA{}
+		return a.ISA.UnmarshalXML(d, start)
 	}
 
 	return nil

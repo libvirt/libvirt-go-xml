@@ -45,6 +45,10 @@ type DriveAddress struct {
 	Unit       uint
 }
 
+type ISAAddress struct {
+	Iobase uint
+}
+
 var uhciIndex uint = 0
 var uhciAddr = PCIAddress{0, 0, 1, 2}
 
@@ -53,6 +57,7 @@ var ifaceAddr = PCIAddress{0, 0, 4, 0}
 var videoAddr = PCIAddress{0, 0, 5, 0}
 var fsAddr = PCIAddress{0, 0, 6, 0}
 var balloonAddr = PCIAddress{0, 0, 7, 0}
+var panicAddr = ISAAddress{0x505}
 var duplexAddr = PCIAddress{0, 0, 8, 0}
 var hostdevSCSI = DriveAddress{0, 0, 3, 0}
 
@@ -303,6 +308,19 @@ var domainTestData = []struct {
 						},
 					},
 				},
+				Panics: []DomainPanic{
+					DomainPanic{
+						Model: "hyperv",
+					},
+					DomainPanic{
+						Model: "isa",
+						Address: &DomainAddress{
+							ISA: &DomainAddressISA{
+								Iobase: &panicAddr.Iobase,
+							},
+						},
+					},
+				},
 				Consoles: []DomainConsole{
 					DomainConsole{
 						Type: "pty",
@@ -453,6 +471,10 @@ var domainTestData = []struct {
 			`    <memballoon model="virtio">`,
 			`      <address type="pci" domain="0x0" bus="0x0" slot="0x7" function="0x0"></address>`,
 			`    </memballoon>`,
+		    `    <panic model="hyperv"></panic>`,
+			`    <panic model="isa">`,
+			`      <address type="isa" iobase="0x505"></address>`,
+			`    </panic>`,
 			`    <sound model="ich6">`,
 			`      <codec type="duplex"></codec>`,
 			`      <address type="pci" domain="0x0" bus="0x0" slot="0x8" function="0x0"></address>`,
