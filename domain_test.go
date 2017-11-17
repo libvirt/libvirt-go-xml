@@ -471,7 +471,7 @@ var domainTestData = []struct {
 			`    <memballoon model="virtio">`,
 			`      <address type="pci" domain="0x0" bus="0x0" slot="0x7" function="0x0"></address>`,
 			`    </memballoon>`,
-		    `    <panic model="hyperv"></panic>`,
+			`    <panic model="hyperv"></panic>`,
 			`    <panic model="isa">`,
 			`      <address type="isa" iobase="0x505"></address>`,
 			`    </panic>`,
