@@ -95,9 +95,9 @@ type NodeDevicePCIAddress struct {
 }
 
 type NodeDevicePCISubCapability struct {
-	Type     string       `xml:"type,attr"`
-	Address  []PCIAddress `xml:"address,omitempty"`
-	MaxCount int          `xml:"maxCount,attr,omitempty"`
+	Type     string                 `xml:"type,attr"`
+	Address  []NodeDevicePCIAddress `xml:"address,omitempty"`
+	MaxCount int                    `xml:"maxCount,attr,omitempty"`
 }
 
 type NodeDeviceSystemHardware struct {
