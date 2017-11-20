@@ -1556,6 +1556,32 @@ var domainTestData = []struct {
 	{
 		Object: &Domain{
 			Name: "test",
+			KeyWrap: &DomainKeyWrap{
+				Ciphers: []DomainKeyWrapCipher{
+					DomainKeyWrapCipher{
+						Name:  "aes",
+						State: "on",
+					},
+					DomainKeyWrapCipher{
+						Name:  "dea",
+						State: "off",
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain>`,
+			`  <name>test</name>`,
+			`  <keywrap>`,
+			`    <cipher name="aes" state="on"></cipher>`,
+			`    <cipher name="dea" state="off"></cipher>`,
+			`  </keywrap>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Name: "test",
 			NUMATune: &DomainNUMATune{
 				Memory: &DomainNUMATuneMemory{
 					Mode:      "strict",

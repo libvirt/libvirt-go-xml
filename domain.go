@@ -853,6 +853,15 @@ type DomainIOThread struct {
 	ID uint `xml:"id,attr"`
 }
 
+type DomainKeyWrap struct {
+	Ciphers []DomainKeyWrapCipher `xml:"cipher"`
+}
+
+type DomainKeyWrapCipher struct {
+	Name  string `xml:"name,attr"`
+	State string `xml:"state,attr"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -890,6 +899,7 @@ type Domain struct {
 	Devices         *DomainDeviceList    `xml:"devices"`
 	SecLabel        []DomainSecLabel     `xml:"seclabel"`
 	QEMUCommandline *DomainQEMUCommandline
+	KeyWrap         *DomainKeyWrap `xml:"keywrap"`
 }
 
 func (d *Domain) Unmarshal(doc string) error {
