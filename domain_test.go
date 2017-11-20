@@ -635,9 +635,9 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
+			`  <maxMemory unit="KiB" slots="2">16384</maxMemory>`,
 			`  <memory unit="KiB">8192</memory>`,
 			`  <currentMemory unit="KiB">4096</currentMemory>`,
-			`  <maxMemory unit="KiB" slots="2">16384</maxMemory>`,
 			`  <memoryBacking>`,
 			`    <hugepages>`,
 			`      <page size="1" unit="G" nodeset="0-3,5"></page>`,

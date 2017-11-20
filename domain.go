@@ -804,17 +804,17 @@ type Domain struct {
 	Type            string               `xml:"type,attr,omitempty"`
 	Name            string               `xml:"name"`
 	UUID            string               `xml:"uuid,omitempty"`
+	MaximumMemory   *DomainMaxMemory     `xml:"maxMemory"`
 	Memory          *DomainMemory        `xml:"memory"`
 	CurrentMemory   *DomainMemory        `xml:"currentMemory"`
-	MaximumMemory   *DomainMaxMemory     `xml:"maxMemory"`
 	MemoryBacking   *DomainMemoryBacking `xml:"memoryBacking"`
 	VCPU            *DomainVCPU          `xml:"vcpu"`
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`
 	CPUTune         *DomainCPUTune       `xml:"cputune"`
-	Bootloader      string               `xml:"bootloader,omitempty"`
-	BootloaderArgs  string               `xml:"bootloader_args,omitempty"`
 	Resource        *DomainResource      `xml:"resource"`
 	SysInfo         *DomainSysInfo       `xml:"sysinfo"`
+	Bootloader      string               `xml:"bootloader,omitempty"`
+	BootloaderArgs  string               `xml:"bootloader_args,omitempty"`
 	OS              *DomainOS            `xml:"os"`
 	Features        *DomainFeatureList   `xml:"features"`
 	CPU             *DomainCPU           `xml:"cpu"`
