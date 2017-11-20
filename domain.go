@@ -846,6 +846,7 @@ type Domain struct {
 	MemoryBacking   *DomainMemoryBacking `xml:"memoryBacking"`
 	VCPU            *DomainVCPU          `xml:"vcpu"`
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`
+	IOThreads       uint                 `xml:"iothreads,omitempty"`
 	CPUTune         *DomainCPUTune       `xml:"cputune"`
 	Resource        *DomainResource      `xml:"resource"`
 	SysInfo         *DomainSysInfo       `xml:"sysinfo"`

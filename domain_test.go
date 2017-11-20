@@ -1511,7 +1511,8 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &Domain{
-			Name: "test",
+			Name:      "test",
+			IOThreads: 4,
 			CPUTune: &DomainCPUTune{
 				Shares: &DomainCPUTuneShares{Value: 1024},
 				Period: &DomainCPUTunePeriod{Value: 500000},
@@ -1521,6 +1522,7 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<domain>`,
 			`  <name>test</name>`,
+			`  <iothreads>4</iothreads>`,
 			`  <cputune>`,
 			`    <shares>1024</shares>`,
 			`    <period>500000</period>`,
