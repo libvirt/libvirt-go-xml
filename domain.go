@@ -862,6 +862,17 @@ type DomainKeyWrapCipher struct {
 	State string `xml:"state,attr"`
 }
 
+type DomainIDMap struct {
+	UIDs []DomainIDMapRange `xml:"uid"`
+	GIDs []DomainIDMapRange `xml:"gid"`
+}
+
+type DomainIDMapRange struct {
+	Start  uint `xml:"start,attr"`
+	Target uint `xml:"target,attr"`
+	Count  uint `xml:"count,attr"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -889,6 +900,7 @@ type Domain struct {
 	Bootloader      string               `xml:"bootloader,omitempty"`
 	BootloaderArgs  string               `xml:"bootloader_args,omitempty"`
 	OS              *DomainOS            `xml:"os"`
+	IDMap           *DomainIDMap         `xml:"idmap"`
 	Features        *DomainFeatureList   `xml:"features"`
 	CPU             *DomainCPU           `xml:"cpu"`
 	Clock           *DomainClock         `xml:"clock,omitempty"`

@@ -1582,6 +1582,48 @@ var domainTestData = []struct {
 	{
 		Object: &Domain{
 			Name: "test",
+			IDMap: &DomainIDMap{
+				UIDs: []DomainIDMapRange{
+					DomainIDMapRange{
+						Start:  0,
+						Target: 1000,
+						Count:  50,
+					},
+					DomainIDMapRange{
+						Start:  1000,
+						Target: 5000,
+						Count:  5000,
+					},
+				},
+				GIDs: []DomainIDMapRange{
+					DomainIDMapRange{
+						Start:  0,
+						Target: 1000,
+						Count:  50,
+					},
+					DomainIDMapRange{
+						Start:  1000,
+						Target: 5000,
+						Count:  5000,
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain>`,
+			`  <name>test</name>`,
+			`  <idmap>`,
+			`    <uid start="0" target="1000" count="50"></uid>`,
+			`    <uid start="1000" target="5000" count="5000"></uid>`,
+			`    <gid start="0" target="1000" count="50"></gid>`,
+			`    <gid start="1000" target="5000" count="5000"></gid>`,
+			`  </idmap>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Name: "test",
 			NUMATune: &DomainNUMATune{
 				Memory: &DomainNUMATuneMemory{
 					Mode:      "strict",
