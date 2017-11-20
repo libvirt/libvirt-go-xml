@@ -804,6 +804,8 @@ type Domain struct {
 	Type            string               `xml:"type,attr,omitempty"`
 	Name            string               `xml:"name"`
 	UUID            string               `xml:"uuid,omitempty"`
+	Title           string               `xml:"title,omitempty"`
+	Description     string               `xml:"description,omitempty"`
 	MaximumMemory   *DomainMaxMemory     `xml:"maxMemory"`
 	Memory          *DomainMemory        `xml:"memory"`
 	CurrentMemory   *DomainMemory        `xml:"currentMemory"`

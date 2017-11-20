@@ -92,8 +92,10 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &Domain{
-			Type: "kvm",
-			Name: "test",
+			Type:        "kvm",
+			Name:        "test",
+			Title:       "Test",
+			Description: "A test guest config",
 			Devices: &DomainDeviceList{
 				Disks: []DomainDisk{
 					DomainDisk{
@@ -211,6 +213,8 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
+			`  <title>Test</title>`,
+			`  <description>A test guest config</description>`,
 			`  <devices>`,
 			`    <disk type="file" device="cdrom">`,
 			`      <driver name="qemu" type="qcow2"></driver>`,
