@@ -845,6 +845,14 @@ type DomainNUMATuneMemNode struct {
 	Nodeset string `xml:"nodeset,attr"`
 }
 
+type DomainIOThreadIDs struct {
+	IOThreads []DomainIOThread `xml:"iothread"`
+}
+
+type DomainIOThread struct {
+	ID uint `xml:"id,attr"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -864,6 +872,7 @@ type Domain struct {
 	VCPU            *DomainVCPU          `xml:"vcpu"`
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`
 	IOThreads       uint                 `xml:"iothreads,omitempty"`
+	IOThreadIDs     *DomainIOThreadIDs   `xml:"iothreadids"`
 	CPUTune         *DomainCPUTune       `xml:"cputune"`
 	NUMATune        *DomainNUMATune      `xml:"numatune"`
 	Resource        *DomainResource      `xml:"resource"`

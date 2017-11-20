@@ -1513,6 +1513,22 @@ var domainTestData = []struct {
 		Object: &Domain{
 			Name:      "test",
 			IOThreads: 4,
+			IOThreadIDs: &DomainIOThreadIDs{
+				IOThreads: []DomainIOThread{
+					DomainIOThread{
+						ID: 0,
+					},
+					DomainIOThread{
+						ID: 1,
+					},
+					DomainIOThread{
+						ID: 2,
+					},
+					DomainIOThread{
+						ID: 3,
+					},
+				},
+			},
 			CPUTune: &DomainCPUTune{
 				Shares: &DomainCPUTuneShares{Value: 1024},
 				Period: &DomainCPUTunePeriod{Value: 500000},
@@ -1523,6 +1539,12 @@ var domainTestData = []struct {
 			`<domain>`,
 			`  <name>test</name>`,
 			`  <iothreads>4</iothreads>`,
+			`  <iothreadids>`,
+			`    <iothread id="0"></iothread>`,
+			`    <iothread id="1"></iothread>`,
+			`    <iothread id="2"></iothread>`,
+			`    <iothread id="3"></iothread>`,
+			`  </iothreadids>`,
 			`  <cputune>`,
 			`    <shares>1024</shares>`,
 			`    <period>500000</period>`,
