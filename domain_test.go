@@ -770,6 +770,29 @@ var domainTestData = []struct {
 		Object: &Domain{
 			Type: "kvm",
 			Name: "test",
+			PM: &DomainPM{
+				SuspendToMem: &DomainPMPolicy{
+					Enabled: "no",
+				},
+				SuspendToDisk: &DomainPMPolicy{
+					Enabled: "yes",
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <pm>`,
+			`    <suspend-to-mem enabled="no"></suspend-to-mem>`,
+			`    <suspend-to-disk enabled="yes"></suspend-to-disk>`,
+			`  </pm>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
 			OS: &DomainOS{
 				Kernel:     "/vmlinuz",
 				Initrd:     "/initrd",

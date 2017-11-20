@@ -810,6 +810,15 @@ type DomainBlockIOTuneDevice struct {
 	WriteBytesSec uint   `xml:"write_bytes_sec"`
 }
 
+type DomainPM struct {
+	SuspendToMem  *DomainPMPolicy `xml:"suspend-to-mem"`
+	SuspendToDisk *DomainPMPolicy `xml:"suspend-to-disk"`
+}
+
+type DomainPMPolicy struct {
+	Enabled string `xml:"enabled,attr"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -840,6 +849,7 @@ type Domain struct {
 	OnPoweroff      string               `xml:"on_poweroff,omitempty"`
 	OnReboot        string               `xml:"on_reboot,omitempty"`
 	OnCrash         string               `xml:"on_crash,omitempty"`
+	PM              *DomainPM            `xml:"pm"`
 	Devices         *DomainDeviceList    `xml:"devices"`
 	QEMUCommandline *DomainQEMUCommandline
 }
