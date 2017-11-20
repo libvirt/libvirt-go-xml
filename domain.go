@@ -796,6 +796,20 @@ type DomainQEMUCommandline struct {
 	Envs    []DomainQEMUCommandlineEnv `xml:"env"`
 }
 
+type DomainBlockIOTune struct {
+	Weight uint                      `xml:"weight,omitempty"`
+	Device []DomainBlockIOTuneDevice `xml:"device"`
+}
+
+type DomainBlockIOTuneDevice struct {
+	Path          string `xml:"path"`
+	Weight        uint   `xml:"weight,omitempty"`
+	ReadIopsSec   uint   `xml:"read_iops_sec"`
+	WriteIopsSec  uint   `xml:"write_iops_sec"`
+	ReadBytesSec  uint   `xml:"read_bytes_sec"`
+	WriteBytesSec uint   `xml:"write_bytes_sec"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -809,6 +823,7 @@ type Domain struct {
 	MaximumMemory   *DomainMaxMemory     `xml:"maxMemory"`
 	Memory          *DomainMemory        `xml:"memory"`
 	CurrentMemory   *DomainMemory        `xml:"currentMemory"`
+	BlockIOTune     *DomainBlockIOTune   `xml:"blkiotune"`
 	MemoryBacking   *DomainMemoryBacking `xml:"memoryBacking"`
 	VCPU            *DomainVCPU          `xml:"vcpu"`
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`
