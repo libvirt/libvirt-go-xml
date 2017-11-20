@@ -828,6 +828,23 @@ type DomainSecLabel struct {
 	BaseLabel  string `xml:"baselabel,omitempty"`
 }
 
+type DomainNUMATune struct {
+	Memory   *DomainNUMATuneMemory   `xml:"memory"`
+	MemNodes []DomainNUMATuneMemNode `xml:"memnode"`
+}
+
+type DomainNUMATuneMemory struct {
+	Mode      string `xml:"mode,attr"`
+	Nodeset   string `xml:"nodeset,attr,omitempty"`
+	Placement string `xml:"placement,attr,omitempty"`
+}
+
+type DomainNUMATuneMemNode struct {
+	CellID  uint   `xml:"cellid,attr"`
+	Mode    string `xml:"mode,attr"`
+	Nodeset string `xml:"nodeset,attr"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -848,6 +865,7 @@ type Domain struct {
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`
 	IOThreads       uint                 `xml:"iothreads,omitempty"`
 	CPUTune         *DomainCPUTune       `xml:"cputune"`
+	NUMATune        *DomainNUMATune      `xml:"numatune"`
 	Resource        *DomainResource      `xml:"resource"`
 	SysInfo         *DomainSysInfo       `xml:"sysinfo"`
 	Bootloader      string               `xml:"bootloader,omitempty"`

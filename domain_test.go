@@ -1531,6 +1531,41 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Name: "test",
+			NUMATune: &DomainNUMATune{
+				Memory: &DomainNUMATuneMemory{
+					Mode:      "strict",
+					Nodeset:   "2-3",
+					Placement: "static",
+				},
+				MemNodes: []DomainNUMATuneMemNode{
+					DomainNUMATuneMemNode{
+						CellID:  0,
+						Mode:    "strict",
+						Nodeset: "2",
+					},
+					DomainNUMATuneMemNode{
+						CellID:  1,
+						Mode:    "strict",
+						Nodeset: "3",
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain>`,
+			`  <name>test</name>`,
+			`  <numatune>`,
+			`    <memory mode="strict" nodeset="2-3" placement="static"></memory>`,
+			`    <memnode cellid="0" mode="strict" nodeset="2"></memnode>`,
+			`    <memnode cellid="1" mode="strict" nodeset="3"></memnode>`,
+
+			`  </numatune>`,
+			`</domain>`,
+		},
+	},
 
 	/* Tests for sub-documents that can be hotplugged */
 	{
