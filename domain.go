@@ -816,6 +816,7 @@ type DomainBlockIOTuneDevice struct {
 type Domain struct {
 	XMLName         xml.Name             `xml:"domain"`
 	Type            string               `xml:"type,attr,omitempty"`
+	ID              *int                 `xml:"id,attr"`
 	Name            string               `xml:"name"`
 	UUID            string               `xml:"uuid,omitempty"`
 	Title           string               `xml:"title,omitempty"`

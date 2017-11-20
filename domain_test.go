@@ -49,6 +49,8 @@ type ISAAddress struct {
 	Iobase uint
 }
 
+var domainID int = 3
+
 var uhciIndex uint = 0
 var uhciAddr = PCIAddress{0, 0, 1, 2}
 
@@ -83,9 +85,10 @@ var domainTestData = []struct {
 		Object: &Domain{
 			Type: "kvm",
 			Name: "test",
+			ID:   &domainID,
 		},
 		Expected: []string{
-			`<domain type="kvm">`,
+			`<domain type="kvm" id="3">`,
 			`  <name>test</name>`,
 			`</domain>`,
 		},
