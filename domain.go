@@ -819,6 +819,15 @@ type DomainPMPolicy struct {
 	Enabled string `xml:"enabled,attr"`
 }
 
+type DomainSecLabel struct {
+	Type       string `xml:"type,attr,omitempty"`
+	Model      string `xml:"model,attr,omitempty"`
+	Relabel    string `xml:"relabel,attr,omitempty"`
+	Label      string `xml:"label,omitempty"`
+	ImageLabel string `xml:"imagelabel,omitempty"`
+	BaseLabel  string `xml:"baselabel,omitempty"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -851,6 +860,7 @@ type Domain struct {
 	OnCrash         string               `xml:"on_crash,omitempty"`
 	PM              *DomainPM            `xml:"pm"`
 	Devices         *DomainDeviceList    `xml:"devices"`
+	SecLabel        []DomainSecLabel     `xml:"seclabel"`
 	QEMUCommandline *DomainQEMUCommandline
 }
 

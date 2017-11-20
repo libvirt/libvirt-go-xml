@@ -793,6 +793,38 @@ var domainTestData = []struct {
 		Object: &Domain{
 			Type: "kvm",
 			Name: "test",
+			SecLabel: []DomainSecLabel{
+				DomainSecLabel{
+					Type:       "dynamic",
+					Model:      "selinux",
+					Relabel:    "yes",
+					Label:      "system_u:system_r:svirt_t:s0:c143,c762",
+					ImageLabel: "system_u:object_r:svirt_image_t:s0:c143,c762",
+					BaseLabel:  "system_u:system_r:svirt_t:s0",
+				},
+				DomainSecLabel{
+					Type:    "dynamic",
+					Model:   "dac",
+					Relabel: "no",
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <seclabel type="dynamic" model="selinux" relabel="yes">`,
+			`    <label>system_u:system_r:svirt_t:s0:c143,c762</label>`,
+			`    <imagelabel>system_u:object_r:svirt_image_t:s0:c143,c762</imagelabel>`,
+			`    <baselabel>system_u:system_r:svirt_t:s0</baselabel>`,
+			`  </seclabel>`,
+			`  <seclabel type="dynamic" model="dac" relabel="no"></seclabel>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
 			OS: &DomainOS{
 				Kernel:     "/vmlinuz",
 				Initrd:     "/initrd",
