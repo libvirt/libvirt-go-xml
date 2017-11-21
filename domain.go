@@ -430,12 +430,19 @@ type DomainGraphic struct {
 	Listeners     []DomainGraphicListener `xml:"listen"`
 }
 
+type DomainVideoAccel struct {
+	Accel3D string `xml:"accel3d,attr,omitempty"`
+}
+
 type DomainVideoModel struct {
-	Type   string `xml:"type,attr"`
-	Heads  uint   `xml:"heads,attr,omitempty"`
-	Ram    uint   `xml:"ram,attr,omitempty"`
-	VRam   uint   `xml:"vram,attr,omitempty"`
-	VGAMem uint   `xml:"vgamem,attr,omitempty"`
+	Type    string            `xml:"type,attr"`
+	Heads   uint              `xml:"heads,attr,omitempty"`
+	Ram     uint              `xml:"ram,attr,omitempty"`
+	VRam    uint              `xml:"vram,attr,omitempty"`
+	VRam64  uint              `xml:"vram64,attr,omitempty"`
+	VGAMem  uint              `xml:"vgamem,attr,omitempty"`
+	Primary string            `xml:"primary,attr,omitempty"`
+	Accel   *DomainVideoAccel `xml:"acceleration"`
 }
 
 type DomainVideo struct {

@@ -1864,11 +1864,16 @@ var domainTestData = []struct {
 	{
 		Object: &DomainVideo{
 			Model: DomainVideoModel{
-				Type:   "cirrus",
-				Heads:  1,
-				Ram:    4096,
-				VRam:   8192,
-				VGAMem: 256,
+				Type:    "cirrus",
+				Heads:   1,
+				Ram:     4096,
+				VRam:    8192,
+				VRam64:  8192,
+				VGAMem:  256,
+				Primary: "yes",
+				Accel: &DomainVideoAccel{
+					Accel3D: "yes",
+				},
 			},
 			Address: &DomainAddress{
 				PCI: &DomainAddressPCI{
@@ -1883,7 +1888,9 @@ var domainTestData = []struct {
 
 		Expected: []string{
 			`<video>`,
-			`  <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
+			`  <model type="cirrus" heads="1" ram="4096" vram="8192" vram64="8192" vgamem="256" primary="yes">`,
+			`    <acceleration accel3d="yes"></acceleration>`,
+			`  </model>`,
 			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0" multifunction="on"></address>`,
 			`</video>`,
 		},
