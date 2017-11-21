@@ -873,6 +873,18 @@ type DomainIDMapRange struct {
 	Count  uint `xml:"count,attr"`
 }
 
+type DomainMemoryTuneLimit struct {
+	Value uint64 `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+}
+
+type DomainMemoryTune struct {
+	HardLimit     *DomainMemoryTuneLimit `xml:"hard_limit"`
+	SoftLimit     *DomainMemoryTuneLimit `xml:"soft_limit"`
+	MinGuarantee  *DomainMemoryTuneLimit `xml:"min_guarantee"`
+	SwapHardLimit *DomainMemoryTuneLimit `xml:"swap_hard_limit"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -888,6 +900,7 @@ type Domain struct {
 	Memory          *DomainMemory        `xml:"memory"`
 	CurrentMemory   *DomainMemory        `xml:"currentMemory"`
 	BlockIOTune     *DomainBlockIOTune   `xml:"blkiotune"`
+	MemoryTune      *DomainMemoryTune    `xml:"memtune"`
 	MemoryBacking   *DomainMemoryBacking `xml:"memoryBacking"`
 	VCPU            *DomainVCPU          `xml:"vcpu"`
 	VCPUs           *DomainVCPUs         `xml:"vcpus"`

@@ -770,6 +770,38 @@ var domainTestData = []struct {
 		Object: &Domain{
 			Type: "kvm",
 			Name: "test",
+			MemoryTune: &DomainMemoryTune{
+				HardLimit: &DomainMemoryTuneLimit{
+					Value: 1024,
+					Unit:  "MiB",
+				},
+				SoftLimit: &DomainMemoryTuneLimit{
+					Value: 1024,
+				},
+				MinGuarantee: &DomainMemoryTuneLimit{
+					Value: 1024,
+				},
+				SwapHardLimit: &DomainMemoryTuneLimit{
+					Value: 1024,
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <memtune>`,
+			`    <hard_limit unit="MiB">1024</hard_limit>`,
+			`    <soft_limit>1024</soft_limit>`,
+			`    <min_guarantee>1024</min_guarantee>`,
+			`    <swap_hard_limit>1024</swap_hard_limit>`,
+			`  </memtune>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
 			PM: &DomainPM{
 				SuspendToMem: &DomainPMPolicy{
 					Enabled: "no",
