@@ -337,6 +337,10 @@ type DomainAddressVirtioSerial struct {
 	Port       *uint `xml:"port,attr"`
 }
 
+type DomainAddressSpaprVIO struct {
+	Reg *uint64 `xml:"reg,attr"`
+}
+
 type DomainAddress struct {
 	USB          *DomainAddressUSB
 	PCI          *DomainAddressPCI
@@ -346,6 +350,7 @@ type DomainAddress struct {
 	VirtioMMIO   *DomainAddressVirtioMMIO
 	CCW          *DomainAddressCCW
 	VirtioSerial *DomainAddressVirtioSerial
+	SpaprVIO     *DomainAddressSpaprVIO
 }
 
 type DomainChardevLog struct {
@@ -1295,6 +1300,16 @@ func (a *DomainAddressVirtioSerial) MarshalXML(e *xml.Encoder, start xml.StartEl
 	return nil
 }
 
+func (a *DomainAddressSpaprVIO) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "spapr-vio",
+	})
+	marshallUint64Attr(&start, "reg", a.Reg, "%x")
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
 		return a.USB.MarshalXML(e, start)
@@ -1312,6 +1327,8 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return a.CCW.MarshalXML(e, start)
 	} else if a.VirtioSerial != nil {
 		return a.VirtioSerial.MarshalXML(e, start)
+	} else if a.SpaprVIO != nil {
+		return a.SpaprVIO.MarshalXML(e, start)
 	} else {
 		return nil
 	}
@@ -1475,6 +1492,17 @@ func (a *DomainAddressVirtioSerial) UnmarshalXML(d *xml.Decoder, start xml.Start
 	return nil
 }
 
+func (a *DomainAddressSpaprVIO) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "reg" {
+			if err := unmarshallUint64Attr(attr.Value, &a.Reg, 16); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
 	d.Skip()
@@ -1512,6 +1540,9 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "virtio-serial" {
 		a.VirtioSerial = &DomainAddressVirtioSerial{}
 		return a.VirtioSerial.UnmarshalXML(d, start)
+	} else if typ == "spapr-vio" {
+		a.SpaprVIO = &DomainAddressSpaprVIO{}
+		return a.SpaprVIO.UnmarshalXML(d, start)
 	}
 
 	return nil
