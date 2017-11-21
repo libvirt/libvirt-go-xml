@@ -319,12 +319,16 @@ type DomainAddressISA struct {
 	Iobase *uint `xml:"iobase,attr"`
 }
 
+type DomainAddressVirtioMMIO struct {
+}
+
 type DomainAddress struct {
-	USB   *DomainAddressUSB
-	PCI   *DomainAddressPCI
-	Drive *DomainAddressDrive
-	DIMM  *DomainAddressDIMM
-	ISA   *DomainAddressISA
+	USB        *DomainAddressUSB
+	PCI        *DomainAddressPCI
+	Drive      *DomainAddressDrive
+	DIMM       *DomainAddressDIMM
+	ISA        *DomainAddressISA
+	VirtioMMIO *DomainAddressVirtioMMIO
 }
 
 type DomainConsole struct {
@@ -1192,6 +1196,15 @@ func (a *DomainAddressISA) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	return nil
 }
 
+func (a *DomainAddressVirtioMMIO) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "virtio-mmio",
+	})
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
 		return a.USB.MarshalXML(e, start)
@@ -1203,6 +1216,8 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return a.DIMM.MarshalXML(e, start)
 	} else if a.ISA != nil {
 		return a.ISA.MarshalXML(e, start)
+	} else if a.VirtioMMIO != nil {
+		return a.VirtioMMIO.MarshalXML(e, start)
 	} else {
 		return nil
 	}
@@ -1318,6 +1333,10 @@ func (a *DomainAddressISA) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	return nil
 }
 
+func (a *DomainAddressVirtioMMIO) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	return nil
+}
+
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
 	d.Skip()
@@ -1346,6 +1365,9 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "isa" {
 		a.ISA = &DomainAddressISA{}
 		return a.ISA.UnmarshalXML(d, start)
+	} else if typ == "virtio-mmio" {
+		a.VirtioMMIO = &DomainAddressVirtioMMIO{}
+		return a.VirtioMMIO.UnmarshalXML(d, start)
 	}
 
 	return nil
