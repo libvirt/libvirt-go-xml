@@ -464,6 +464,7 @@ type DomainRNG struct {
 	Model   string            `xml:"model,attr"`
 	Rate    *DomainRNGRate    `xml:"rate"`
 	Backend *DomainRNGBackend `xml:"backend"`
+	Address *DomainAddress    `xml:"address"`
 }
 
 type DomainHostdevAdapter struct {

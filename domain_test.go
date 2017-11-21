@@ -62,6 +62,7 @@ var balloonAddr = PCIAddress{0, 0, 7, 0}
 var panicAddr = ISAAddress{0x505}
 var duplexAddr = PCIAddress{0, 0, 8, 0}
 var watchdogAddr = PCIAddress{0, 0, 8, 0}
+var rngAddr = PCIAddress{0, 0, 9, 0}
 var hostdevSCSI = DriveAddress{0, 0, 3, 0}
 
 var serialPort uint = 0
@@ -1961,12 +1962,21 @@ var domainTestData = []struct {
 				Device: "/dev/random",
 				Model:  "random",
 			},
+			Address: &DomainAddress{
+				PCI: &DomainAddressPCI{
+					Domain:   &rngAddr.Domain,
+					Bus:      &rngAddr.Bus,
+					Slot:     &rngAddr.Slot,
+					Function: &rngAddr.Function,
+				},
+			},
 		},
 
 		Expected: []string{
 			`<rng model="virtio">`,
 			`  <rate bytes="1234" period="2000"></rate>`,
 			`  <backend model="random">/dev/random</backend>`,
+			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x09" function="0x0"></address>`,
 			`</rng>`,
 		},
 	},
