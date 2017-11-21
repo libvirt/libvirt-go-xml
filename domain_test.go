@@ -1855,10 +1855,11 @@ var domainTestData = []struct {
 			},
 			Address: &DomainAddress{
 				PCI: &DomainAddressPCI{
-					Domain:   &videoAddr.Domain,
-					Bus:      &videoAddr.Bus,
-					Slot:     &videoAddr.Slot,
-					Function: &videoAddr.Function,
+					Domain:        &videoAddr.Domain,
+					Bus:           &videoAddr.Bus,
+					Slot:          &videoAddr.Slot,
+					Function:      &videoAddr.Function,
+					MultiFunction: "on",
 				},
 			},
 		},
@@ -1866,7 +1867,7 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<video>`,
 			`  <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
-			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"></address>`,
+			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0" multifunction="on"></address>`,
 			`</video>`,
 		},
 	},

@@ -293,10 +293,11 @@ type DomainAlias struct {
 }
 
 type DomainAddressPCI struct {
-	Domain   *uint `xml:"domain,attr"`
-	Bus      *uint `xml:"bus,attr"`
-	Slot     *uint `xml:"slot,attr"`
-	Function *uint `xml:"function,attr"`
+	Domain        *uint  `xml:"domain,attr"`
+	Bus           *uint  `xml:"bus,attr"`
+	Slot          *uint  `xml:"slot,attr"`
+	Function      *uint  `xml:"function,attr"`
+	MultiFunction string `xml:"multifunction,attr,omitempty"`
 }
 
 type DomainAddressUSB struct {
@@ -1146,6 +1147,11 @@ func (a *DomainAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	marshallUintAttr(&start, "bus", a.Bus, "0x%02x")
 	marshallUintAttr(&start, "slot", a.Slot, "0x%02x")
 	marshallUintAttr(&start, "function", a.Function, "0x%x")
+	if a.MultiFunction != "" {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "multifunction"}, a.MultiFunction,
+		})
+	}
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -1281,6 +1287,8 @@ func (a *DomainAddressPCI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			if err := unmarshallUintAttr(attr.Value, &a.Function, 0); err != nil {
 				return err
 			}
+		} else if attr.Name.Local == "multifunction" {
+			a.MultiFunction = attr.Value
 		}
 	}
 	return nil
