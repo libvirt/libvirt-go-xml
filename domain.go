@@ -299,8 +299,8 @@ type DomainAddressPCI struct {
 }
 
 type DomainAddressUSB struct {
-	Bus  *uint `xml:"bus,attr"`
-	Port *uint `xml:"port,attr"`
+	Bus  *uint  `xml:"bus,attr"`
+	Port string `xml:"port,attr,omitempty"`
 }
 
 type DomainAddressDrive struct {
@@ -1149,7 +1149,9 @@ func (a *DomainAddressUSB) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		xml.Name{Local: "type"}, "usb",
 	})
 	marshallUintAttr(&start, "bus", a.Bus, 10)
-	marshallUintAttr(&start, "port", a.Port, 10)
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "port"}, a.Port,
+	})
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -1237,9 +1239,7 @@ func (a *DomainAddressUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 				return err
 			}
 		} else if attr.Name.Local == "port" {
-			if err := unmarshallUintAttr(attr.Value, &a.Port, 10); err != nil {
-				return err
-			}
+			a.Port = attr.Value
 		}
 	}
 	return nil

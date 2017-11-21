@@ -65,7 +65,7 @@ var hostdevSCSI = DriveAddress{0, 0, 3, 0}
 
 var serialPort uint = 0
 var tabletBus uint = 0
-var tabletPort uint = 1
+var tabletPort string = "1.1"
 
 var nicAverage int = 1000
 var nicBurst int = 10000
@@ -271,7 +271,7 @@ var domainTestData = []struct {
 						Address: &DomainAddress{
 							USB: &DomainAddressUSB{
 								Bus:  &tabletBus,
-								Port: &tabletPort,
+								Port: tabletPort,
 							},
 						},
 					},
@@ -464,7 +464,7 @@ var domainTestData = []struct {
 			`      <target type="virtio" port="0"></target>`,
 			`    </console>`,
 			`    <input type="tablet" bus="usb">`,
-			`      <address type="usb" bus="0" port="1"></address>`,
+			`      <address type="usb" bus="0" port="1.1"></address>`,
 			`    </input>`,
 			`    <input type="keyboard" bus="ps2"></input>`,
 			`    <graphics type="vnc"></graphics>`,
@@ -1825,14 +1825,14 @@ var domainTestData = []struct {
 			Address: &DomainAddress{
 				USB: &DomainAddressUSB{
 					Bus:  &tabletBus,
-					Port: &tabletPort,
+					Port: tabletPort,
 				},
 			},
 		},
 
 		Expected: []string{
 			`<input type="tablet" bus="usb">`,
-			`  <address type="usb" bus="0" port="1"></address>`,
+			`  <address type="usb" bus="0" port="1.1"></address>`,
 			`</input>`,
 		},
 	},
