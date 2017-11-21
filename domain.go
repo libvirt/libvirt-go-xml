@@ -432,10 +432,16 @@ type DomainVideo struct {
 	Address *DomainAddress   `xml:"address"`
 }
 
+type DomainMemBalloonStats struct {
+	Period uint `xml:"period,attr"`
+}
+
 type DomainMemBalloon struct {
-	XMLName xml.Name       `xml:"memballoon"`
-	Model   string         `xml:"model,attr"`
-	Address *DomainAddress `xml:"address"`
+	XMLName     xml.Name               `xml:"memballoon"`
+	Model       string                 `xml:"model,attr"`
+	AutoDeflate string                 `xml:"autodeflate,attr,omitempty"`
+	Stats       *DomainMemBalloonStats `xml:"stats"`
+	Address     *DomainAddress         `xml:"address"`
 }
 
 type DomainPanic struct {

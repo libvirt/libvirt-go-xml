@@ -1906,7 +1906,11 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainMemBalloon{
-			Model: "virtio",
+			Model:       "virtio",
+			AutoDeflate: "on",
+			Stats: &DomainMemBalloonStats{
+				Period: 10,
+			},
 			Address: &DomainAddress{
 				PCI: &DomainAddressPCI{
 					Domain:   &balloonAddr.Domain,
@@ -1918,7 +1922,8 @@ var domainTestData = []struct {
 		},
 
 		Expected: []string{
-			`<memballoon model="virtio">`,
+			`<memballoon model="virtio" autodeflate="on">`,
+			`  <stats period="10"></stats>`,
 			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"></address>`,
 			`</memballoon>`,
 		},
