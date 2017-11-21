@@ -960,6 +960,7 @@ var domainTestData = []struct {
 			Name: "test",
 			CPU: &DomainCPU{
 				Match: "exact",
+				Check: "none",
 				Model: &DomainCPUModel{
 					Fallback: "allow",
 					Value:    "core2duo",
@@ -986,7 +987,7 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
-			`  <cpu match="exact">`,
+			`  <cpu match="exact" check="none">`,
 			`    <model fallback="allow">core2duo</model>`,
 			`    <vendor>Intel</vendor>`,
 			`    <topology sockets="1" cores="2" threads="1"></topology>`,

@@ -669,6 +669,7 @@ type DomainCPUFeature struct {
 type DomainCPU struct {
 	Match    string             `xml:"match,attr,omitempty"`
 	Mode     string             `xml:"mode,attr,omitempty"`
+	Check    string             `xml:"check,attr,omitempty"`
 	Model    *DomainCPUModel    `xml:"model"`
 	Vendor   string             `xml:"vendor,omitempty"`
 	Topology *DomainCPUTopology `xml:"topology"`
