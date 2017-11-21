@@ -622,7 +622,7 @@ type DomainBootDevice struct {
 }
 
 type DomainBootMenu struct {
-	Enabled string `xml:"enabled,attr,omitempty"`
+	Enable  string `xml:"enable,attr,omitempty"`
 	Timeout string `xml:"timeout,attr,omitempty"`
 }
 

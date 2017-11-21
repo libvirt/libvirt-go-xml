@@ -719,7 +719,7 @@ var domainTestData = []struct {
 					NVRam:    "/vars.fd",
 				},
 				BootMenu: &DomainBootMenu{
-					Enabled: "yes",
+					Enable:  "yes",
 					Timeout: "3000",
 				},
 			},
@@ -729,7 +729,7 @@ var domainTestData = []struct {
 			`  <name>test</name>`,
 			`  <os>`,
 			`    <nvram template="/t.fd">/vars.fd</nvram>`,
-			`    <bootmenu enabled="yes" timeout="3000"></bootmenu>`,
+			`    <bootmenu enable="yes" timeout="3000"></bootmenu>`,
 			`  </os>`,
 			`</domain>`,
 		},
