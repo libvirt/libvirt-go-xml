@@ -576,7 +576,7 @@ type DomainSMBios struct {
 
 type DomainNVRam struct {
 	NVRam    string `xml:",chardata"`
-	Template string `xml:"template,attr"`
+	Template string `xml:"template,attr,omitempty"`
 }
 
 type DomainBootDevice struct {
@@ -584,8 +584,8 @@ type DomainBootDevice struct {
 }
 
 type DomainBootMenu struct {
-	Enabled string `xml:"enabled,attr"`
-	Timeout string `xml:"timeout,attr"`
+	Enabled string `xml:"enabled,attr,omitempty"`
+	Timeout string `xml:"timeout,attr,omitempty"`
 }
 
 type DomainSysInfo struct {
@@ -607,9 +607,9 @@ type DomainBIOS struct {
 
 type DomainLoader struct {
 	Path     string `xml:",chardata"`
-	Readonly string `xml:"readonly,attr"`
-	Secure   string `xml:"secure,attr"`
-	Type     string `xml:"type,attr"`
+	Readonly string `xml:"readonly,attr,omitempty"`
+	Secure   string `xml:"secure,attr,omitempty"`
+	Type     string `xml:"type,attr,omitempty"`
 }
 
 type DomainOS struct {
