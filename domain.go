@@ -610,6 +610,8 @@ type DomainLoader struct {
 
 type DomainOS struct {
 	Type        *DomainOSType      `xml:"type"`
+	Init        string             `xml:"init,omitempty"`
+	InitArgs    []string           `xml:"initarg"`
 	Loader      *DomainLoader      `xml:"loader"`
 	NVRam       *DomainNVRam       `xml:"nvram"`
 	Kernel      string             `xml:"kernel,omitempty"`
@@ -617,10 +619,8 @@ type DomainOS struct {
 	KernelArgs  string             `xml:"cmdline,omitempty"`
 	BootDevices []DomainBootDevice `xml:"boot"`
 	BootMenu    *DomainBootMenu    `xml:"bootmenu"`
-	SMBios      *DomainSMBios      `xml:"smbios"`
 	BIOS        *DomainBIOS        `xml:"bios"`
-	Init        string             `xml:"init,omitempty"`
-	InitArgs    []string           `xml:"initarg"`
+	SMBios      *DomainSMBios      `xml:"smbios"`
 }
 
 type DomainResource struct {
