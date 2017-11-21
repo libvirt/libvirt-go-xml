@@ -324,6 +324,12 @@ type DomainAddressISA struct {
 type DomainAddressVirtioMMIO struct {
 }
 
+type DomainAddressCCW struct {
+	Cssid *uint `xml:"cssid,attr"`
+	Ssid  *uint `xml:"ssid,attr"`
+	DevNo *uint `xml:"devno,attr"`
+}
+
 type DomainAddress struct {
 	USB        *DomainAddressUSB
 	PCI        *DomainAddressPCI
@@ -331,6 +337,7 @@ type DomainAddress struct {
 	DIMM       *DomainAddressDIMM
 	ISA        *DomainAddressISA
 	VirtioMMIO *DomainAddressVirtioMMIO
+	CCW        *DomainAddressCCW
 }
 
 type DomainChardevLog struct {
@@ -1239,6 +1246,18 @@ func (a *DomainAddressVirtioMMIO) MarshalXML(e *xml.Encoder, start xml.StartElem
 	return nil
 }
 
+func (a *DomainAddressCCW) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "ccw",
+	})
+	marshallUintAttr(&start, "cssid", a.Cssid, "0x%x")
+	marshallUintAttr(&start, "ssid", a.Ssid, "0x%x")
+	marshallUintAttr(&start, "devno", a.DevNo, "0x%04x")
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
 		return a.USB.MarshalXML(e, start)
@@ -1252,6 +1271,8 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return a.ISA.MarshalXML(e, start)
 	} else if a.VirtioMMIO != nil {
 		return a.VirtioMMIO.MarshalXML(e, start)
+	} else if a.CCW != nil {
+		return a.CCW.MarshalXML(e, start)
 	} else {
 		return nil
 	}
@@ -1373,6 +1394,25 @@ func (a *DomainAddressVirtioMMIO) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	return nil
 }
 
+func (a *DomainAddressCCW) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "cssid" {
+			if err := unmarshallUintAttr(attr.Value, &a.Cssid, 16); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "ssid" {
+			if err := unmarshallUintAttr(attr.Value, &a.Ssid, 16); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "devno" {
+			if err := unmarshallUintAttr(attr.Value, &a.DevNo, 16); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
 	d.Skip()
@@ -1404,6 +1444,9 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "virtio-mmio" {
 		a.VirtioMMIO = &DomainAddressVirtioMMIO{}
 		return a.VirtioMMIO.UnmarshalXML(d, start)
+	} else if typ == "ccw" {
+		a.CCW = &DomainAddressCCW{}
+		return a.CCW.UnmarshalXML(d, start)
 	}
 
 	return nil
