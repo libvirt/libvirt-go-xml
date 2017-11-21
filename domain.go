@@ -616,7 +616,7 @@ type DomainOS struct {
 	NVRam       *DomainNVRam       `xml:"nvram"`
 	Kernel      string             `xml:"kernel,omitempty"`
 	Initrd      string             `xml:"initrd,omitempty"`
-	KernelArgs  string             `xml:"cmdline,omitempty"`
+	Cmdline     string             `xml:"cmdline,omitempty"`
 	DTB         string             `xml:"dtb,omitempty"`
 	BootDevices []DomainBootDevice `xml:"boot"`
 	BootMenu    *DomainBootMenu    `xml:"bootmenu"`

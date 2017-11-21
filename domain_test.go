@@ -860,9 +860,9 @@ var domainTestData = []struct {
 			Type: "kvm",
 			Name: "test",
 			OS: &DomainOS{
-				Kernel:     "/vmlinuz",
-				Initrd:     "/initrd",
-				KernelArgs: "arg",
+				Kernel:  "/vmlinuz",
+				Initrd:  "/initrd",
+				Cmdline: "arg",
 			},
 		},
 		Expected: []string{
