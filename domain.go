@@ -27,6 +27,7 @@ package libvirtxml
 
 import (
 	"encoding/xml"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -1121,26 +1122,18 @@ func (d *DomainMemorydev) Marshal() (string, error) {
 	return string(doc), nil
 }
 
-func marshallUintAttr(start *xml.StartElement, name string, val *uint, base int) {
-	prefix := ""
-	if base == 16 {
-		prefix = "0x"
-	}
+func marshallUintAttr(start *xml.StartElement, name string, val *uint, format string) {
 	if val != nil {
 		start.Attr = append(start.Attr, xml.Attr{
-			xml.Name{Local: name}, prefix + strconv.FormatUint(uint64(*val), base),
+			xml.Name{Local: name}, fmt.Sprintf(format, *val),
 		})
 	}
 }
 
-func marshallUint64Attr(start *xml.StartElement, name string, val *uint64, base int) {
-	prefix := ""
-	if base == 16 {
-		prefix = "0x"
-	}
+func marshallUint64Attr(start *xml.StartElement, name string, val *uint64, format string) {
 	if val != nil {
 		start.Attr = append(start.Attr, xml.Attr{
-			xml.Name{Local: name}, prefix + strconv.FormatUint(*val, base),
+			xml.Name{Local: name}, fmt.Sprintf(format, *val),
 		})
 	}
 }
@@ -1149,10 +1142,10 @@ func (a *DomainAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "type"}, "pci",
 	})
-	marshallUintAttr(&start, "domain", a.Domain, 16)
-	marshallUintAttr(&start, "bus", a.Bus, 16)
-	marshallUintAttr(&start, "slot", a.Slot, 16)
-	marshallUintAttr(&start, "function", a.Function, 16)
+	marshallUintAttr(&start, "domain", a.Domain, "0x%04x")
+	marshallUintAttr(&start, "bus", a.Bus, "0x%02x")
+	marshallUintAttr(&start, "slot", a.Slot, "0x%02x")
+	marshallUintAttr(&start, "function", a.Function, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -1162,7 +1155,7 @@ func (a *DomainAddressUSB) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "type"}, "usb",
 	})
-	marshallUintAttr(&start, "bus", a.Bus, 10)
+	marshallUintAttr(&start, "bus", a.Bus, "%d")
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "port"}, a.Port,
 	})
@@ -1175,10 +1168,10 @@ func (a *DomainAddressDrive) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "type"}, "drive",
 	})
-	marshallUintAttr(&start, "controller", a.Controller, 10)
-	marshallUintAttr(&start, "bus", a.Bus, 10)
-	marshallUintAttr(&start, "target", a.Target, 10)
-	marshallUintAttr(&start, "unit", a.Unit, 10)
+	marshallUintAttr(&start, "controller", a.Controller, "%d")
+	marshallUintAttr(&start, "bus", a.Bus, "%d")
+	marshallUintAttr(&start, "target", a.Target, "%d")
+	marshallUintAttr(&start, "unit", a.Unit, "%d")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -1188,8 +1181,8 @@ func (a *DomainAddressDIMM) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "type"}, "dimm",
 	})
-	marshallUintAttr(&start, "slot", a.Slot, 10)
-	marshallUint64Attr(&start, "base", a.Base, 16)
+	marshallUintAttr(&start, "slot", a.Slot, "%d")
+	marshallUint64Attr(&start, "base", a.Base, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -1199,7 +1192,7 @@ func (a *DomainAddressISA) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "type"}, "isa",
 	})
-	marshallUintAttr(&start, "iobase", a.Iobase, 16)
+	marshallUintAttr(&start, "iobase", a.Iobase, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
