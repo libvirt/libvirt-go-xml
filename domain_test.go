@@ -572,6 +572,14 @@ var domainTestData = []struct {
 					Path:     "/loader",
 				},
 				DTB: "/some/path",
+				ACPI: &DomainACPI{
+					Tables: []DomainACPITable{
+						DomainACPITable{
+							Type: "slic",
+							Path: "/some/data",
+						},
+					},
+				},
 				SMBios: &DomainSMBios{
 					Mode: "sysinfo",
 				},
@@ -686,6 +694,9 @@ var domainTestData = []struct {
 			`    <initarg>emergency.service</initarg>`,
 			`    <loader readonly="yes" secure="no" type="rom">/loader</loader>`,
 			`    <dtb>/some/path</dtb>`,
+			`    <acpi>`,
+			`      <table type="slic">/some/data</table>`,
+			`    </acpi>`,
 			`    <boot dev="hd"></boot>`,
 			`    <bios useserial="yes" rebootTimeout="0"></bios>`,
 			`    <smbios mode="sysinfo"></smbios>`,

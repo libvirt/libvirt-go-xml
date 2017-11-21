@@ -644,6 +644,15 @@ type DomainLoader struct {
 	Type     string `xml:"type,attr,omitempty"`
 }
 
+type DomainACPI struct {
+	Tables []DomainACPITable `xml:"table"`
+}
+
+type DomainACPITable struct {
+	Type string `xml:"type,attr"`
+	Path string `xml:",chardata"`
+}
+
 type DomainOS struct {
 	Type        *DomainOSType      `xml:"type"`
 	Init        string             `xml:"init,omitempty"`
@@ -654,6 +663,7 @@ type DomainOS struct {
 	Initrd      string             `xml:"initrd,omitempty"`
 	Cmdline     string             `xml:"cmdline,omitempty"`
 	DTB         string             `xml:"dtb,omitempty"`
+	ACPI        *DomainACPI        `xml:"acpi"`
 	BootDevices []DomainBootDevice `xml:"boot"`
 	BootMenu    *DomainBootMenu    `xml:"bootmenu"`
 	BIOS        *DomainBIOS        `xml:"bios"`
