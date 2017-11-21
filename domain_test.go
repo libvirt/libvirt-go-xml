@@ -61,6 +61,7 @@ var fsAddr = PCIAddress{0, 0, 6, 0}
 var balloonAddr = PCIAddress{0, 0, 7, 0}
 var panicAddr = ISAAddress{0x505}
 var duplexAddr = PCIAddress{0, 0, 8, 0}
+var watchdogAddr = PCIAddress{0, 0, 8, 0}
 var hostdevSCSI = DriveAddress{0, 0, 3, 0}
 
 var serialPort uint = 0
@@ -1904,6 +1905,26 @@ var domainTestData = []struct {
 			`<memballoon model="virtio">`,
 			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"></address>`,
 			`</memballoon>`,
+		},
+	},
+	{
+		Object: &DomainWatchdog{
+			Model:  "ib700",
+			Action: "inject-nmi",
+			Address: &DomainAddress{
+				PCI: &DomainAddressPCI{
+					Domain:   &watchdogAddr.Domain,
+					Bus:      &watchdogAddr.Bus,
+					Slot:     &watchdogAddr.Slot,
+					Function: &watchdogAddr.Function,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<watchdog model="ib700" action="inject-nmi">`,
+			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x08" function="0x0"></address>`,
+			`</watchdog>`,
 		},
 	},
 	{

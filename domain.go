@@ -506,6 +506,13 @@ type DomainMemorydev struct {
 	Address *DomainAddress         `xml:"address"`
 }
 
+type DomainWatchdog struct {
+	XMLName xml.Name       `xml:"watchdog"`
+	Model   string         `xml:"model,attr"`
+	Action  string         `xml:"action,attr,omitempty"`
+	Address *DomainAddress `xml:"address"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Controllers []DomainController `xml:"controller"`
@@ -524,6 +531,7 @@ type DomainDeviceList struct {
 	RNGs        []DomainRNG        `xml:"rng"`
 	Hostdevs    []DomainHostdev    `xml:"hostdev"`
 	Memorydevs  []DomainMemorydev  `xml:"memory"`
+	Watchdog    *DomainWatchdog    `xml:"watchdog"`
 }
 
 type DomainMemory struct {
@@ -1116,6 +1124,18 @@ func (d *DomainMemorydev) Unmarshal(doc string) error {
 }
 
 func (d *DomainMemorydev) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainWatchdog) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainWatchdog) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err
