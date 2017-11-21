@@ -318,7 +318,8 @@ type DomainAddressDIMM struct {
 }
 
 type DomainAddressISA struct {
-	Iobase *uint `xml:"iobase,attr"`
+	IOBase *uint `xml:"iobase,attr"`
+	IRQ    *uint `xml:"irq,attr"`
 }
 
 type DomainAddressVirtioMMIO struct {
@@ -1231,7 +1232,8 @@ func (a *DomainAddressISA) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "type"}, "isa",
 	})
-	marshallUintAttr(&start, "iobase", a.Iobase, "0x%x")
+	marshallUintAttr(&start, "iobase", a.IOBase, "0x%x")
+	marshallUintAttr(&start, "irq", a.IRQ, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -1382,7 +1384,11 @@ func (a *DomainAddressDIMM) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 func (a *DomainAddressISA) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "iobase" {
-			if err := unmarshallUintAttr(attr.Value, &a.Iobase, 16); err != nil {
+			if err := unmarshallUintAttr(attr.Value, &a.IOBase, 16); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "irq" {
+			if err := unmarshallUintAttr(attr.Value, &a.IRQ, 16); err != nil {
 				return err
 			}
 		}

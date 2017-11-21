@@ -46,7 +46,7 @@ type DriveAddress struct {
 }
 
 type ISAAddress struct {
-	Iobase uint
+	IOBase uint
 }
 
 var domainID int = 3
@@ -325,7 +325,7 @@ var domainTestData = []struct {
 						Model: "isa",
 						Address: &DomainAddress{
 							ISA: &DomainAddressISA{
-								Iobase: &panicAddr.Iobase,
+								IOBase: &panicAddr.IOBase,
 							},
 						},
 					},
