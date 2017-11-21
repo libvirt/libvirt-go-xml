@@ -331,14 +331,21 @@ type DomainAddressCCW struct {
 	DevNo *uint `xml:"devno,attr"`
 }
 
+type DomainAddressVirtioSerial struct {
+	Controller *uint `xml:"controller,attr"`
+	Bus        *uint `xml:"bus,attr"`
+	Port       *uint `xml:"port,attr"`
+}
+
 type DomainAddress struct {
-	USB        *DomainAddressUSB
-	PCI        *DomainAddressPCI
-	Drive      *DomainAddressDrive
-	DIMM       *DomainAddressDIMM
-	ISA        *DomainAddressISA
-	VirtioMMIO *DomainAddressVirtioMMIO
-	CCW        *DomainAddressCCW
+	USB          *DomainAddressUSB
+	PCI          *DomainAddressPCI
+	Drive        *DomainAddressDrive
+	DIMM         *DomainAddressDIMM
+	ISA          *DomainAddressISA
+	VirtioMMIO   *DomainAddressVirtioMMIO
+	CCW          *DomainAddressCCW
+	VirtioSerial *DomainAddressVirtioSerial
 }
 
 type DomainChardevLog struct {
@@ -1276,6 +1283,18 @@ func (a *DomainAddressCCW) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	return nil
 }
 
+func (a *DomainAddressVirtioSerial) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "type"}, "virtio-serial",
+	})
+	marshallUintAttr(&start, "controller", a.Controller, "%d")
+	marshallUintAttr(&start, "bus", a.Bus, "%d")
+	marshallUintAttr(&start, "port", a.Port, "%d")
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
 		return a.USB.MarshalXML(e, start)
@@ -1291,6 +1310,8 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return a.VirtioMMIO.MarshalXML(e, start)
 	} else if a.CCW != nil {
 		return a.CCW.MarshalXML(e, start)
+	} else if a.VirtioSerial != nil {
+		return a.VirtioSerial.MarshalXML(e, start)
 	} else {
 		return nil
 	}
@@ -1435,6 +1456,25 @@ func (a *DomainAddressCCW) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	return nil
 }
 
+func (a *DomainAddressVirtioSerial) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "controller" {
+			if err := unmarshallUintAttr(attr.Value, &a.Controller, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "bus" {
+			if err := unmarshallUintAttr(attr.Value, &a.Bus, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "port" {
+			if err := unmarshallUintAttr(attr.Value, &a.Port, 10); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
 	d.Skip()
@@ -1469,6 +1509,9 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "ccw" {
 		a.CCW = &DomainAddressCCW{}
 		return a.CCW.UnmarshalXML(d, start)
+	} else if typ == "virtio-serial" {
+		a.VirtioSerial = &DomainAddressVirtioSerial{}
+		return a.VirtioSerial.UnmarshalXML(d, start)
 	}
 
 	return nil
