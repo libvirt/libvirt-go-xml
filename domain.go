@@ -452,11 +452,16 @@ type DomainRNGRate struct {
 	Period uint `xml:"period,attr,omitempty"`
 }
 
+type DomainRNGProtocol struct {
+	Type string `xml:"type,attr"`
+}
+
 type DomainRNGBackend struct {
-	Device  string                  `xml:",chardata"`
-	Model   string                  `xml:"model,attr"`
-	Type    string                  `xml:"type,attr,omitempty"`
-	Sources []DomainInterfaceSource `xml:"source"`
+	Device   string                  `xml:",chardata"`
+	Model    string                  `xml:"model,attr"`
+	Type     string                  `xml:"type,attr,omitempty"`
+	Sources  []DomainInterfaceSource `xml:"source"`
+	Protocol *DomainRNGProtocol      `xml:"protocol"`
 }
 
 type DomainRNG struct {

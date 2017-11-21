@@ -420,6 +420,9 @@ var domainTestData = []struct {
 									Service: "1234",
 								},
 							},
+							Protocol: &DomainRNGProtocol{
+								Type: "raw",
+							},
 						},
 					},
 				},
@@ -493,6 +496,7 @@ var domainTestData = []struct {
 			`      <backend model="egd" type="udp">`,
 			`        <source mode="bind" service="1234"></source>`,
 			`        <source mode="connect" service="1234" host="1.2.3.4"></source>`,
+			`        <protocol type="raw"></protocol>`,
 			`      </backend>`,
 			`    </rng>`,
 			`    <memory model="dimm" access="private">`,
