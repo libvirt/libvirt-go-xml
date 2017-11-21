@@ -331,11 +331,17 @@ type DomainAddress struct {
 	VirtioMMIO *DomainAddressVirtioMMIO
 }
 
+type DomainChardevLog struct {
+	File   string `xml:"file,attr"`
+	Append string `xml:"append,attr,omitempty"`
+}
+
 type DomainConsole struct {
 	XMLName xml.Name             `xml:"console"`
 	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
 	Target  *DomainConsoleTarget `xml:"target"`
+	Log     *DomainChardevLog    `xml:"log"`
 	Alias   *DomainAlias         `xml:"alias"`
 	Address *DomainAddress       `xml:"address"`
 }
@@ -346,6 +352,7 @@ type DomainSerial struct {
 	Source   *DomainChardevSource  `xml:"source"`
 	Protocol *DomainSerialProtocol `xml:"protocol"`
 	Target   *DomainSerialTarget   `xml:"target"`
+	Log      *DomainChardevLog     `xml:"log"`
 	Alias    *DomainAlias          `xml:"alias"`
 	Address  *DomainAddress        `xml:"address"`
 }
@@ -359,6 +366,7 @@ type DomainChannel struct {
 	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
 	Target  *DomainChannelTarget `xml:"target"`
+	Log     *DomainChardevLog    `xml:"log"`
 	Alias   *DomainAlias         `xml:"alias"`
 	Address *DomainAddress       `xml:"address"`
 }

@@ -1798,11 +1798,16 @@ var domainTestData = []struct {
 				Type: "isa",
 				Port: &serialPort,
 			},
+			Log: &DomainChardevLog{
+				File:   "/some/path",
+				Append: "on",
+			},
 		},
 
 		Expected: []string{
 			`<serial type="pty">`,
 			`  <target type="isa" port="0"></target>`,
+			`  <log file="/some/path" append="on"></log>`,
 			`</serial>`,
 		},
 	},
