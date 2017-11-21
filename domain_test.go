@@ -565,6 +565,7 @@ var domainTestData = []struct {
 					Type:     "rom",
 					Path:     "/loader",
 				},
+				DTB: "/some/path",
 				SMBios: &DomainSMBios{
 					Mode: "sysinfo",
 				},
@@ -678,6 +679,7 @@ var domainTestData = []struct {
 			`    <initarg>--unit</initarg>`,
 			`    <initarg>emergency.service</initarg>`,
 			`    <loader readonly="yes" secure="no" type="rom">/loader</loader>`,
+			`    <dtb>/some/path</dtb>`,
 			`    <boot dev="hd"></boot>`,
 			`    <bios useserial="yes" rebootTimeout="0"></bios>`,
 			`    <smbios mode="sysinfo"></smbios>`,
