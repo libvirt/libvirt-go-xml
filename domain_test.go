@@ -90,6 +90,8 @@ var vcpuId1 uint = 1
 var memorydevAddressSlot uint = 0
 var memorydevAddressBase uint64 = 4294967296
 
+var rebootTimeout uint = 0
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -596,7 +598,7 @@ var domainTestData = []struct {
 				},
 				BIOS: &DomainBIOS{
 					UseSerial:     "yes",
-					RebootTimeout: "0",
+					RebootTimeout: &rebootTimeout,
 				},
 				Init: "/bin/systemd",
 				InitArgs: []string{
