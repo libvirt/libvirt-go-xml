@@ -1709,15 +1709,15 @@ func (a *DomainAddressVirtioMMIO) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 func (a *DomainAddressCCW) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "cssid" {
-			if err := unmarshallUintAttr(attr.Value, &a.Cssid, 16); err != nil {
+			if err := unmarshallUintAttr(attr.Value, &a.Cssid, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "ssid" {
-			if err := unmarshallUintAttr(attr.Value, &a.Ssid, 16); err != nil {
+			if err := unmarshallUintAttr(attr.Value, &a.Ssid, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "devno" {
-			if err := unmarshallUintAttr(attr.Value, &a.DevNo, 16); err != nil {
+			if err := unmarshallUintAttr(attr.Value, &a.DevNo, 0); err != nil {
 				return err
 			}
 		}
