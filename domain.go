@@ -1556,7 +1556,7 @@ func (a *DomainAddressSpaprVIO) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	start.Attr = append(start.Attr, xml.Attr{
 		xml.Name{Local: "type"}, "spapr-vio",
 	})
-	marshallUint64Attr(&start, "reg", a.Reg, "%x")
+	marshallUint64Attr(&start, "reg", a.Reg, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
