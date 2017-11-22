@@ -859,7 +859,7 @@ type DomainFeatureState struct {
 }
 
 type DomainFeatureAPIC struct {
-	EOI string `xml:"eio,attr,omitempty"`
+	EOI string `xml:"eoi,attr,omitempty"`
 }
 
 type DomainFeatureHyperVVendorId struct {
