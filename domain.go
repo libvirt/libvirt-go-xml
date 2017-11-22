@@ -809,10 +809,10 @@ type DomainNuma struct {
 }
 
 type DomainCell struct {
-	ID        string `xml:"id,attr"`
+	ID        *uint  `xml:"id,attr"`
 	CPUs      string `xml:"cpus,attr"`
 	Memory    string `xml:"memory,attr"`
-	Unit      string `xml:"unit,attr"`
+	Unit      string `xml:"unit,attr,omitempty"`
 	MemAccess string `xml:"memAccess,attr,omitempty"`
 }
 

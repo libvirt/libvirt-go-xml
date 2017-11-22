@@ -91,6 +91,7 @@ var memorydevAddressSlot uint = 0
 var memorydevAddressBase uint64 = 4294967296
 
 var rebootTimeout uint = 0
+var cellID uint = 0
 
 var domainTestData = []struct {
 	Object   Document
@@ -1011,7 +1012,7 @@ var domainTestData = []struct {
 				},
 				Numa: &DomainNuma{
 					[]DomainCell{
-						{ID: "0", CPUs: "0-3", Memory: "512000", Unit: "KiB", MemAccess: "private"},
+						{ID: &cellID, CPUs: "0-3", Memory: "512000", Unit: "KiB", MemAccess: "private"},
 					},
 				},
 			},
