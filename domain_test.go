@@ -994,6 +994,7 @@ var domainTestData = []struct {
 				Model: &DomainCPUModel{
 					Fallback: "allow",
 					Value:    "core2duo",
+					VendorID: "LibvirtQEMU",
 				},
 				Vendor: "Intel",
 				Topology: &DomainCPUTopology{
@@ -1004,9 +1005,13 @@ var domainTestData = []struct {
 				Features: []DomainCPUFeature{
 					DomainCPUFeature{Policy: "disable", Name: "lahf_lm"},
 				},
+				Cache: &DomainCPUCache{
+					Level: 1,
+					Mode:  "emulate",
+				},
 				Numa: &DomainNuma{
 					[]DomainCell{
-						{ID: "0", CPUs: "0-3", Memory: "512000", Unit: "KiB"},
+						{ID: "0", CPUs: "0-3", Memory: "512000", Unit: "KiB", MemAccess: "private"},
 					},
 				},
 			},
@@ -1018,12 +1023,13 @@ var domainTestData = []struct {
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
 			`  <cpu match="exact" check="none">`,
-			`    <model fallback="allow">core2duo</model>`,
+			`    <model fallback="allow" vendor_id="LibvirtQEMU">core2duo</model>`,
 			`    <vendor>Intel</vendor>`,
 			`    <topology sockets="1" cores="2" threads="1"></topology>`,
+			`    <cache level="1" mode="emulate"></cache>`,
 			`    <feature policy="disable" name="lahf_lm"></feature>`,
 			`    <numa>`,
-			`      <cell id="0" cpus="0-3" memory="512000" unit="KiB"></cell>`,
+			`      <cell id="0" cpus="0-3" memory="512000" unit="KiB" memAccess="private"></cell>`,
 			`    </numa>`,
 			`  </cpu>`,
 			`  <devices>`,

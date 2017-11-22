@@ -773,6 +773,7 @@ type DomainVCPUs struct {
 type DomainCPUModel struct {
 	Fallback string `xml:"fallback,attr,omitempty"`
 	Value    string `xml:",chardata"`
+	VendorID string `xml:"vendor_id,attr,omitempty"`
 }
 
 type DomainCPUTopology struct {
@@ -786,6 +787,11 @@ type DomainCPUFeature struct {
 	Name   string `xml:"name,attr,omitempty"`
 }
 
+type DomainCPUCache struct {
+	Level uint   `xml:"level,attr,omitempty"`
+	Mode  string `xml:"mode,attr"`
+}
+
 type DomainCPU struct {
 	Match    string             `xml:"match,attr,omitempty"`
 	Mode     string             `xml:"mode,attr,omitempty"`
@@ -793,6 +799,7 @@ type DomainCPU struct {
 	Model    *DomainCPUModel    `xml:"model"`
 	Vendor   string             `xml:"vendor,omitempty"`
 	Topology *DomainCPUTopology `xml:"topology"`
+	Cache    *DomainCPUCache    `xml:"cache"`
 	Features []DomainCPUFeature `xml:"feature"`
 	Numa     *DomainNuma        `xml:"numa,omitempty"`
 }
@@ -802,10 +809,11 @@ type DomainNuma struct {
 }
 
 type DomainCell struct {
-	ID     string `xml:"id,attr"`
-	CPUs   string `xml:"cpus,attr"`
-	Memory string `xml:"memory,attr"`
-	Unit   string `xml:"unit,attr"`
+	ID        string `xml:"id,attr"`
+	CPUs      string `xml:"cpus,attr"`
+	Memory    string `xml:"memory,attr"`
+	Unit      string `xml:"unit,attr"`
+	MemAccess string `xml:"memAccess,attr,omitempty"`
 }
 
 type DomainClock struct {
