@@ -969,7 +969,7 @@ type DomainNUMATune struct {
 }
 
 type DomainNUMATuneMemory struct {
-	Mode      string `xml:"mode,attr"`
+	Mode      string `xml:"mode,attr,omitempty"`
 	Nodeset   string `xml:"nodeset,attr,omitempty"`
 	Placement string `xml:"placement,attr,omitempty"`
 }
