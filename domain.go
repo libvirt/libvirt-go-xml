@@ -893,6 +893,14 @@ type DomainFeatureGIC struct {
 	Version string `xml:"version,attr,omitempty"`
 }
 
+type DomainFeatureIOAPIC struct {
+	Driver string `xml:"driver,attr,omitempty"`
+}
+
+type DomainFeatureHPT struct {
+	Resizing string `xml:"resizing,attr,omitempty"`
+}
+
 type DomainFeatureList struct {
 	PAE        *DomainFeature       `xml:"pae"`
 	ACPI       *DomainFeature       `xml:"acpi"`
@@ -907,6 +915,8 @@ type DomainFeatureList struct {
 	VMPort     *DomainFeatureState  `xml:"vmport"`
 	GIC        *DomainFeatureGIC    `xml:"gic"`
 	SMM        *DomainFeatureState  `xml:"smm"`
+	IOAPIC     *DomainFeatureIOAPIC `xml:"ioapic"`
+	HPT        *DomainFeatureHPT    `xml:"hpt"`
 }
 
 type DomainCPUTuneShares struct {
