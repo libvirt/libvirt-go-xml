@@ -53,6 +53,17 @@ var domainID int = 3
 
 var uhciIndex uint = 0
 var uhciAddr = PCIAddress{0, 0, 1, 2}
+var pciIndex uint = 0
+var pciTargetChassisNr uint = 7
+var pciTargetChassis uint = 23
+var pciTargetPort uint = 78
+var pciTargetBusNr uint = 2
+var pciTargetIndex uint = 3
+var pciTargetNUMANode uint = 2
+var scsiIndex uint = 0
+var scsiQueues uint = 3
+var scsiCmdPerLUN uint = 8
+var scsiMaxSectors uint = 512
 
 var diskAddr = PCIAddress{0, 0, 3, 0}
 var ifaceAddr = PCIAddress{0, 0, 4, 0}
@@ -1518,6 +1529,11 @@ var domainTestData = []struct {
 						Type:  "usb",
 						Index: nil,
 						Model: "ehci",
+						USB: &DomainControllerUSB{
+							Master: &DomainControllerUSBMaster{
+								StartPort: 0,
+							},
+						},
 					},
 				},
 			},
@@ -1529,7 +1545,87 @@ var domainTestData = []struct {
 			`    <controller type="usb" index="0" model="piix3-uhci">`,
 			`      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x2"></address>`,
 			`    </controller>`,
-			`    <controller type="usb" model="ehci"></controller>`,
+			`    <controller type="usb" model="ehci">`,
+			`      <master startport="0"></master>`,
+			`    </controller>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Controllers: []DomainController{
+					DomainController{
+						Type:  "pci",
+						Index: &pciIndex,
+						Model: "pci-expander-bus",
+						PCI: &DomainControllerPCI{
+							Model: &DomainControllerPCIModel{
+								Name: "pxb",
+							},
+							Target: &DomainControllerPCITarget{
+								ChassisNr: &pciTargetChassisNr,
+								Chassis:   &pciTargetChassis,
+								Port:      &pciTargetPort,
+								BusNr:     &pciTargetBusNr,
+								Index:     &pciTargetIndex,
+								NUMANode:  &pciTargetNUMANode,
+							},
+							Hole64: &DomainControllerPCIHole64{
+								Size: 1024,
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <controller type="pci" index="0" model="pci-expander-bus">`,
+			`      <model name="pxb"></model>`,
+			`      <target chassisNr="7" chassis="23" port="78" busNr="2" index="3">`,
+			`        <node>2</node>`,
+			`      </target>`,
+			`      <pcihole64>1024</pcihole64>`,
+			`    </controller>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Controllers: []DomainController{
+					DomainController{
+						Type:  "scsi",
+						Index: &scsiIndex,
+						Driver: &DomainControllerDriver{
+							Queues:     &scsiQueues,
+							CmdPerLUN:  &scsiCmdPerLUN,
+							MaxSectors: &scsiMaxSectors,
+							IOEventFD:  "yes",
+							IOThread:   3,
+							IOMMU:      "yes",
+							ATS:        "no",
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <controller type="scsi" index="0">`,
+			`      <driver queues="3" cmd_per_lun="8" max_sectors="512" ioeventfd="yes" iothread="3" iommu="yes" ats="no"></driver>`,
+			`    </controller>`,
 			`  </devices>`,
 			`</domain>`,
 		},

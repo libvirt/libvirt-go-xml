@@ -28,16 +28,69 @@ package libvirtxml
 import (
 	"encoding/xml"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 )
 
+type DomainControllerPCIHole64 struct {
+	Size uint64 `xml:",chardata"`
+	Unit string `xml:"unit,attr,omitempty"`
+}
+
+type DomainControllerPCIModel struct {
+	Name string `xml:"name,attr"`
+}
+
+type DomainControllerPCITarget struct {
+	ChassisNr *uint
+	Chassis   *uint
+	Port      *uint
+	BusNr     *uint
+	Index     *uint
+	NUMANode  *uint
+}
+
+type DomainControllerPCI struct {
+	Model  *DomainControllerPCIModel  `xml:"model"`
+	Target *DomainControllerPCITarget `xml:"target"`
+	Hole64 *DomainControllerPCIHole64 `xml:"pcihole64"`
+}
+
+type DomainControllerUSBMaster struct {
+	StartPort uint `xml:"startport,attr"`
+}
+
+type DomainControllerUSB struct {
+	Port   *uint                      `xml:"ports,attr"`
+	Master *DomainControllerUSBMaster `xml:"master"`
+}
+
+type DomainControllerVirtIOSerial struct {
+	Ports   *uint `xml:"ports,attr"`
+	Vectors *uint `xml:"vectors,attr"`
+}
+
+type DomainControllerDriver struct {
+	Queues     *uint  `xml:"queues,attr"`
+	CmdPerLUN  *uint  `xml:"cmd_per_lun,attr"`
+	MaxSectors *uint  `xml:"max_sectors,attr"`
+	IOEventFD  string `xml:"ioeventfd,attr,omitempty"`
+	IOThread   uint   `xml:"iothread,attr,omitempty"`
+	IOMMU      string `xml:"iommu,attr,omitempty"`
+	ATS        string `xml:"ats,attr,omitempty"`
+}
+
 type DomainController struct {
-	XMLName xml.Name       `xml:"controller"`
-	Type    string         `xml:"type,attr"`
-	Index   *uint          `xml:"index,attr"`
-	Model   string         `xml:"model,attr,omitempty"`
-	Address *DomainAddress `xml:"address"`
+	XMLName      xml.Name                      `xml:"controller"`
+	Type         string                        `xml:"type,attr"`
+	Index        *uint                         `xml:"index,attr"`
+	Model        string                        `xml:"model,attr,omitempty"`
+	Driver       *DomainControllerDriver       `xml:"driver"`
+	Address      *DomainAddress                `xml:"address"`
+	PCI          *DomainControllerPCI          `xml:"-"`
+	USB          *DomainControllerUSB          `xml:"-"`
+	VirtIOSerial *DomainControllerVirtIOSerial `xml:"-"`
 }
 
 type DomainDiskSecret struct {
@@ -1010,6 +1063,178 @@ func (d *Domain) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+type domainController DomainController
+
+type domainControllerPCI struct {
+	DomainControllerPCI
+	domainController
+}
+
+type domainControllerUSB struct {
+	DomainControllerUSB
+	domainController
+}
+
+type domainControllerVirtIOSerial struct {
+	DomainControllerVirtIOSerial
+	domainController
+}
+
+func (a *DomainControllerPCITarget) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	marshallUintAttr(&start, "chassisNr", a.ChassisNr, "%d")
+	marshallUintAttr(&start, "chassis", a.Chassis, "%d")
+	marshallUintAttr(&start, "port", a.Port, "%d")
+	marshallUintAttr(&start, "busNr", a.BusNr, "%d")
+	marshallUintAttr(&start, "index", a.Index, "%d")
+	e.EncodeToken(start)
+	if a.NUMANode != nil {
+		node := xml.StartElement{
+			Name: xml.Name{Local: "node"},
+		}
+		e.EncodeToken(node)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("%d", *a.NUMANode)))
+		e.EncodeToken(node.End())
+	}
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainControllerPCITarget) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "chassisNr" {
+			if err := unmarshallUintAttr(attr.Value, &a.ChassisNr, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "chassis" {
+			if err := unmarshallUintAttr(attr.Value, &a.Chassis, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "port" {
+			if err := unmarshallUintAttr(attr.Value, &a.Port, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "busNr" {
+			if err := unmarshallUintAttr(attr.Value, &a.BusNr, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "index" {
+			if err := unmarshallUintAttr(attr.Value, &a.Index, 10); err != nil {
+				return err
+			}
+		}
+	}
+	for {
+		tok, err := d.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		switch tok := tok.(type) {
+		case xml.StartElement:
+			if tok.Name.Local == "node" {
+				data, err := d.Token()
+				if err != nil {
+					return err
+				}
+				switch data := data.(type) {
+				case xml.CharData:
+					val, err := strconv.ParseUint(string(data), 10, 64)
+					if err != nil {
+						return err
+					}
+					vali := uint(val)
+					a.NUMANode = &vali
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (a *DomainController) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "controller"
+	if a.Type == "pci" {
+		pci := domainControllerPCI{}
+		pci.domainController = domainController(*a)
+		if a.PCI != nil {
+			pci.DomainControllerPCI = *a.PCI
+		}
+		return e.EncodeElement(pci, start)
+	} else if a.Type == "usb" {
+		usb := domainControllerUSB{}
+		usb.domainController = domainController(*a)
+		if a.USB != nil {
+			usb.DomainControllerUSB = *a.USB
+		}
+		return e.EncodeElement(usb, start)
+	} else if a.Type == "virtio-serial" {
+		vioserial := domainControllerVirtIOSerial{}
+		vioserial.domainController = domainController(*a)
+		if a.VirtIOSerial != nil {
+			vioserial.DomainControllerVirtIOSerial = *a.VirtIOSerial
+		}
+		return e.EncodeElement(vioserial, start)
+	} else {
+		gen := domainController(*a)
+		return e.EncodeElement(gen, start)
+	}
+}
+
+func getAttr(attrs []xml.Attr, name string) (string, bool) {
+	for _, attr := range attrs {
+		if attr.Name.Local == name {
+			return attr.Value, true
+		}
+	}
+	return "", false
+}
+
+func (a *DomainController) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing 'type' attribute on domain controller")
+	}
+	if typ == "pci" {
+		var pci domainControllerPCI
+		err := d.DecodeElement(&pci, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainController(pci.domainController)
+		a.PCI = &pci.DomainControllerPCI
+		return nil
+	} else if typ == "usb" {
+		var usb domainControllerUSB
+		err := d.DecodeElement(&usb, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainController(usb.domainController)
+		a.USB = &usb.DomainControllerUSB
+		return nil
+	} else if typ == "virtio-serial" {
+		var vioserial domainControllerVirtIOSerial
+		err := d.DecodeElement(&vioserial, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainController(vioserial.domainController)
+		a.VirtIOSerial = &vioserial.DomainControllerVirtIOSerial
+		return nil
+	} else {
+		var gen domainController
+		err := d.DecodeElement(&gen, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainController(gen)
+		return nil
+	}
 }
 
 func (d *DomainController) Unmarshal(doc string) error {
