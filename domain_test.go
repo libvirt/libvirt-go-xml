@@ -445,7 +445,7 @@ var domainTestData = []struct {
 						Model:  "dimm",
 						Access: "private",
 						Target: &DomainMemorydevTarget{
-							Size: &DomainMemory{
+							Size: &DomainMemorydevTargetSize{
 								Value: 1,
 								Unit:  "GiB",
 							},
@@ -529,10 +529,11 @@ var domainTestData = []struct {
 			Type: "kvm",
 			Name: "test",
 			Memory: &DomainMemory{
-				Unit:  "KiB",
-				Value: 8192,
+				Unit:     "KiB",
+				Value:    8192,
+				DumpCore: "yes",
 			},
-			CurrentMemory: &DomainMemory{
+			CurrentMemory: &DomainCurrentMemory{
 				Unit:  "KiB",
 				Value: 4096,
 			},
@@ -673,7 +674,7 @@ var domainTestData = []struct {
 			`<domain type="kvm">`,
 			`  <name>test</name>`,
 			`  <maxMemory unit="KiB" slots="2">16384</maxMemory>`,
-			`  <memory unit="KiB">8192</memory>`,
+			`  <memory unit="KiB" dumpCore="yes">8192</memory>`,
 			`  <currentMemory unit="KiB">4096</currentMemory>`,
 			`  <memoryBacking>`,
 			`    <hugepages>`,
@@ -2190,7 +2191,7 @@ var domainTestData = []struct {
 			Model:  "dimm",
 			Access: "private",
 			Target: &DomainMemorydevTarget{
-				Size: &DomainMemory{
+				Size: &DomainMemorydevTargetSize{
 					Value: 1,
 					Unit:  "GiB",
 				},

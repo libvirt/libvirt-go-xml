@@ -585,8 +585,13 @@ type DomainMemorydevTargetNode struct {
 	Value uint `xml:",chardata"`
 }
 
+type DomainMemorydevTargetSize struct {
+	Value uint   `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+}
+
 type DomainMemorydevTarget struct {
-	Size *DomainMemory              `xml:"size"`
+	Size *DomainMemorydevTargetSize `xml:"size"`
 	Node *DomainMemorydevTargetNode `xml:"node"`
 }
 
@@ -627,6 +632,12 @@ type DomainDeviceList struct {
 }
 
 type DomainMemory struct {
+	Value    uint   `xml:",chardata"`
+	Unit     string `xml:"unit,attr,omitempty"`
+	DumpCore string `xml:"dumpCore,attr,omitempty"`
+}
+
+type DomainCurrentMemory struct {
 	Value uint   `xml:",chardata"`
 	Unit  string `xml:"unit,attr,omitempty"`
 }
@@ -1033,7 +1044,7 @@ type Domain struct {
 	Description     string               `xml:"description,omitempty"`
 	MaximumMemory   *DomainMaxMemory     `xml:"maxMemory"`
 	Memory          *DomainMemory        `xml:"memory"`
-	CurrentMemory   *DomainMemory        `xml:"currentMemory"`
+	CurrentMemory   *DomainCurrentMemory `xml:"currentMemory"`
 	BlockIOTune     *DomainBlockIOTune   `xml:"blkiotune"`
 	MemoryTune      *DomainMemoryTune    `xml:"memtune"`
 	MemoryBacking   *DomainMemoryBacking `xml:"memoryBacking"`
