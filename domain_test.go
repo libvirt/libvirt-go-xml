@@ -652,6 +652,7 @@ var domainTestData = []struct {
 				Offset:     "variable",
 				Basis:      "utc",
 				Adjustment: 28794,
+				TimeZone:   "Europe/Paris",
 				Timer: []DomainTimer{
 					DomainTimer{
 						Name:       "rtc",
@@ -715,7 +716,7 @@ var domainTestData = []struct {
 			`    <bios useserial="yes" rebootTimeout="0"></bios>`,
 			`    <smbios mode="sysinfo"></smbios>`,
 			`  </os>`,
-			`  <clock offset="variable" basis="utc" adjustment="28794">`,
+			`  <clock offset="variable" basis="utc" adjustment="28794" timezone="Europe/Paris">`,
 			`    <timer name="rtc" track="boot" tickpolicy="catchup" frequency="120" mode="auto">`,
 			`      <catchup threshold="123" slew="120" limit="10000"></catchup>`,
 			`    </timer>`,

@@ -820,7 +820,8 @@ type DomainClock struct {
 	Offset     string        `xml:"offset,attr,omitempty"`
 	Basis      string        `xml:"basis,attr,omitempty"`
 	Adjustment int           `xml:"adjustment,attr,omitempty"`
-	Timer      []DomainTimer `xml:"timer,omitempty"`
+	TimeZone   string        `xml:"timezone,attr,omitempty"`
+	Timer      []DomainTimer `xml:"timer"`
 }
 
 type DomainTimer struct {
