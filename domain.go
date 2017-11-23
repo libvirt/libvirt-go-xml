@@ -1631,6 +1631,7 @@ func (a *DomainAddressUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			a.Port = attr.Value
 		}
 	}
+	d.Skip()
 	return nil
 }
 
@@ -1656,6 +1657,7 @@ func (a *DomainAddressPCI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			a.MultiFunction = attr.Value
 		}
 	}
+	d.Skip()
 	return nil
 }
 
@@ -1679,6 +1681,7 @@ func (a *DomainAddressDrive) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 			}
 		}
 	}
+	d.Skip()
 	return nil
 }
 
@@ -1694,6 +1697,7 @@ func (a *DomainAddressDIMM) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			}
 		}
 	}
+	d.Skip()
 	return nil
 }
 
@@ -1709,10 +1713,12 @@ func (a *DomainAddressISA) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			}
 		}
 	}
+	d.Skip()
 	return nil
 }
 
 func (a *DomainAddressVirtioMMIO) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	d.Skip()
 	return nil
 }
 
@@ -1732,6 +1738,7 @@ func (a *DomainAddressCCW) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			}
 		}
 	}
+	d.Skip()
 	return nil
 }
 
@@ -1751,6 +1758,7 @@ func (a *DomainAddressVirtioSerial) UnmarshalXML(d *xml.Decoder, start xml.Start
 			}
 		}
 	}
+	d.Skip()
 	return nil
 }
 
@@ -1762,12 +1770,12 @@ func (a *DomainAddressSpaprVIO) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 			}
 		}
 	}
+	d.Skip()
 	return nil
 }
 
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
-	d.Skip()
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "type" {
 			typ = attr.Value
@@ -1775,6 +1783,7 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 	}
 	if typ == "" {
+		d.Skip()
 		return nil
 	}
 
