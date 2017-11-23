@@ -65,6 +65,14 @@ var scsiQueues uint = 3
 var scsiCmdPerLUN uint = 8
 var scsiMaxSectors uint = 512
 
+var usbHostBus uint = 14
+var usbHostDevice uint = 6
+
+var pciHostDomain uint = 0
+var pciHostBus uint = 3
+var pciHostSlot uint = 14
+var pciHostFunction uint = 5
+
 var diskAddr = PCIAddress{0, 0, 3, 0}
 var ifaceAddr = PCIAddress{0, 0, 4, 0}
 var videoAddr = PCIAddress{0, 0, 5, 0}
@@ -92,6 +100,8 @@ var memorydevAddressBase uint64 = 4294967296
 
 var rebootTimeout uint = 0
 var cellID uint = 0
+
+var ipv6Prefix uint = 24
 
 var domainTestData = []struct {
 	Object   Document
@@ -2150,19 +2160,19 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainHostdev{
-			Mode:  "subsystem",
-			Type:  "scsi",
-			SGIO:  "unfiltered",
-			RawIO: "yes",
-			Source: &DomainHostdevSource{
-				Adapter: &DomainHostdevAdapter{
-					Name: "scsi_host0",
-				},
-				Address: &DomainAddress{
-					Drive: &DomainAddressDrive{
-						Bus:    &hostdevSCSI.Bus,
-						Target: &hostdevSCSI.Target,
-						Unit:   &hostdevSCSI.Unit,
+			SubsysSCSI: &DomainHostdevSubsysSCSI{
+				SGIO:  "unfiltered",
+				RawIO: "yes",
+				Source: &DomainHostdevSubsysSCSISource{
+					Host: &DomainHostdevSubsysSCSISourceHost{
+						Adapter: &DomainHostdevSubsysSCSIAdapter{
+							Name: "scsi_host0",
+						},
+						Address: &DomainAddressDrive{
+							Bus:    &hostdevSCSI.Bus,
+							Target: &hostdevSCSI.Target,
+							Unit:   &hostdevSCSI.Unit,
+						},
 					},
 				},
 			},
@@ -2180,9 +2190,212 @@ var domainTestData = []struct {
 			`<hostdev mode="subsystem" type="scsi" sgio="unfiltered" rawio="yes">`,
 			`  <source>`,
 			`    <adapter name="scsi_host0"></adapter>`,
-			`    <address type="drive" bus="0" target="3" unit="0"></address>`,
+			`    <address bus="0" target="3" unit="0"></address>`,
 			`  </source>`,
 			`  <address type="drive" controller="0" bus="0" target="3" unit="0"></address>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			SubsysSCSI: &DomainHostdevSubsysSCSI{
+				SGIO:  "unfiltered",
+				RawIO: "yes",
+				Source: &DomainHostdevSubsysSCSISource{
+					ISCSI: &DomainHostdevSubsysSCSISourceISCSI{
+						Name: "iqn.1992-01.com.example:storage/1",
+						Host: []DomainDiskSourceHost{
+							DomainDiskSourceHost{
+								Name: "example.org",
+								Port: "3260",
+							},
+						},
+						Auth: &DomainDiskAuth{
+							Username: "myname",
+							Secret: &DomainDiskSecret{
+								Type:  "iscsi",
+								Usage: "mycluster_myname",
+							},
+						},
+					},
+				},
+			},
+			Address: &DomainAddress{
+				Drive: &DomainAddressDrive{
+					Controller: &hostdevSCSI.Controller,
+					Bus:        &hostdevSCSI.Bus,
+					Target:     &hostdevSCSI.Target,
+					Unit:       &hostdevSCSI.Unit,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="subsystem" type="scsi" sgio="unfiltered" rawio="yes">`,
+			`  <source protocol="iscsi" name="iqn.1992-01.com.example:storage/1">`,
+			`    <host name="example.org" port="3260"></host>`,
+			`    <auth username="myname">`,
+			`      <secret type="iscsi" usage="mycluster_myname"></secret>`,
+			`    </auth>`,
+			`  </source>`,
+			`  <address type="drive" controller="0" bus="0" target="3" unit="0"></address>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			SubsysSCSIHost: &DomainHostdevSubsysSCSIHost{
+				Source: &DomainHostdevSubsysSCSIHostSource{
+					Protocol: "vhost",
+					WWPN:     "naa.5123456789abcde0",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="subsystem" type="scsi_host">`,
+			`  <source protocol="vhost" wwpn="naa.5123456789abcde0"></source>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			SubsysUSB: &DomainHostdevSubsysUSB{
+				Source: &DomainHostdevSubsysUSBSource{
+					Address: &DomainAddressUSB{
+						Bus:    &usbHostBus,
+						Device: &usbHostDevice,
+					},
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="subsystem" type="usb">`,
+			`  <source>`,
+			`    <address bus="14" device="6"></address>`,
+			`  </source>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			Managed: "yes",
+			SubsysPCI: &DomainHostdevSubsysPCI{
+				Source: &DomainHostdevSubsysPCISource{
+					Address: &DomainAddressPCI{
+						Domain:   &pciHostDomain,
+						Bus:      &pciHostBus,
+						Slot:     &pciHostSlot,
+						Function: &pciHostFunction,
+					},
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="subsystem" type="pci" managed="yes">`,
+			`  <source>`,
+			`    <address domain="0x0000" bus="0x03" slot="0x0e" function="0x5"></address>`,
+			`  </source>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			SubsysMDev: &DomainHostdevSubsysMDev{
+				Model: "vfio-pci",
+				Source: &DomainHostdevSubsysMDevSource{
+					Address: &DomainAddressMDev{
+						UUID: "53764d0e-85a0-42b4-af5c-2046b460b1dc",
+					},
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="subsystem" type="mdev" model="vfio-pci">`,
+			`  <source>`,
+			`    <address uuid="53764d0e-85a0-42b4-af5c-2046b460b1dc"></address>`,
+			`  </source>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			CapsStorage: &DomainHostdevCapsStorage{
+				Source: &DomainHostdevCapsStorageSource{
+					Block: "/dev/sda",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="capabilities" type="storage">`,
+			`  <source>`,
+			`    <block>/dev/sda</block>`,
+			`  </source>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			CapsMisc: &DomainHostdevCapsMisc{
+				Source: &DomainHostdevCapsMiscSource{
+					Char: "/dev/kvm",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="capabilities" type="misc">`,
+			`  <source>`,
+			`    <char>/dev/kvm</char>`,
+			`  </source>`,
+			`</hostdev>`,
+		},
+	},
+	{
+		Object: &DomainHostdev{
+			CapsNet: &DomainHostdevCapsNet{
+				Source: &DomainHostdevCapsNetSource{
+					Interface: "eth0",
+				},
+				IP: []DomainIP{
+					DomainIP{
+						Address: "192.168.122.2",
+						Family:  "ipv4",
+					},
+					DomainIP{
+						Address: "2003:db8:1:0:214:1234:fe0b:3596",
+						Family:  "ipv6",
+						Prefix:  &ipv6Prefix,
+					},
+				},
+				Route: []DomainRoute{
+					DomainRoute{
+						Family:  "ipv4",
+						Address: "0.0.0.0",
+						Gateway: "192.168.122.1",
+					},
+					DomainRoute{
+						Family:  "ipv6",
+						Address: "::",
+						Gateway: "2003:db8:1:0:214:1234:fe0b:3595",
+					},
+				},
+			},
+		},
+
+		Expected: []string{
+			`<hostdev mode="capabilities" type="net">`,
+			`  <source>`,
+			`    <interface>eth0</interface>`,
+			`  </source>`,
+			`  <ip address="192.168.122.2" family="ipv4"></ip>`,
+			`  <ip address="2003:db8:1:0:214:1234:fe0b:3596" family="ipv6" prefix="24"></ip>`,
+			`  <route family="ipv4" address="0.0.0.0" gateway="192.168.122.1"></route>`,
+			`  <route family="ipv6" address="::" gateway="2003:db8:1:0:214:1234:fe0b:3595"></route>`,
 			`</hostdev>`,
 		},
 	},

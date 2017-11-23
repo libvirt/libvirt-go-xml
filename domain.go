@@ -559,27 +559,127 @@ type DomainRNG struct {
 	Address *DomainAddress    `xml:"address"`
 }
 
-type DomainHostdevAdapter struct {
+type DomainHostdevSubsysUSB struct {
+	Source *DomainHostdevSubsysUSBSource `xml:"source"`
+}
+
+type DomainHostdevSubsysUSBSource struct {
+	Address *DomainAddressUSB `xml:"address"`
+}
+
+type DomainHostdevSubsysSCSI struct {
+	SGIO      string                         `xml:"sgio,attr,omitempty"`
+	RawIO     string                         `xml:"rawio,attr,omitempty"`
+	Source    *DomainHostdevSubsysSCSISource `xml:"source"`
+	ReadOnly  *DomainDiskReadOnly            `xml:"readonly"`
+	Shareable *DomainDiskShareable           `xml:"shareable"`
+}
+
+type DomainHostdevSubsysSCSISource struct {
+	Host  *DomainHostdevSubsysSCSISourceHost  `xml:"-"`
+	ISCSI *DomainHostdevSubsysSCSISourceISCSI `xml:"-"`
+}
+
+type DomainHostdevSubsysSCSIAdapter struct {
+	Name string `xml:"name,attr"`
+}
+
+type DomainHostdevSubsysSCSISourceHost struct {
+	Adapter *DomainHostdevSubsysSCSIAdapter `xml:"adapter"`
+	Address *DomainAddressDrive             `xml:"address"`
+}
+
+type DomainHostdevSubsysSCSISourceISCSI struct {
+	Name string                 `xml:"name,attr"`
+	Host []DomainDiskSourceHost `xml:"host"`
+	Auth *DomainDiskAuth        `xml:"auth"`
+}
+
+type DomainHostdevSubsysSCSIHost struct {
+	Source *DomainHostdevSubsysSCSIHostSource `xml:"source"`
+}
+
+type DomainHostdevSubsysSCSIHostSource struct {
+	Protocol string `xml:"protocol,attr,omitempty"`
+	WWPN     string `xml:"wwpn,attr,omitempty"`
+}
+
+type DomainHostdevSubsysPCISource struct {
+	Address *DomainAddressPCI `xml:"address"`
+}
+
+type DomainHostdevSubsysPCIDriver struct {
 	Name string `xml:"name,attr,omitempty"`
 }
 
-type DomainHostdevSource struct {
-	Protocol string                `xml:"protocol,attr,omitempty"`
-	Name     string                `xml:"name,attr,omitempty"`
-	WWPN     string                `xml:"wwpn,attr,omitempty"`
-	Adapter  *DomainHostdevAdapter `xml:"adapter"`
-	Address  *DomainAddress        `xml:"address"`
+type DomainHostdevSubsysPCI struct {
+	Driver *DomainHostdevSubsysPCIDriver `xml:"driver"`
+	Source *DomainHostdevSubsysPCISource `xml:"source"`
+}
+
+type DomainAddressMDev struct {
+	UUID string `xml:"uuid,attr"`
+}
+
+type DomainHostdevSubsysMDevSource struct {
+	Address *DomainAddressMDev `xml:"address"`
+}
+
+type DomainHostdevSubsysMDev struct {
+	Model  string                         `xml:"model,attr,omitempty"`
+	Source *DomainHostdevSubsysMDevSource `xml:"source"`
+}
+
+type DomainHostdevCapsStorage struct {
+	Source *DomainHostdevCapsStorageSource `xml:"source"`
+}
+
+type DomainHostdevCapsStorageSource struct {
+	Block string `xml:"block"`
+}
+
+type DomainHostdevCapsMisc struct {
+	Source *DomainHostdevCapsMiscSource `xml:"source"`
+}
+
+type DomainHostdevCapsMiscSource struct {
+	Char string `xml:"char"`
+}
+
+type DomainIP struct {
+	Address string `xml:"address,attr,omitempty"`
+	Family  string `xml:"family,attr,omitempty"`
+	Prefix  *uint  `xml:"prefix,attr"`
+}
+
+type DomainRoute struct {
+	Family  string `xml:"family,attr,omitempty"`
+	Address string `xml:"address,attr,omitempty"`
+	Gateway string `xml:"gateway,attr,omitempty"`
+}
+
+type DomainHostdevCapsNet struct {
+	Source *DomainHostdevCapsNetSource `xml:"source"`
+	IP     []DomainIP                  `xml:"ip"`
+	Route  []DomainRoute               `xml:"route"`
+}
+
+type DomainHostdevCapsNetSource struct {
+	Interface string `xml:"interface"`
 }
 
 type DomainHostdev struct {
-	XMLName xml.Name             `xml:"hostdev"`
-	Mode    string               `xml:"mode,attr"`
-	Type    string               `xml:"type,attr"`
-	SGIO    string               `xml:"sgio,attr,omitempty"`
-	RawIO   string               `xml:"rawio,attr,omitempty"`
-	Managed string               `xml:"managed,attr,omitempty"`
-	Source  *DomainHostdevSource `xml:"source"`
-	Address *DomainAddress       `xml:"address"`
+	Managed        string                       `xml:"managed,attr,omitempty"`
+	SubsysUSB      *DomainHostdevSubsysUSB      `xml:"-"`
+	SubsysSCSI     *DomainHostdevSubsysSCSI     `xml:"-"`
+	SubsysSCSIHost *DomainHostdevSubsysSCSIHost `xml:"-"`
+	SubsysPCI      *DomainHostdevSubsysPCI      `xml:"-"`
+	SubsysMDev     *DomainHostdevSubsysMDev     `xml:"-"`
+	CapsStorage    *DomainHostdevCapsStorage    `xml:"-"`
+	CapsMisc       *DomainHostdevCapsMisc       `xml:"-"`
+	CapsNet        *DomainHostdevCapsNet        `xml:"-"`
+	Boot           *DomainDeviceBoot            `xml:"boot"`
+	Address        *DomainAddress               `xml:"address"`
 }
 
 type DomainMemorydevTargetNode struct {
@@ -1410,6 +1510,271 @@ func (d *DomainRNG) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainHostdevSubsysSCSISource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.Host != nil {
+		return e.EncodeElement(a.Host, start)
+	} else if a.ISCSI != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "protocol"}, "iscsi",
+		})
+		return e.EncodeElement(a.ISCSI, start)
+	}
+	return nil
+}
+
+func (a *DomainHostdevSubsysSCSISource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	proto, ok := getAttr(start.Attr, "protocol")
+	if !ok {
+		a.Host = &DomainHostdevSubsysSCSISourceHost{}
+		err := d.DecodeElement(a.Host, &start)
+		if err != nil {
+			return err
+		}
+	}
+	if proto == "iscsi" {
+		a.ISCSI = &DomainHostdevSubsysSCSISourceISCSI{}
+		err := d.DecodeElement(a.ISCSI, &start)
+		if err != nil {
+			return err
+		}
+	}
+	d.Skip()
+	return nil
+}
+
+type domainHostdev DomainHostdev
+
+type domainHostdevSubsysSCSI struct {
+	DomainHostdevSubsysSCSI
+	domainHostdev
+}
+
+type domainHostdevSubsysSCSIHost struct {
+	DomainHostdevSubsysSCSIHost
+	domainHostdev
+}
+
+type domainHostdevSubsysUSB struct {
+	DomainHostdevSubsysUSB
+	domainHostdev
+}
+
+type domainHostdevSubsysPCI struct {
+	DomainHostdevSubsysPCI
+	domainHostdev
+}
+
+type domainHostdevSubsysMDev struct {
+	DomainHostdevSubsysMDev
+	domainHostdev
+}
+
+type domainHostdevCapsStorage struct {
+	DomainHostdevCapsStorage
+	domainHostdev
+}
+
+type domainHostdevCapsMisc struct {
+	DomainHostdevCapsMisc
+	domainHostdev
+}
+
+type domainHostdevCapsNet struct {
+	DomainHostdevCapsNet
+	domainHostdev
+}
+
+func (a *DomainHostdev) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "hostdev"
+	if a.SubsysSCSI != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "subsystem",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "scsi",
+		})
+		scsi := domainHostdevSubsysSCSI{}
+		scsi.domainHostdev = domainHostdev(*a)
+		scsi.DomainHostdevSubsysSCSI = *a.SubsysSCSI
+		return e.EncodeElement(scsi, start)
+	} else if a.SubsysSCSIHost != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "subsystem",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "scsi_host",
+		})
+		scsi_host := domainHostdevSubsysSCSIHost{}
+		scsi_host.domainHostdev = domainHostdev(*a)
+		scsi_host.DomainHostdevSubsysSCSIHost = *a.SubsysSCSIHost
+		return e.EncodeElement(scsi_host, start)
+	} else if a.SubsysUSB != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "subsystem",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "usb",
+		})
+		usb := domainHostdevSubsysUSB{}
+		usb.domainHostdev = domainHostdev(*a)
+		usb.DomainHostdevSubsysUSB = *a.SubsysUSB
+		return e.EncodeElement(usb, start)
+	} else if a.SubsysPCI != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "subsystem",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "pci",
+		})
+		pci := domainHostdevSubsysPCI{}
+		pci.domainHostdev = domainHostdev(*a)
+		pci.DomainHostdevSubsysPCI = *a.SubsysPCI
+		return e.EncodeElement(pci, start)
+	} else if a.SubsysMDev != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "subsystem",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "mdev",
+		})
+		mdev := domainHostdevSubsysMDev{}
+		mdev.domainHostdev = domainHostdev(*a)
+		mdev.DomainHostdevSubsysMDev = *a.SubsysMDev
+		return e.EncodeElement(mdev, start)
+	} else if a.CapsStorage != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "capabilities",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "storage",
+		})
+		storage := domainHostdevCapsStorage{}
+		storage.domainHostdev = domainHostdev(*a)
+		storage.DomainHostdevCapsStorage = *a.CapsStorage
+		return e.EncodeElement(storage, start)
+	} else if a.CapsMisc != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "capabilities",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "misc",
+		})
+		misc := domainHostdevCapsMisc{}
+		misc.domainHostdev = domainHostdev(*a)
+		misc.DomainHostdevCapsMisc = *a.CapsMisc
+		return e.EncodeElement(misc, start)
+	} else if a.CapsNet != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "capabilities",
+		})
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "net",
+		})
+		net := domainHostdevCapsNet{}
+		net.domainHostdev = domainHostdev(*a)
+		net.DomainHostdevCapsNet = *a.CapsNet
+		return e.EncodeElement(net, start)
+	} else {
+		gen := domainHostdev(*a)
+		return e.EncodeElement(gen, start)
+	}
+}
+
+func (a *DomainHostdev) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	mode, ok := getAttr(start.Attr, "mode")
+	if !ok {
+		return fmt.Errorf("Missing 'mode' attribute on domain hostdev")
+	}
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing 'type' attribute on domain controller")
+	}
+	if mode == "subsystem" {
+		if typ == "scsi" {
+			var scsi domainHostdevSubsysSCSI
+			err := d.DecodeElement(&scsi, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(scsi.domainHostdev)
+			a.SubsysSCSI = &scsi.DomainHostdevSubsysSCSI
+			return nil
+		} else if typ == "scsi_host" {
+			var scsi_host domainHostdevSubsysSCSIHost
+			err := d.DecodeElement(&scsi_host, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(scsi_host.domainHostdev)
+			a.SubsysSCSIHost = &scsi_host.DomainHostdevSubsysSCSIHost
+			return nil
+		} else if typ == "usb" {
+			var usb domainHostdevSubsysUSB
+			err := d.DecodeElement(&usb, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(usb.domainHostdev)
+			a.SubsysUSB = &usb.DomainHostdevSubsysUSB
+			return nil
+		} else if typ == "pci" {
+			var pci domainHostdevSubsysPCI
+			err := d.DecodeElement(&pci, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(pci.domainHostdev)
+			a.SubsysPCI = &pci.DomainHostdevSubsysPCI
+			return nil
+		} else if typ == "mdev" {
+			var mdev domainHostdevSubsysMDev
+			err := d.DecodeElement(&mdev, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(mdev.domainHostdev)
+			a.SubsysMDev = &mdev.DomainHostdevSubsysMDev
+			return nil
+		}
+	} else if mode == "capabilities" {
+		if typ == "storage" {
+			var storage domainHostdevCapsStorage
+			err := d.DecodeElement(&storage, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(storage.domainHostdev)
+			a.CapsStorage = &storage.DomainHostdevCapsStorage
+			return nil
+		} else if typ == "misc" {
+			var misc domainHostdevCapsMisc
+			err := d.DecodeElement(&misc, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(misc.domainHostdev)
+			a.CapsMisc = &misc.DomainHostdevCapsMisc
+			return nil
+		} else if typ == "net" {
+			var net domainHostdevCapsNet
+			err := d.DecodeElement(&net, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainHostdev(net.domainHostdev)
+			a.CapsNet = &net.DomainHostdevCapsNet
+			return nil
+		}
+	}
+	var gen domainHostdev
+	err := d.DecodeElement(&gen, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainHostdev(gen)
+	return nil
 }
 
 func (d *DomainHostdev) Unmarshal(doc string) error {
