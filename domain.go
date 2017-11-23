@@ -354,8 +354,9 @@ type DomainAddressPCI struct {
 }
 
 type DomainAddressUSB struct {
-	Bus  *uint  `xml:"bus,attr"`
-	Port string `xml:"port,attr,omitempty"`
+	Bus    *uint  `xml:"bus,attr"`
+	Port   string `xml:"port,attr,omitempty"`
+	Device *uint  `xml:"device,attr"`
 }
 
 type DomainAddressDrive struct {
@@ -1464,9 +1465,6 @@ func marshallUint64Attr(start *xml.StartElement, name string, val *uint64, forma
 }
 
 func (a *DomainAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "pci",
-	})
 	marshallUintAttr(&start, "domain", a.Domain, "0x%04x")
 	marshallUintAttr(&start, "bus", a.Bus, "0x%02x")
 	marshallUintAttr(&start, "slot", a.Slot, "0x%02x")
@@ -1482,22 +1480,19 @@ func (a *DomainAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (a *DomainAddressUSB) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "usb",
-	})
 	marshallUintAttr(&start, "bus", a.Bus, "%d")
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "port"}, a.Port,
-	})
+	if a.Port != "" {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "port"}, a.Port,
+		})
+	}
+	marshallUintAttr(&start, "device", a.Device, "%d")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressDrive) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "drive",
-	})
 	marshallUintAttr(&start, "controller", a.Controller, "%d")
 	marshallUintAttr(&start, "bus", a.Bus, "%d")
 	marshallUintAttr(&start, "target", a.Target, "%d")
@@ -1508,9 +1503,6 @@ func (a *DomainAddressDrive) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (a *DomainAddressDIMM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "dimm",
-	})
 	marshallUintAttr(&start, "slot", a.Slot, "%d")
 	marshallUint64Attr(&start, "base", a.Base, "0x%x")
 	e.EncodeToken(start)
@@ -1519,9 +1511,6 @@ func (a *DomainAddressDIMM) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (a *DomainAddressISA) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "isa",
-	})
 	marshallUintAttr(&start, "iobase", a.IOBase, "0x%x")
 	marshallUintAttr(&start, "irq", a.IRQ, "0x%x")
 	e.EncodeToken(start)
@@ -1530,18 +1519,12 @@ func (a *DomainAddressISA) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (a *DomainAddressVirtioMMIO) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "virtio-mmio",
-	})
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressCCW) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "ccw",
-	})
 	marshallUintAttr(&start, "cssid", a.Cssid, "0x%x")
 	marshallUintAttr(&start, "ssid", a.Ssid, "0x%x")
 	marshallUintAttr(&start, "devno", a.DevNo, "0x%04x")
@@ -1551,9 +1534,6 @@ func (a *DomainAddressCCW) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (a *DomainAddressVirtioSerial) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "virtio-serial",
-	})
 	marshallUintAttr(&start, "controller", a.Controller, "%d")
 	marshallUintAttr(&start, "bus", a.Bus, "%d")
 	marshallUintAttr(&start, "port", a.Port, "%d")
@@ -1563,9 +1543,6 @@ func (a *DomainAddressVirtioSerial) MarshalXML(e *xml.Encoder, start xml.StartEl
 }
 
 func (a *DomainAddressSpaprVIO) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = append(start.Attr, xml.Attr{
-		xml.Name{Local: "type"}, "spapr-vio",
-	})
 	marshallUint64Attr(&start, "reg", a.Reg, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
@@ -1574,22 +1551,49 @@ func (a *DomainAddressSpaprVIO) MarshalXML(e *xml.Encoder, start xml.StartElemen
 
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "usb",
+		})
 		return a.USB.MarshalXML(e, start)
 	} else if a.PCI != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "pci",
+		})
 		return a.PCI.MarshalXML(e, start)
 	} else if a.Drive != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "drive",
+		})
 		return a.Drive.MarshalXML(e, start)
 	} else if a.DIMM != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "dimm",
+		})
 		return a.DIMM.MarshalXML(e, start)
 	} else if a.ISA != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "isa",
+		})
 		return a.ISA.MarshalXML(e, start)
 	} else if a.VirtioMMIO != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "virtio-mmio",
+		})
 		return a.VirtioMMIO.MarshalXML(e, start)
 	} else if a.CCW != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "ccw",
+		})
 		return a.CCW.MarshalXML(e, start)
 	} else if a.VirtioSerial != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "virtio-serial",
+		})
 		return a.VirtioSerial.MarshalXML(e, start)
 	} else if a.SpaprVIO != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "spapr-vio",
+		})
 		return a.SpaprVIO.MarshalXML(e, start)
 	} else {
 		return nil
@@ -1629,6 +1633,10 @@ func (a *DomainAddressUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			}
 		} else if attr.Name.Local == "port" {
 			a.Port = attr.Value
+		} else if attr.Name.Local == "device" {
+			if err := unmarshallUintAttr(attr.Value, &a.Device, 10); err != nil {
+				return err
+			}
 		}
 	}
 	d.Skip()
