@@ -103,6 +103,9 @@ var cellID uint = 0
 
 var ipv6Prefix uint = 24
 
+var iothreadPriority int = -3
+var vcpuPriority int = -5
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -1720,9 +1723,52 @@ var domainTestData = []struct {
 				},
 			},
 			CPUTune: &DomainCPUTune{
-				Shares: &DomainCPUTuneShares{Value: 1024},
-				Period: &DomainCPUTunePeriod{Value: 500000},
-				Quota:  &DomainCPUTuneQuota{Value: -1},
+				Shares:         &DomainCPUTuneShares{Value: 1024},
+				Period:         &DomainCPUTunePeriod{Value: 500000},
+				Quota:          &DomainCPUTuneQuota{Value: -1},
+				GlobalPeriod:   &DomainCPUTunePeriod{Value: 500000},
+				GlobalQuota:    &DomainCPUTuneQuota{Value: 500},
+				EmulatorPeriod: &DomainCPUTunePeriod{Value: 900000},
+				EmulatorQuota:  &DomainCPUTuneQuota{Value: 100},
+				IOThreadPeriod: &DomainCPUTunePeriod{Value: 100000},
+				IOThreadQuota:  &DomainCPUTuneQuota{Value: 2000},
+				VCPUPin: []DomainCPUTuneVCPUPin{
+					DomainCPUTuneVCPUPin{
+						VCPU:   0,
+						CPUSet: "0-1",
+					},
+					DomainCPUTuneVCPUPin{
+						VCPU:   1,
+						CPUSet: "2-3",
+					},
+				},
+				EmulatorPin: &DomainCPUTuneEmulatorPin{
+					CPUSet: "0-3",
+				},
+				IOThreadPin: []DomainCPUTuneIOThreadPin{
+					DomainCPUTuneIOThreadPin{
+						IOThread: 0,
+						CPUSet:   "0-1",
+					},
+					DomainCPUTuneIOThreadPin{
+						IOThread: 1,
+						CPUSet:   "2-3",
+					},
+				},
+				VCPUSched: []DomainCPUTuneVCPUSched{
+					DomainCPUTuneVCPUSched{
+						VCPUs:     "0-1",
+						Scheduler: "fifo",
+						Priority:  &vcpuPriority,
+					},
+				},
+				IOThreadSched: []DomainCPUTuneIOThreadSched{
+					DomainCPUTuneIOThreadSched{
+						IOThreads: "0-1",
+						Scheduler: "fifo",
+						Priority:  &iothreadPriority,
+					},
+				},
 			},
 		},
 		Expected: []string{
@@ -1739,6 +1785,19 @@ var domainTestData = []struct {
 			`    <shares>1024</shares>`,
 			`    <period>500000</period>`,
 			`    <quota>-1</quota>`,
+			`    <global_period>500000</global_period>`,
+			`    <global_quota>500</global_quota>`,
+			`    <emulator_period>900000</emulator_period>`,
+			`    <emulator_quota>100</emulator_quota>`,
+			`    <iothread_period>100000</iothread_period>`,
+			`    <iothread_quota>2000</iothread_quota>`,
+			`    <vcpupin vcpu="0" cpuset="0-1"></vcpupin>`,
+			`    <vcpupin vcpu="1" cpuset="2-3"></vcpupin>`,
+			`    <emulatorpin cpuset="0-3"></emulatorpin>`,
+			`    <iothreadpin iothread="0" cpuset="0-1"></iothreadpin>`,
+			`    <iothreadpin iothread="1" cpuset="2-3"></iothreadpin>`,
+			`    <vcpusched vcpus="0-1" scheduler="fifo" priority="-5"></vcpusched>`,
+			`    <iothreadsched iothreads="0-1" scheduler="fifo" priority="-3"></iothreadsched>`,
 			`  </cputune>`,
 			`</domain>`,
 		},
