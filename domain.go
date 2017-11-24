@@ -281,10 +281,12 @@ type DomainDisk struct {
 }
 
 type DomainFilesystemDriver struct {
-	Type     string `xml:"type,attr"`
+	Type     string `xml:"type,attr,omitempty"`
 	Format   string `xml:"format,attr,omitempty"`
 	Name     string `xml:"name,attr,omitempty"`
 	WRPolicy string `xml:"wrpolicy,attr,omitempty"`
+	IOMMU    string `xml:"iommu,attr,omitempty"`
+	ATS      string `xml:"ats,attr,omitempty"`
 }
 
 type DomainFilesystemSource struct {
