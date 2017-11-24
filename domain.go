@@ -112,14 +112,52 @@ type DomainDiskSourceHost struct {
 }
 
 type DomainDiskSource struct {
-	File          string                 `xml:"file,attr,omitempty"`
-	Device        string                 `xml:"dev,attr,omitempty"`
-	Protocol      string                 `xml:"protocol,attr,omitempty"`
-	Name          string                 `xml:"name,attr,omitempty"`
-	Pool          string                 `xml:"pool,attr,omitempty"`
-	Volume        string                 `xml:"volume,attr,omitempty"`
-	Hosts         []DomainDiskSourceHost `xml:"host"`
-	StartupPolicy string                 `xml:"startupPolicy,attr,omitempty"`
+	File          *DomainDiskSourceFile    `xml:"-"`
+	Block         *DomainDiskSourceBlock   `xml:"-"`
+	Dir           *DomainDiskSourceDir     `xml:"-"`
+	Network       *DomainDiskSourceNetwork `xml:"-"`
+	Volume        *DomainDiskSourceVolume  `xml:"-"`
+	StartupPolicy string                   `xml:"startupPolicy,attr,omitempty"`
+	Encryption    *DomainDiskEncryption    `xml:"encryption"`
+}
+
+type DomainDiskSourceFile struct {
+	File     string                `xml:"file,attr,omitempty"`
+	SecLabel *DomainDeviceSecLabel `xml:"seclabel"`
+}
+
+type DomainDiskSourceBlock struct {
+	Dev      string                `xml:"dev,attr,omitempty"`
+	SecLabel *DomainDeviceSecLabel `xml:"seclabel"`
+}
+
+type DomainDiskSourceDir struct {
+	Dir string `xml:"dir,attr,omitempty"`
+}
+
+type DomainDiskSourceNetwork struct {
+	Protocol string                           `xml:"protocol,attr,omitempty"`
+	Name     string                           `xml:"name,attr,omitempty"`
+	TLS      string                           `xml:"tls,attr,omitempty"`
+	Hosts    []DomainDiskSourceHost           `xml:"host"`
+	Snapshot *DomainDiskSourceNetworkSnapshot `xml:"snapshot"`
+	Config   *DomainDiskSourceNetworkConfig   `xml:"config"`
+	Auth     *DomainDiskAuth                  `xml:"auth"`
+}
+
+type DomainDiskSourceNetworkSnapshot struct {
+	Name string `xml:"name,attr"`
+}
+
+type DomainDiskSourceNetworkConfig struct {
+	File string `xml:"file,attr"`
+}
+
+type DomainDiskSourceVolume struct {
+	Pool     string                `xml:"pool,attr,omitempty"`
+	Volume   string                `xml:"volume,attr,omitempty"`
+	Mode     string                `xml:"mode,attr,omitempty"`
+	SecLabel *DomainDeviceSecLabel `xml:"seclabel"`
 }
 
 type DomainDiskDriver struct {
@@ -134,6 +172,11 @@ type DomainDiskDriver struct {
 type DomainDiskTarget struct {
 	Dev string `xml:"dev,attr,omitempty"`
 	Bus string `xml:"bus,attr,omitempty"`
+}
+
+type DomainDiskEncryption struct {
+	Format string            `xml:"format,attr,omitempty"`
+	Secret *DomainDiskSecret `xml:"secret"`
 }
 
 type DomainDiskReadOnly struct {
@@ -166,21 +209,21 @@ type DomainDiskIOTune struct {
 }
 
 type DomainDisk struct {
-	XMLName   xml.Name             `xml:"disk"`
-	Type      string               `xml:"type,attr"`
-	Device    string               `xml:"device,attr"`
-	Snapshot  string               `xml:"snapshot,attr,omitempty"`
-	Driver    *DomainDiskDriver    `xml:"driver"`
-	Auth      *DomainDiskAuth      `xml:"auth"`
-	Source    *DomainDiskSource    `xml:"source"`
-	Target    *DomainDiskTarget    `xml:"target"`
-	IOTune    *DomainDiskIOTune    `xml:"iotune"`
-	Serial    string               `xml:"serial,omitempty"`
-	ReadOnly  *DomainDiskReadOnly  `xml:"readonly"`
-	Shareable *DomainDiskShareable `xml:"shareable"`
-	Address   *DomainAddress       `xml:"address"`
-	Boot      *DomainDeviceBoot    `xml:"boot"`
-	WWN       string               `xml:"wwn,omitempty"`
+	XMLName    xml.Name              `xml:"disk"`
+	Device     string                `xml:"device,attr"`
+	Snapshot   string                `xml:"snapshot,attr,omitempty"`
+	Driver     *DomainDiskDriver     `xml:"driver"`
+	Auth       *DomainDiskAuth       `xml:"auth"`
+	Source     *DomainDiskSource     `xml:"source"`
+	Target     *DomainDiskTarget     `xml:"target"`
+	IOTune     *DomainDiskIOTune     `xml:"iotune"`
+	Serial     string                `xml:"serial,omitempty"`
+	ReadOnly   *DomainDiskReadOnly   `xml:"readonly"`
+	Shareable  *DomainDiskShareable  `xml:"shareable"`
+	Encryption *DomainDiskEncryption `xml:"encryption"`
+	Address    *DomainAddress        `xml:"address"`
+	Boot       *DomainDeviceBoot     `xml:"boot"`
+	WWN        string                `xml:"wwn,omitempty"`
 }
 
 type DomainFilesystemDriver struct {
@@ -1236,6 +1279,12 @@ type DomainSecLabel struct {
 	BaseLabel  string `xml:"baselabel,omitempty"`
 }
 
+type DomainDeviceSecLabel struct {
+	Model   string `xml:"model,attr,omitempty"`
+	Relabel string `xml:"relabel,attr,omitempty"`
+	Label   string `xml:"label,omitempty"`
+}
+
 type DomainNUMATune struct {
 	Memory   *DomainNUMATuneMemory   `xml:"memory"`
 	MemNodes []DomainNUMATuneMemNode `xml:"memnode"`
@@ -1529,6 +1578,175 @@ func (d *DomainController) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+type domainDiskSource DomainDiskSource
+
+type domainDiskSourceFile struct {
+	DomainDiskSourceFile
+	domainDiskSource
+}
+
+type domainDiskSourceBlock struct {
+	DomainDiskSourceBlock
+	domainDiskSource
+}
+
+type domainDiskSourceDir struct {
+	DomainDiskSourceDir
+	domainDiskSource
+}
+
+type domainDiskSourceNetwork struct {
+	DomainDiskSourceNetwork
+	domainDiskSource
+}
+
+type domainDiskSourceVolume struct {
+	DomainDiskSourceVolume
+	domainDiskSource
+}
+
+func (a *DomainDiskSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.File != nil {
+		file := domainDiskSourceFile{
+			*a.File, domainDiskSource(*a),
+		}
+		return e.EncodeElement(&file, start)
+	} else if a.Block != nil {
+		block := domainDiskSourceBlock{
+			*a.Block, domainDiskSource(*a),
+		}
+		return e.EncodeElement(&block, start)
+	} else if a.Dir != nil {
+		dir := domainDiskSourceDir{
+			*a.Dir, domainDiskSource(*a),
+		}
+		return e.EncodeElement(&dir, start)
+	} else if a.Network != nil {
+		network := domainDiskSourceNetwork{
+			*a.Network, domainDiskSource(*a),
+		}
+		return e.EncodeElement(&network, start)
+	} else if a.Volume != nil {
+		volume := domainDiskSourceVolume{
+			*a.Volume, domainDiskSource(*a),
+		}
+		return e.EncodeElement(&volume, start)
+	}
+	return nil
+}
+
+func (a *DomainDiskSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if a.File != nil {
+		file := domainDiskSourceFile{
+			*a.File, domainDiskSource(*a),
+		}
+		err := d.DecodeElement(&file, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainDiskSource(file.domainDiskSource)
+		a.File = &file.DomainDiskSourceFile
+	} else if a.Block != nil {
+		block := domainDiskSourceBlock{
+			*a.Block, domainDiskSource(*a),
+		}
+		err := d.DecodeElement(&block, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainDiskSource(block.domainDiskSource)
+		a.Block = &block.DomainDiskSourceBlock
+	} else if a.Dir != nil {
+		dir := domainDiskSourceDir{
+			*a.Dir, domainDiskSource(*a),
+		}
+		err := d.DecodeElement(&dir, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainDiskSource(dir.domainDiskSource)
+		a.Dir = &dir.DomainDiskSourceDir
+	} else if a.Network != nil {
+		network := domainDiskSourceNetwork{
+			*a.Network, domainDiskSource(*a),
+		}
+		err := d.DecodeElement(&network, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainDiskSource(network.domainDiskSource)
+		a.Network = &network.DomainDiskSourceNetwork
+	} else if a.Volume != nil {
+		volume := domainDiskSourceVolume{
+			*a.Volume, domainDiskSource(*a),
+		}
+		err := d.DecodeElement(&volume, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainDiskSource(volume.domainDiskSource)
+		a.Volume = &volume.DomainDiskSourceVolume
+	}
+	return nil
+}
+
+type domainDisk DomainDisk
+
+func (a *DomainDisk) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "disk"
+	if a.Source != nil {
+		if a.Source.File != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "file",
+			})
+		} else if a.Source.Block != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "block",
+			})
+		} else if a.Source.Dir != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "dir",
+			})
+		} else if a.Source.Network != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "network",
+			})
+		} else if a.Source.Volume != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "volume",
+			})
+		}
+	}
+	disk := domainDisk(*a)
+	return e.EncodeElement(disk, start)
+}
+
+func (a *DomainDisk) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "file"
+	}
+	a.Source = &DomainDiskSource{}
+	if typ == "file" {
+		a.Source.File = &DomainDiskSourceFile{}
+	} else if typ == "block" {
+		a.Source.Block = &DomainDiskSourceBlock{}
+	} else if typ == "network" {
+		a.Source.Network = &DomainDiskSourceNetwork{}
+	} else if typ == "dir" {
+		a.Source.Dir = &DomainDiskSourceDir{}
+	} else if typ == "volume" {
+		a.Source.Volume = &DomainDiskSourceVolume{}
+	}
+	disk := domainDisk(*a)
+	err := d.DecodeElement(&disk, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainDisk(disk)
+	return nil
 }
 
 func (d *DomainDisk) Unmarshal(doc string) error {

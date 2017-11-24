@@ -131,14 +131,15 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Disks: []DomainDisk{
 					DomainDisk{
-						Type:   "file",
 						Device: "cdrom",
 						Driver: &DomainDiskDriver{
 							Name: "qemu",
 							Type: "qcow2",
 						},
 						Source: &DomainDiskSource{
-							File: "/var/lib/libvirt/images/demo.qcow2",
+							File: &DomainDiskSourceFile{
+								File: "/var/lib/libvirt/images/demo.qcow2",
+							},
 						},
 						Target: &DomainDiskTarget{
 							Dev: "vda",
@@ -150,14 +151,15 @@ var domainTestData = []struct {
 						},
 					},
 					DomainDisk{
-						Type:   "block",
 						Device: "disk",
 						Driver: &DomainDiskDriver{
 							Name: "qemu",
 							Type: "raw",
 						},
 						Source: &DomainDiskSource{
-							Device: "/dev/sda1",
+							Block: &DomainDiskSourceBlock{
+								Dev: "/dev/sda1",
+							},
 						},
 						Target: &DomainDiskTarget{
 							Dev: "vdb",
@@ -173,7 +175,6 @@ var domainTestData = []struct {
 						},
 					},
 					DomainDisk{
-						Type:   "network",
 						Device: "disk",
 						Auth: &DomainDiskAuth{
 							Username: "fred",
@@ -183,18 +184,20 @@ var domainTestData = []struct {
 							},
 						},
 						Source: &DomainDiskSource{
-							Protocol: "rbd",
-							Name:     "somepool/somevol",
-							Hosts: []DomainDiskSourceHost{
-								DomainDiskSourceHost{
-									Transport: "tcp",
-									Name:      "rbd1.example.com",
-									Port:      "3000",
-								},
-								DomainDiskSourceHost{
-									Transport: "tcp",
-									Name:      "rbd2.example.com",
-									Port:      "3000",
+							Network: &DomainDiskSourceNetwork{
+								Protocol: "rbd",
+								Name:     "somepool/somevol",
+								Hosts: []DomainDiskSourceHost{
+									DomainDiskSourceHost{
+										Transport: "tcp",
+										Name:      "rbd1.example.com",
+										Port:      "3000",
+									},
+									DomainDiskSourceHost{
+										Transport: "tcp",
+										Name:      "rbd2.example.com",
+										Port:      "3000",
+									},
 								},
 							},
 						},
@@ -204,14 +207,15 @@ var domainTestData = []struct {
 						},
 					},
 					DomainDisk{
-						Type:   "network",
 						Device: "disk",
 						Source: &DomainDiskSource{
-							Protocol: "nbd",
-							Hosts: []DomainDiskSourceHost{
-								DomainDiskSourceHost{
-									Transport: "unix",
-									Socket:    "/var/run/nbd.sock",
+							Network: &DomainDiskSourceNetwork{
+								Protocol: "nbd",
+								Hosts: []DomainDiskSourceHost{
+									DomainDiskSourceHost{
+										Transport: "unix",
+										Socket:    "/var/run/nbd.sock",
+									},
 								},
 							},
 						},
@@ -222,7 +226,6 @@ var domainTestData = []struct {
 						Shareable: &DomainDiskShareable{},
 					},
 					DomainDisk{
-						Type:   "volume",
 						Device: "cdrom",
 						Driver: &DomainDiskDriver{
 							Cache:       "none",
@@ -230,8 +233,10 @@ var domainTestData = []struct {
 							ErrorPolicy: "stop",
 						},
 						Source: &DomainDiskSource{
-							Pool:   "default",
-							Volume: "myvolume",
+							Volume: &DomainDiskSourceVolume{
+								Pool:   "default",
+								Volume: "myvolume",
+							},
 						},
 						Target: &DomainDiskTarget{
 							Dev: "vde",
@@ -1938,14 +1943,15 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainDisk{
-			Type:   "file",
 			Device: "cdrom",
 			Driver: &DomainDiskDriver{
 				Name: "qemu",
 				Type: "qcow2",
 			},
 			Source: &DomainDiskSource{
-				File: "/var/lib/libvirt/images/demo.qcow2",
+				File: &DomainDiskSourceFile{
+					File: "/var/lib/libvirt/images/demo.qcow2",
+				},
 			},
 			Target: &DomainDiskTarget{
 				Dev: "vda",

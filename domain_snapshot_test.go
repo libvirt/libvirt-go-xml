@@ -102,14 +102,15 @@ var domainSnapshotTestData = []struct {
 				Devices: &DomainDeviceList{
 					Disks: []DomainDisk{
 						DomainDisk{
-							Type:   "file",
 							Device: "disk",
 							Driver: &DomainDiskDriver{
 								Name: "qemu",
 								Type: "raw",
 							},
 							Source: &DomainDiskSource{
-								File: "/path/to/old",
+								File: &DomainDiskSourceFile{
+									File: "/path/to/old",
+								},
 							},
 							Target: &DomainDiskTarget{
 								Dev: "vda",
@@ -117,7 +118,6 @@ var domainSnapshotTestData = []struct {
 							},
 						},
 						DomainDisk{
-							Type:     "file",
 							Device:   "disk",
 							Snapshot: "external",
 							Driver: &DomainDiskDriver{
@@ -125,7 +125,9 @@ var domainSnapshotTestData = []struct {
 								Type: "raw",
 							},
 							Source: &DomainDiskSource{
-								File: "/path/to/old2",
+								File: &DomainDiskSourceFile{
+									File: "/path/to/old2",
+								},
 							},
 							Target: &DomainDiskTarget{
 								Dev: "vdb",
