@@ -967,11 +967,33 @@ type DomainBootMenu struct {
 	Timeout string `xml:"timeout,attr,omitempty"`
 }
 
+type DomainSysInfoBIOS struct {
+	Entry []DomainSysInfoEntry `xml:"entry"`
+}
+
+type DomainSysInfoSystem struct {
+	Entry []DomainSysInfoEntry `xml:"entry"`
+}
+
+type DomainSysInfoBaseBoard struct {
+	Entry []DomainSysInfoEntry `xml:"entry"`
+}
+
+type DomainSysInfoProcessor struct {
+	Entry []DomainSysInfoEntry `xml:"entry"`
+}
+
+type DomainSysInfoMemory struct {
+	Entry []DomainSysInfoEntry `xml:"entry"`
+}
+
 type DomainSysInfo struct {
-	Type      string               `xml:"type,attr"`
-	System    []DomainSysInfoEntry `xml:"system>entry"`
-	BIOS      []DomainSysInfoEntry `xml:"bios>entry"`
-	BaseBoard []DomainSysInfoEntry `xml:"baseBoard>entry"`
+	Type      string                   `xml:"type,attr"`
+	BIOS      *DomainSysInfoBIOS       `xml:"bios"`
+	System    *DomainSysInfoSystem     `xml:"system"`
+	BaseBoard []DomainSysInfoBaseBoard `xml:"baseBoard"`
+	Processor *DomainSysInfoProcessor  `xml:"processor"`
+	Memory    *DomainSysInfoMemory     `xml:"memory"`
 }
 
 type DomainSysInfoEntry struct {

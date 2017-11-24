@@ -644,42 +644,50 @@ var domainTestData = []struct {
 			},
 			SysInfo: &DomainSysInfo{
 				Type: "smbios",
-				BIOS: []DomainSysInfoEntry{
-					DomainSysInfoEntry{
-						Name:  "vendor",
-						Value: "vendor",
+				BIOS: &DomainSysInfoBIOS{
+					Entry: []DomainSysInfoEntry{
+						DomainSysInfoEntry{
+							Name:  "vendor",
+							Value: "vendor",
+						},
 					},
 				},
-				System: []DomainSysInfoEntry{
-					DomainSysInfoEntry{
-						Name:  "manufacturer",
-						Value: "manufacturer",
-					},
-					DomainSysInfoEntry{
-						Name:  "product",
-						Value: "product",
-					},
-					DomainSysInfoEntry{
-						Name:  "version",
-						Value: "version",
+				System: &DomainSysInfoSystem{
+					Entry: []DomainSysInfoEntry{
+						DomainSysInfoEntry{
+							Name:  "manufacturer",
+							Value: "manufacturer",
+						},
+						DomainSysInfoEntry{
+							Name:  "product",
+							Value: "product",
+						},
+						DomainSysInfoEntry{
+							Name:  "version",
+							Value: "version",
+						},
 					},
 				},
-				BaseBoard: []DomainSysInfoEntry{
-					DomainSysInfoEntry{
-						Name:  "manufacturer",
-						Value: "manufacturer",
-					},
-					DomainSysInfoEntry{
-						Name:  "product",
-						Value: "product",
-					},
-					DomainSysInfoEntry{
-						Name:  "version",
-						Value: "version",
-					},
-					DomainSysInfoEntry{
-						Name:  "serial",
-						Value: "serial",
+				BaseBoard: []DomainSysInfoBaseBoard{
+					DomainSysInfoBaseBoard{
+						Entry: []DomainSysInfoEntry{
+							DomainSysInfoEntry{
+								Name:  "manufacturer",
+								Value: "manufacturer",
+							},
+							DomainSysInfoEntry{
+								Name:  "product",
+								Value: "product",
+							},
+							DomainSysInfoEntry{
+								Name:  "version",
+								Value: "version",
+							},
+							DomainSysInfoEntry{
+								Name:  "serial",
+								Value: "serial",
+							},
+						},
 					},
 				},
 			},
@@ -722,14 +730,14 @@ var domainTestData = []struct {
 			`    <allocation mode="immediate"></allocation>`,
 			`  </memoryBacking>`,
 			`  <sysinfo type="smbios">`,
+			`    <bios>`,
+			`      <entry name="vendor">vendor</entry>`,
+			`    </bios>`,
 			`    <system>`,
 			`      <entry name="manufacturer">manufacturer</entry>`,
 			`      <entry name="product">product</entry>`,
 			`      <entry name="version">version</entry>`,
 			`    </system>`,
-			`    <bios>`,
-			`      <entry name="vendor">vendor</entry>`,
-			`    </bios>`,
 			`    <baseBoard>`,
 			`      <entry name="manufacturer">manufacturer</entry>`,
 			`      <entry name="product">product</entry>`,
