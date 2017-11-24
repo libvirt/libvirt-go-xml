@@ -1070,22 +1070,68 @@ type DomainFeatureHPT struct {
 	Resizing string `xml:"resizing,attr,omitempty"`
 }
 
+type DomainFeatureCapability struct {
+	State string `xml:"state,attr,omitempty"`
+}
+
+type DomainFeatureCapabilities struct {
+	Policy         string                   `xml:"policy,attr,omitempty"`
+	AuditControl   *DomainFeatureCapability `xml:"audit_control"`
+	AuditWrite     *DomainFeatureCapability `xml:"audit_write"`
+	BlockSuspend   *DomainFeatureCapability `xml:"block_suspend"`
+	Chown          *DomainFeatureCapability `xml:"chown"`
+	DACOverride    *DomainFeatureCapability `xml:"dac_override"`
+	DACReadSearch  *DomainFeatureCapability `xml:"dac_read_Search"`
+	FOwner         *DomainFeatureCapability `xml:"fowner"`
+	FSetID         *DomainFeatureCapability `xml:"fsetid"`
+	IPCLock        *DomainFeatureCapability `xml:"ipc_lock"`
+	IPCOwner       *DomainFeatureCapability `xml:"ipc_owner"`
+	Kill           *DomainFeatureCapability `xml:"kill"`
+	Lease          *DomainFeatureCapability `xml:"lease"`
+	LinuxImmutable *DomainFeatureCapability `xml:"linux_immutable"`
+	MACAdmin       *DomainFeatureCapability `xml:"mac_admin"`
+	MACOverride    *DomainFeatureCapability `xml:"mac_override"`
+	MkNod          *DomainFeatureCapability `xml:"mknod"`
+	NetAdmin       *DomainFeatureCapability `xml:"net_admin"`
+	NetBindService *DomainFeatureCapability `xml:"net_bind_service"`
+	NetBroadcast   *DomainFeatureCapability `xml:"net_broadcast"`
+	NetRaw         *DomainFeatureCapability `xml:"net_raw"`
+	SetGID         *DomainFeatureCapability `xml:"setgid"`
+	SetFCap        *DomainFeatureCapability `xml:"setfcap"`
+	SetPCap        *DomainFeatureCapability `xml:"setpcap"`
+	SetUID         *DomainFeatureCapability `xml:"setuid"`
+	SysAdmin       *DomainFeatureCapability `xml:"sys_admin"`
+	SysBoot        *DomainFeatureCapability `xml:"sys_boot"`
+	SysChRoot      *DomainFeatureCapability `xml:"sys_chroot"`
+	SysModule      *DomainFeatureCapability `xml:"sys_module"`
+	SysNice        *DomainFeatureCapability `xml:"sys_nice"`
+	SysPAcct       *DomainFeatureCapability `xml:"sys_pacct"`
+	SysPTrace      *DomainFeatureCapability `xml:"sys_ptrace"`
+	SysRawIO       *DomainFeatureCapability `xml:"sys_rawio"`
+	SysResource    *DomainFeatureCapability `xml:"sys_resource"`
+	SysTime        *DomainFeatureCapability `xml:"sys_time"`
+	SysTTYCnofig   *DomainFeatureCapability `xml:"sys_tty_config"`
+	SysLog         *DomainFeatureCapability `xml:"syslog"`
+	WakeAlarm      *DomainFeatureCapability `xml:"wake_alarm"`
+}
+
 type DomainFeatureList struct {
-	PAE        *DomainFeature       `xml:"pae"`
-	ACPI       *DomainFeature       `xml:"acpi"`
-	APIC       *DomainFeatureAPIC   `xml:"apic"`
-	HAP        *DomainFeatureState  `xml:"hap"`
-	Viridian   *DomainFeature       `xml:"viridian"`
-	PrivNet    *DomainFeature       `xml:"privnet"`
-	HyperV     *DomainFeatureHyperV `xml:"hyperv"`
-	KVM        *DomainFeatureKVM    `xml:"kvm"`
-	PVSpinlock *DomainFeatureState  `xml:"pvspinlock"`
-	PMU        *DomainFeatureState  `xml:"pmu"`
-	VMPort     *DomainFeatureState  `xml:"vmport"`
-	GIC        *DomainFeatureGIC    `xml:"gic"`
-	SMM        *DomainFeatureState  `xml:"smm"`
-	IOAPIC     *DomainFeatureIOAPIC `xml:"ioapic"`
-	HPT        *DomainFeatureHPT    `xml:"hpt"`
+	PAE          *DomainFeature             `xml:"pae"`
+	ACPI         *DomainFeature             `xml:"acpi"`
+	APIC         *DomainFeatureAPIC         `xml:"apic"`
+	HAP          *DomainFeatureState        `xml:"hap"`
+	Viridian     *DomainFeature             `xml:"viridian"`
+	PrivNet      *DomainFeature             `xml:"privnet"`
+	HyperV       *DomainFeatureHyperV       `xml:"hyperv"`
+	KVM          *DomainFeatureKVM          `xml:"kvm"`
+	PVSpinlock   *DomainFeatureState        `xml:"pvspinlock"`
+	PMU          *DomainFeatureState        `xml:"pmu"`
+	VMPort       *DomainFeatureState        `xml:"vmport"`
+	GIC          *DomainFeatureGIC          `xml:"gic"`
+	SMM          *DomainFeatureState        `xml:"smm"`
+	IOAPIC       *DomainFeatureIOAPIC       `xml:"ioapic"`
+	HPT          *DomainFeatureHPT          `xml:"hpt"`
+	Capabilities *DomainFeatureCapabilities `xml:"capabilities"`
 }
 
 type DomainCPUTuneShares struct {

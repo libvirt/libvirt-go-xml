@@ -1521,6 +1521,12 @@ var domainTestData = []struct {
 				},
 				PVSpinlock: &DomainFeatureState{State: "on"},
 				GIC:        &DomainFeatureGIC{Version: "2"},
+				Capabilities: &DomainFeatureCapabilities{
+					Policy: "default",
+					MkNod: &DomainFeatureCapability{
+						State: "on",
+					},
+				},
 			},
 		},
 		Expected: []string{
@@ -1547,6 +1553,9 @@ var domainTestData = []struct {
 			`    </kvm>`,
 			`    <pvspinlock state="on"></pvspinlock>`,
 			`    <gic version="2"></gic>`,
+			`    <capabilities policy="default">`,
+			`      <mknod state="on"></mknod>`,
+			`    </capabilities>`,
 			`  </features>`,
 			`</domain>`,
 		},
