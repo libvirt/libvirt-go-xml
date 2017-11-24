@@ -122,13 +122,13 @@ type DomainDiskSource struct {
 }
 
 type DomainDiskSourceFile struct {
-	File     string                `xml:"file,attr,omitempty"`
-	SecLabel *DomainDeviceSecLabel `xml:"seclabel"`
+	File     string                 `xml:"file,attr,omitempty"`
+	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
 }
 
 type DomainDiskSourceBlock struct {
-	Dev      string                `xml:"dev,attr,omitempty"`
-	SecLabel *DomainDeviceSecLabel `xml:"seclabel"`
+	Dev      string                 `xml:"dev,attr,omitempty"`
+	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
 }
 
 type DomainDiskSourceDir struct {
@@ -154,24 +154,35 @@ type DomainDiskSourceNetworkConfig struct {
 }
 
 type DomainDiskSourceVolume struct {
-	Pool     string                `xml:"pool,attr,omitempty"`
-	Volume   string                `xml:"volume,attr,omitempty"`
-	Mode     string                `xml:"mode,attr,omitempty"`
-	SecLabel *DomainDeviceSecLabel `xml:"seclabel"`
+	Pool     string                 `xml:"pool,attr,omitempty"`
+	Volume   string                 `xml:"volume,attr,omitempty"`
+	Mode     string                 `xml:"mode,attr,omitempty"`
+	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
 }
 
 type DomainDiskDriver struct {
-	Name        string `xml:"name,attr,omitempty"`
-	Type        string `xml:"type,attr,omitempty"`
-	Cache       string `xml:"cache,attr,omitempty"`
-	IO          string `xml:"io,attr,omitempty"`
-	ErrorPolicy string `xml:"error_policy,attr,omitempty"`
-	Discard     string `xml:"discard,attr,omitempty"`
+	Name         string `xml:"name,attr,omitempty"`
+	Type         string `xml:"type,attr,omitempty"`
+	Cache        string `xml:"cache,attr,omitempty"`
+	ErrorPolicy  string `xml:"error_policy,attr,omitempty"`
+	RErrorPolicy string `xml:"rerror_policy,attr,omitempty"`
+	IO           string `xml:"io,attr,omitempty"`
+	IOEventFD    string `xml:"ioeventfd,attr,omitempty"`
+	EventIDX     string `xml:"event_idx,attr,omitempty"`
+	CopyOnRead   string `xml:"copy_on_read,attr,omitempty"`
+	Discard      string `xml:"discard,attr,omitempty"`
+	IOThread     *uint  `xml:"iothread,attr"`
+	DetectZeros  string `xml:"detect_zeroes,attr,omitempty"`
+	Queues       *uint  `xml:"queues,attr"`
+	IOMMU        string `xml:"iommu,attr,omitempty"`
+	ATS          string `xml:"ats,attr,omitempty"`
 }
 
 type DomainDiskTarget struct {
-	Dev string `xml:"dev,attr,omitempty"`
-	Bus string `xml:"bus,attr,omitempty"`
+	Dev       string `xml:"dev,attr,omitempty"`
+	Bus       string `xml:"bus,attr,omitempty"`
+	Tray      string `xml:"tray,attr,omitempty"`
+	Removable string `xml:"removable,attr,omitempty"`
 }
 
 type DomainDiskEncryption struct {
@@ -185,45 +196,68 @@ type DomainDiskReadOnly struct {
 type DomainDiskShareable struct {
 }
 
+type DomainDiskTransient struct {
+}
+
 type DomainDiskIOTune struct {
-	TotalBytesSec          uint64 `xml:"total_bytes_sec"`
-	ReadBytesSec           uint64 `xml:"read_bytes_sec"`
-	WriteBytesSec          uint64 `xml:"write_bytes_sec"`
-	TotalIopsSec           uint64 `xml:"total_iops_sec"`
-	ReadIopsSec            uint64 `xml:"read_iops_sec"`
-	WriteIopsSec           uint64 `xml:"write_iops_sec"`
-	TotalBytesSecMax       uint64 `xml:"total_bytes_sec_max"`
-	ReadBytesSecMax        uint64 `xml:"read_bytes_sec_max"`
-	WriteBytesSecMax       uint64 `xml:"write_bytes_sec_max"`
-	TotalIopsSecMax        uint64 `xml:"total_iops_sec_max"`
-	ReadIopsSecMax         uint64 `xml:"read_iops_sec_max"`
-	WriteIopsSecMax        uint64 `xml:"write_iops_sec_max"`
-	TotalBytesSecMaxLength uint64 `xml:"total_bytes_sec_max_length"`
-	ReadBytesSecMaxLength  uint64 `xml:"read_bytes_sec_max_length"`
-	WriteBytesSecMaxLength uint64 `xml:"write_bytes_sec_max_length"`
-	TotalIopsSecMaxLength  uint64 `xml:"total_iops_sec_max_length"`
-	ReadIopsSecMaxLength   uint64 `xml:"read_iops_sec_max_length"`
-	WriteIopsSecMaxLength  uint64 `xml:"write_iops_sec_max_length"`
-	SizeIopsSec            uint64 `xml:"size_iops_sec"`
-	GroupName              string `xml:"group_name"`
+	TotalBytesSec          uint64 `xml:"total_bytes_sec,omitempty"`
+	ReadBytesSec           uint64 `xml:"read_bytes_sec,omitempty"`
+	WriteBytesSec          uint64 `xml:"write_bytes_sec,omitempty"`
+	TotalIopsSec           uint64 `xml:"total_iops_sec,omitempty"`
+	ReadIopsSec            uint64 `xml:"read_iops_sec,omitempty"`
+	WriteIopsSec           uint64 `xml:"write_iops_sec,omitempty"`
+	TotalBytesSecMax       uint64 `xml:"total_bytes_sec_max,omitempty"`
+	ReadBytesSecMax        uint64 `xml:"read_bytes_sec_max,omitempty"`
+	WriteBytesSecMax       uint64 `xml:"write_bytes_sec_max,omitempty"`
+	TotalIopsSecMax        uint64 `xml:"total_iops_sec_max,omitempty"`
+	ReadIopsSecMax         uint64 `xml:"read_iops_sec_max,omitempty"`
+	WriteIopsSecMax        uint64 `xml:"write_iops_sec_max,omitempty"`
+	TotalBytesSecMaxLength uint64 `xml:"total_bytes_sec_max_length,omitempty"`
+	ReadBytesSecMaxLength  uint64 `xml:"read_bytes_sec_max_length,omitempty"`
+	WriteBytesSecMaxLength uint64 `xml:"write_bytes_sec_max_length,omitempty"`
+	TotalIopsSecMaxLength  uint64 `xml:"total_iops_sec_max_length,omitempty"`
+	ReadIopsSecMaxLength   uint64 `xml:"read_iops_sec_max_length,omitempty"`
+	WriteIopsSecMaxLength  uint64 `xml:"write_iops_sec_max_length,omitempty"`
+	SizeIopsSec            uint64 `xml:"size_iops_sec,omitempty"`
+	GroupName              string `xml:"group_name,omitempty"`
+}
+
+type DomainDiskGeometry struct {
+	Cylinders uint   `xml:"cyls,attr"`
+	Headers   uint   `xml:"heads,attr"`
+	Sectors   uint   `xml:"secs,attr"`
+	Trans     string `xml:"trans,attr,omitempty"`
+}
+
+type DomainDiskBlockIO struct {
+	LogicalBlockSize  uint `xml:"logical_block_size,attr,omitempty"`
+	PhysicalBlockSize uint `xml:"physical_block_size,attr,omitempty"`
 }
 
 type DomainDisk struct {
 	XMLName    xml.Name              `xml:"disk"`
 	Device     string                `xml:"device,attr"`
+	RawIO      string                `xml:"rawio,attr,omitempty"`
+	SGIO       string                `xml:"sgio,attr,omitempty"`
 	Snapshot   string                `xml:"snapshot,attr,omitempty"`
 	Driver     *DomainDiskDriver     `xml:"driver"`
 	Auth       *DomainDiskAuth       `xml:"auth"`
 	Source     *DomainDiskSource     `xml:"source"`
+	Geometry   *DomainDiskGeometry   `xml:"geometry"`
+	BlockIO    *DomainDiskBlockIO    `xml:"blockio"`
 	Target     *DomainDiskTarget     `xml:"target"`
 	IOTune     *DomainDiskIOTune     `xml:"iotune"`
-	Serial     string                `xml:"serial,omitempty"`
 	ReadOnly   *DomainDiskReadOnly   `xml:"readonly"`
 	Shareable  *DomainDiskShareable  `xml:"shareable"`
-	Encryption *DomainDiskEncryption `xml:"encryption"`
-	Address    *DomainAddress        `xml:"address"`
-	Boot       *DomainDeviceBoot     `xml:"boot"`
+	Transient  *DomainDiskTransient  `xml:"transient"`
+	Serial     string                `xml:"serial,omitempty"`
 	WWN        string                `xml:"wwn,omitempty"`
+	Vendor     string                `xml:"vendor,omitempty"`
+	Product    string                `xml:"product,omitempty"`
+	Encryption *DomainDiskEncryption `xml:"encryption"`
+	Boot       *DomainDeviceBoot     `xml:"boot"`
+	Alias      *DomainAlias          `xml:"alias"`
+	Address    *DomainAddress        `xml:"address"`
 }
 
 type DomainFilesystemDriver struct {
@@ -342,7 +376,8 @@ type DomainInterfaceLink struct {
 }
 
 type DomainDeviceBoot struct {
-	Order uint `xml:"order,attr"`
+	Order    uint   `xml:"order,attr"`
+	LoadParm string `xml:"loadparm,attr,omitempty"`
 }
 
 type DomainInterfaceScript struct {
@@ -1280,9 +1315,10 @@ type DomainSecLabel struct {
 }
 
 type DomainDeviceSecLabel struct {
-	Model   string `xml:"model,attr,omitempty"`
-	Relabel string `xml:"relabel,attr,omitempty"`
-	Label   string `xml:"label,omitempty"`
+	Model     string `xml:"model,attr,omitempty"`
+	LabelSkip string `xml:"labelskip,attr,omitempty"`
+	Relabel   string `xml:"relabel,attr,omitempty"`
+	Label     string `xml:"label,omitempty"`
 }
 
 type DomainNUMATune struct {

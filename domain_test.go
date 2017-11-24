@@ -284,7 +284,7 @@ var domainTestData = []struct {
 			`      <shareable></shareable>`,
 			`    </disk>`,
 			`    <disk type="volume" device="cdrom">`,
-			`      <driver cache="none" io="native" error_policy="stop"></driver>`,
+			`      <driver cache="none" error_policy="stop" io="native"></driver>`,
 			`      <source pool="default" volume="myvolume"></source>`,
 			`      <target dev="vde" bus="virtio"></target>`,
 			`      <readonly></readonly>`,
