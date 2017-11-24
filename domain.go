@@ -554,7 +554,7 @@ type DomainMemBalloon struct {
 
 type DomainPanic struct {
 	XMLName xml.Name       `xml:"panic"`
-	Model   string         `xml:"model,attr"`
+	Model   string         `xml:"model,attr,omitempty"`
 	Address *DomainAddress `xml:"address"`
 }
 
