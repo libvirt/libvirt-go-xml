@@ -926,7 +926,7 @@ type DomainSysInfoEntry struct {
 
 type DomainBIOS struct {
 	UseSerial     string `xml:"useserial,attr,omitempty"`
-	RebootTimeout *uint  `xml:"rebootTimeout,attr"`
+	RebootTimeout *int   `xml:"rebootTimeout,attr"`
 }
 
 type DomainLoader struct {

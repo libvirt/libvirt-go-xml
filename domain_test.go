@@ -98,7 +98,7 @@ var vcpuId1 uint = 1
 var memorydevAddressSlot uint = 0
 var memorydevAddressBase uint64 = 4294967296
 
-var rebootTimeout uint = 0
+var rebootTimeout int = 0
 var cellID uint = 0
 
 var ipv6Prefix uint = 24
