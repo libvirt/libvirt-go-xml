@@ -87,10 +87,11 @@ type DomainController struct {
 	Index        *uint                         `xml:"index,attr"`
 	Model        string                        `xml:"model,attr,omitempty"`
 	Driver       *DomainControllerDriver       `xml:"driver"`
-	Address      *DomainAddress                `xml:"address"`
 	PCI          *DomainControllerPCI          `xml:"-"`
 	USB          *DomainControllerUSB          `xml:"-"`
 	VirtIOSerial *DomainControllerVirtIOSerial `xml:"-"`
+	Alias        *DomainAlias                  `xml:"alias"`
+	Address      *DomainAddress                `xml:"address"`
 }
 
 type DomainDiskSecret struct {
@@ -355,6 +356,7 @@ type DomainFilesystem struct {
 	ReadOnly       *DomainFilesystemReadOnly       `xml:"readonly"`
 	SpaceHardLimit *DomainFilesystemSpaceHardLimit `xml:"space_hard_limit"`
 	SpaceSoftLimit *DomainFilesystemSpaceSoftLimit `xml:"space_soft_limit"`
+	Alias          *DomainAlias                    `xml:"alias"`
 	Address        *DomainAddress                  `xml:"address"`
 }
 
@@ -387,10 +389,6 @@ type DomainInterfaceSourceLocal struct {
 
 type DomainInterfaceTarget struct {
 	Dev string `xml:"dev,attr"`
-}
-
-type DomainInterfaceAlias struct {
-	Name string `xml:"name,attr"`
 }
 
 type DomainInterfaceLink struct {
@@ -434,13 +432,13 @@ type DomainInterface struct {
 	Model       *DomainInterfaceModel       `xml:"model"`
 	Source      *DomainInterfaceSource      `xml:"source"`
 	Target      *DomainInterfaceTarget      `xml:"target"`
-	Alias       *DomainInterfaceAlias       `xml:"alias"`
 	Link        *DomainInterfaceLink        `xml:"link"`
 	Boot        *DomainDeviceBoot           `xml:"boot"`
 	Script      *DomainInterfaceScript      `xml:"script"`
 	Driver      *DomainInterfaceDriver      `xml:"driver"`
 	Virtualport *DomainInterfaceVirtualport `xml:"virtualport"`
 	Bandwidth   *DomainInterfaceBandwidth   `xml:"bandwidth"`
+	Alias       *DomainAlias                `xml:"alias"`
 	Address     *DomainAddress              `xml:"address"`
 }
 
@@ -586,6 +584,7 @@ type DomainInput struct {
 	XMLName xml.Name       `xml:"input"`
 	Type    string         `xml:"type,attr"`
 	Bus     string         `xml:"bus,attr"`
+	Alias   *DomainAlias   `xml:"alias"`
 	Address *DomainAddress `xml:"address"`
 }
 
@@ -637,6 +636,7 @@ type DomainVideoModel struct {
 type DomainVideo struct {
 	XMLName xml.Name         `xml:"video"`
 	Model   DomainVideoModel `xml:"model"`
+	Alias   *DomainAlias     `xml:"alias"`
 	Address *DomainAddress   `xml:"address"`
 }
 
@@ -649,12 +649,14 @@ type DomainMemBalloon struct {
 	Model       string                 `xml:"model,attr"`
 	AutoDeflate string                 `xml:"autodeflate,attr,omitempty"`
 	Stats       *DomainMemBalloonStats `xml:"stats"`
+	Alias       *DomainAlias           `xml:"alias"`
 	Address     *DomainAddress         `xml:"address"`
 }
 
 type DomainPanic struct {
 	XMLName xml.Name       `xml:"panic"`
 	Model   string         `xml:"model,attr,omitempty"`
+	Alias   *DomainAlias   `xml:"alias"`
 	Address *DomainAddress `xml:"address"`
 }
 
@@ -666,6 +668,7 @@ type DomainSound struct {
 	XMLName xml.Name           `xml:"sound"`
 	Model   string             `xml:"model,attr"`
 	Codec   []DomainSoundCodec `xml:"codec"`
+	Alias   *DomainAlias       `xml:"alias"`
 	Address *DomainAddress     `xml:"address"`
 }
 
@@ -698,6 +701,7 @@ type DomainRNG struct {
 	Model   string            `xml:"model,attr"`
 	Rate    *DomainRNGRate    `xml:"rate"`
 	Backend *DomainRNGBackend `xml:"backend"`
+	Alias   *DomainAlias      `xml:"alias"`
 	Address *DomainAddress    `xml:"address"`
 }
 
@@ -821,6 +825,7 @@ type DomainHostdev struct {
 	CapsMisc       *DomainHostdevCapsMisc       `xml:"-"`
 	CapsNet        *DomainHostdevCapsNet        `xml:"-"`
 	Boot           *DomainDeviceBoot            `xml:"boot"`
+	Alias          *DomainAlias                 `xml:"alias"`
 	Address        *DomainAddress               `xml:"address"`
 }
 
@@ -860,6 +865,7 @@ type DomainMemorydev struct {
 	Access  string                 `xml:"access,attr,omitempty"`
 	Source  *DomainMemorydevSource `xml:"source"`
 	Target  *DomainMemorydevTarget `xml:"target"`
+	Alias   *DomainAlias           `xml:"alias"`
 	Address *DomainAddress         `xml:"address"`
 }
 
@@ -867,6 +873,7 @@ type DomainWatchdog struct {
 	XMLName xml.Name       `xml:"watchdog"`
 	Model   string         `xml:"model,attr"`
 	Action  string         `xml:"action,attr,omitempty"`
+	Alias   *DomainAlias   `xml:"alias"`
 	Address *DomainAddress `xml:"address"`
 }
 

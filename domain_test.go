@@ -1108,7 +1108,7 @@ var domainTestData = []struct {
 						Target: &DomainInterfaceTarget{
 							Dev: "vnet3",
 						},
-						Alias: &DomainInterfaceAlias{
+						Alias: &DomainAlias{
 							Name: "net1",
 						},
 					},
