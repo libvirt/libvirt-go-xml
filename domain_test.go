@@ -2424,6 +2424,14 @@ var domainTestData = []struct {
 		Object: &DomainMemorydev{
 			Model:  "dimm",
 			Access: "private",
+			Source: &DomainMemorydevSource{
+				PageSize: &DomainMemorydevSourcePagesize{
+					Value: 2048,
+					Unit:  "KiB",
+				},
+				Path:     "/tmp/nvdimm",
+				NodeMask: "0-1",
+			},
 			Target: &DomainMemorydevTarget{
 				Size: &DomainMemorydevTargetSize{
 					Value: 1,
@@ -2432,14 +2440,28 @@ var domainTestData = []struct {
 				Node: &DomainMemorydevTargetNode{
 					Value: 0,
 				},
+				Label: &DomainMemorydevTargetLabel{
+					Size: &DomainMemorydevTargetSize{
+						Value: 200,
+						Unit:  "KiB",
+					},
+				},
 			},
 		},
 
 		Expected: []string{
 			`<memory model="dimm" access="private">`,
+			`  <source>`,
+			`    <nodemask>0-1</nodemask>`,
+			`    <pagesize unit="KiB">2048</pagesize>`,
+			`    <path>/tmp/nvdimm</path>`,
+			`  </source>`,
 			`  <target>`,
 			`    <size unit="GiB">1</size>`,
 			`    <node>0</node>`,
+			`    <label>`,
+			`      <size unit="KiB">200</size>`,
+			`    </label>`,
 			`  </target>`,
 			`</memory>`,
 		},

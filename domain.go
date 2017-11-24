@@ -689,6 +689,17 @@ type DomainHostdev struct {
 	Address        *DomainAddress               `xml:"address"`
 }
 
+type DomainMemorydevSource struct {
+	NodeMask string                         `xml:"nodemask,omitempty"`
+	PageSize *DomainMemorydevSourcePagesize `xml:"pagesize"`
+	Path     string                         `xml:"path,omitempty"`
+}
+
+type DomainMemorydevSourcePagesize struct {
+	Value uint64 `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+}
+
 type DomainMemorydevTargetNode struct {
 	Value uint `xml:",chardata"`
 }
@@ -698,15 +709,21 @@ type DomainMemorydevTargetSize struct {
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 
-type DomainMemorydevTarget struct {
+type DomainMemorydevTargetLabel struct {
 	Size *DomainMemorydevTargetSize `xml:"size"`
-	Node *DomainMemorydevTargetNode `xml:"node"`
+}
+
+type DomainMemorydevTarget struct {
+	Size  *DomainMemorydevTargetSize  `xml:"size"`
+	Node  *DomainMemorydevTargetNode  `xml:"node"`
+	Label *DomainMemorydevTargetLabel `xml:"label"`
 }
 
 type DomainMemorydev struct {
 	XMLName xml.Name               `xml:"memory"`
 	Model   string                 `xml:"model,attr"`
-	Access  string                 `xml:"access,attr"`
+	Access  string                 `xml:"access,attr,omitempty"`
+	Source  *DomainMemorydevSource `xml:"source"`
 	Target  *DomainMemorydevTarget `xml:"target"`
 	Address *DomainAddress         `xml:"address"`
 }
