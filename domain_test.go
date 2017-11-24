@@ -2454,7 +2454,7 @@ func TestDomain(t *testing.T) {
 		expect := strings.Join(test.Expected, "\n")
 
 		if doc != expect {
-			t.Fatal("Bad xml:\n", string(doc), "\n does not match\n", expect, "\n")
+			t.Fatal("Bad initial xml:\n", string(doc), "\n does not match\n", expect, "\n")
 		}
 
 		typ := reflect.ValueOf(test.Object).Elem().Type()
@@ -2471,13 +2471,13 @@ func TestDomain(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		doc, err = test.Object.Marshal()
+		doc, err = newdocobj.Marshal()
 		if err != nil {
 			t.Fatal(err)
 		}
 
 		if doc != expect {
-			t.Fatal("Bad xml:\n", string(doc), "\n does not match\n", expect, "\n")
+			t.Fatal("Bad roundtrip xml:\n", string(doc), "\n does not match\n", expect, "\n")
 		}
 	}
 }
