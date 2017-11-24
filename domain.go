@@ -185,13 +185,49 @@ type DomainDisk struct {
 
 type DomainFilesystemDriver struct {
 	Type     string `xml:"type,attr"`
+	Format   string `xml:"format,attr,omitempty"`
 	Name     string `xml:"name,attr,omitempty"`
 	WRPolicy string `xml:"wrpolicy,attr,omitempty"`
 }
 
 type DomainFilesystemSource struct {
-	Dir  string `xml:"dir,attr,omitempty"`
-	File string `xml:"file,attr,omitempty"`
+	Mount    *DomainFilesystemSourceMount    `xml:"-"`
+	Block    *DomainFilesystemSourceBlock    `xml:"-"`
+	File     *DomainFilesystemSourceFile     `xml:"-"`
+	Template *DomainFilesystemSourceTemplate `xml:"-"`
+	RAM      *DomainFilesystemSourceRAM      `xml:"-"`
+	Bind     *DomainFilesystemSourceBind     `xml:"-"`
+	Volume   *DomainFilesystemSourceVolume   `xml:"-"`
+}
+
+type DomainFilesystemSourceMount struct {
+	Dir string `xml:"dir,attr"`
+}
+
+type DomainFilesystemSourceBlock struct {
+	Dev string `xml:"dev,attr"`
+}
+
+type DomainFilesystemSourceFile struct {
+	File string `xml:"file,attr"`
+}
+
+type DomainFilesystemSourceTemplate struct {
+	Name string `xml:"name,attr"`
+}
+
+type DomainFilesystemSourceRAM struct {
+	Usage uint   `xml:"usage,attr"`
+	Units string `xml:"units,attr,omitempty"`
+}
+
+type DomainFilesystemSourceBind struct {
+	Dir string `xml:"dir,attr"`
+}
+
+type DomainFilesystemSourceVolume struct {
+	Pool   string `xml:"pool,attr"`
+	Volume string `xml:"volume,attr"`
 }
 
 type DomainFilesystemTarget struct {
@@ -213,8 +249,7 @@ type DomainFilesystemSpaceSoftLimit struct {
 
 type DomainFilesystem struct {
 	XMLName        xml.Name                        `xml:"filesystem"`
-	Type           string                          `xml:"type,attr"`
-	AccessMode     string                          `xml:"accessmode,attr"`
+	AccessMode     string                          `xml:"accessmode,attr,omitempty"`
 	Driver         *DomainFilesystemDriver         `xml:"driver"`
 	Source         *DomainFilesystemSource         `xml:"source"`
 	Target         *DomainFilesystemTarget         `xml:"target"`
@@ -1423,6 +1458,113 @@ func (d *DomainDisk) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainFilesystemSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.Mount != nil {
+		return e.EncodeElement(a.Mount, start)
+	} else if a.Block != nil {
+		return e.EncodeElement(a.Block, start)
+	} else if a.File != nil {
+		return e.EncodeElement(a.File, start)
+	} else if a.Template != nil {
+		return e.EncodeElement(a.Template, start)
+	} else if a.RAM != nil {
+		return e.EncodeElement(a.RAM, start)
+	} else if a.Bind != nil {
+		return e.EncodeElement(a.Bind, start)
+	} else if a.Volume != nil {
+		return e.EncodeElement(a.Volume, start)
+	}
+	return nil
+}
+
+func (a *DomainFilesystemSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if a.Mount != nil {
+		return d.DecodeElement(a.Mount, &start)
+	} else if a.Block != nil {
+		return d.DecodeElement(a.Block, &start)
+	} else if a.File != nil {
+		return d.DecodeElement(a.File, &start)
+	} else if a.Template != nil {
+		return d.DecodeElement(a.Template, &start)
+	} else if a.RAM != nil {
+		return d.DecodeElement(a.RAM, &start)
+	} else if a.Bind != nil {
+		return d.DecodeElement(a.Bind, &start)
+	} else if a.Volume != nil {
+		return d.DecodeElement(a.Volume, &start)
+	}
+	return nil
+}
+
+type domainFilesystem DomainFilesystem
+
+func (a *DomainFilesystem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "filesystem"
+	if a.Source != nil {
+		if a.Source.Mount != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "mount",
+			})
+		} else if a.Source.Block != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "block",
+			})
+		} else if a.Source.File != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "file",
+			})
+		} else if a.Source.Template != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "template",
+			})
+		} else if a.Source.RAM != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "ram",
+			})
+		} else if a.Source.Bind != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "bind",
+			})
+		} else if a.Source.Volume != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "volume",
+			})
+		}
+	}
+	fs := domainFilesystem(*a)
+	return e.EncodeElement(fs, start)
+}
+
+func (a *DomainFilesystem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "mount"
+	}
+	a.Source = &DomainFilesystemSource{}
+	if typ == "mount" {
+		a.Source.Mount = &DomainFilesystemSourceMount{}
+	} else if typ == "block" {
+		a.Source.Block = &DomainFilesystemSourceBlock{}
+	} else if typ == "file" {
+		a.Source.File = &DomainFilesystemSourceFile{}
+	} else if typ == "template" {
+		a.Source.Template = &DomainFilesystemSourceTemplate{}
+	} else if typ == "ram" {
+		a.Source.RAM = &DomainFilesystemSourceRAM{}
+	} else if typ == "bind" {
+		a.Source.Bind = &DomainFilesystemSourceBind{}
+	} else if typ == "volume" {
+		a.Source.Volume = &DomainFilesystemSourceVolume{}
+	}
+	fs := domainFilesystem(*a)
+	err := d.DecodeElement(&fs, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainFilesystem(fs)
+	return nil
 }
 
 func (d *DomainFilesystem) Unmarshal(doc string) error {

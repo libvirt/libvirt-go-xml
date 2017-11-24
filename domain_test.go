@@ -1430,14 +1430,15 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Filesystems: []DomainFilesystem{
 					DomainFilesystem{
-						Type:       "mount",
 						AccessMode: "mapped",
 						Driver: &DomainFilesystemDriver{
 							Type:     "path",
 							WRPolicy: "immediate",
 						},
 						Source: &DomainFilesystemSource{
-							Dir: "/home/user/test",
+							Mount: &DomainFilesystemSourceMount{
+								Dir: "/home/user/test",
+							},
 						},
 						Target: &DomainFilesystemTarget{
 							Dir: "user-test-mount",
@@ -1452,14 +1453,15 @@ var domainTestData = []struct {
 						},
 					},
 					DomainFilesystem{
-						Type:       "file",
 						AccessMode: "passthrough",
 						Driver: &DomainFilesystemDriver{
 							Name: "loop",
 							Type: "raw",
 						},
 						Source: &DomainFilesystemSource{
-							File: "/home/user/test.img",
+							File: &DomainFilesystemSourceFile{
+								File: "/home/user/test.img",
+							},
 						},
 						Target: &DomainFilesystemTarget{
 							Dir: "user-file-test-mount",
@@ -1896,14 +1898,15 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainFilesystem{
-			Type:       "mount",
 			AccessMode: "mapped",
 			Driver: &DomainFilesystemDriver{
 				Type:     "path",
 				WRPolicy: "immediate",
 			},
 			Source: &DomainFilesystemSource{
-				Dir: "/home/user/test",
+				Mount: &DomainFilesystemSourceMount{
+					Dir: "/home/user/test",
+				},
 			},
 			Target: &DomainFilesystemTarget{
 				Dir: "user-test-mount",
