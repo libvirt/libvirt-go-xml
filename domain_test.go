@@ -418,8 +418,10 @@ var domainTestData = []struct {
 				Sounds: []DomainSound{
 					DomainSound{
 						Model: "ich6",
-						Codec: &DomainSoundCodec{
-							Type: "duplex",
+						Codec: []DomainSoundCodec{
+							DomainSoundCodec{
+								Type: "duplex",
+							},
 						},
 						Address: &DomainAddress{
 							PCI: &DomainAddressPCI{
@@ -2295,8 +2297,13 @@ var domainTestData = []struct {
 	{
 		Object: &DomainSound{
 			Model: "ich6",
-			Codec: &DomainSoundCodec{
-				Type: "duplex",
+			Codec: []DomainSoundCodec{
+				DomainSoundCodec{
+					Type: "duplex",
+				},
+				DomainSoundCodec{
+					Type: "micro",
+				},
 			},
 			Address: &DomainAddress{
 				PCI: &DomainAddressPCI{
@@ -2311,6 +2318,7 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<sound model="ich6">`,
 			`  <codec type="duplex"></codec>`,
+			`  <codec type="micro"></codec>`,
 			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x08" function="0x0"></address>`,
 			`</sound>`,
 		},

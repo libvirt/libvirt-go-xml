@@ -661,10 +661,10 @@ type DomainSoundCodec struct {
 }
 
 type DomainSound struct {
-	XMLName xml.Name          `xml:"sound"`
-	Model   string            `xml:"model,attr"`
-	Codec   *DomainSoundCodec `xml:"codec"`
-	Address *DomainAddress    `xml:"address"`
+	XMLName xml.Name           `xml:"sound"`
+	Model   string             `xml:"model,attr"`
+	Codec   []DomainSoundCodec `xml:"codec"`
+	Address *DomainAddress     `xml:"address"`
 }
 
 type DomainRNGRate struct {
