@@ -618,6 +618,19 @@ var domainTestData = []struct {
 					"--unit",
 					"emergency.service",
 				},
+				InitEnv: []DomainOSInitEnv{
+					DomainOSInitEnv{
+						Name:  "HOME",
+						Value: "/home/fred",
+					},
+					DomainOSInitEnv{
+						Name:  "USER",
+						Value: "fred",
+					},
+				},
+				InitUser:  "fred",
+				InitGroup: "fred",
+				InitDir:   "/home/fred",
 			},
 			SysInfo: &DomainSysInfo{
 				Type: "smbios",
@@ -719,6 +732,11 @@ var domainTestData = []struct {
 			`    <init>/bin/systemd</init>`,
 			`    <initarg>--unit</initarg>`,
 			`    <initarg>emergency.service</initarg>`,
+			`    <initenv name="HOME">/home/fred</initenv>`,
+			`    <initenv name="USER">fred</initenv>`,
+			`    <initdir>/home/fred</initdir>`,
+			`    <inituser>fred</inituser>`,
+			`    <initgroup>fred</initgroup>`,
 			`    <loader readonly="yes" secure="no" type="rom">/loader</loader>`,
 			`    <dtb>/some/path</dtb>`,
 			`    <acpi>`,

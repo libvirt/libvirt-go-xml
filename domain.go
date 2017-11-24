@@ -850,10 +850,19 @@ type DomainACPITable struct {
 	Path string `xml:",chardata"`
 }
 
+type DomainOSInitEnv struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:",chardata"`
+}
+
 type DomainOS struct {
 	Type        *DomainOSType      `xml:"type"`
 	Init        string             `xml:"init,omitempty"`
 	InitArgs    []string           `xml:"initarg"`
+	InitEnv     []DomainOSInitEnv  `xml:"initenv"`
+	InitDir     string             `xml:"initdir,omitempty"`
+	InitUser    string             `xml:"inituser,omitempty"`
+	InitGroup   string             `xml:"initgroup,omitempty"`
 	Loader      *DomainLoader      `xml:"loader"`
 	NVRam       *DomainNVRam       `xml:"nvram"`
 	Kernel      string             `xml:"kernel,omitempty"`
