@@ -588,34 +588,140 @@ type DomainInput struct {
 	Address *DomainAddress `xml:"address"`
 }
 
-type DomainGraphicListener struct {
-	Type    string `xml:"type,attr"`
+type DomainGraphicListenerAddress struct {
 	Address string `xml:"address,attr,omitempty"`
-	Network string `xml:"network,attr,omitempty"`
-	Socket  string `xml:"socket,attr,omitempty"`
 }
 
-type DomainGraphic struct {
-	XMLName       xml.Name                `xml:"graphics"`
-	Type          string                  `xml:"type,attr"`
-	AutoPort      string                  `xml:"autoport,attr,omitempty"`
-	Port          int                     `xml:"port,attr,omitempty"`
-	TLSPort       int                     `xml:"tlsPort,attr,omitempty"`
-	WebSocket     int                     `xml:"websocket,attr,omitempty"`
-	Listen        string                  `xml:"listen,attr,omitempty"`
+type DomainGraphicListenerNetwork struct {
+	Address string `xml:"address,attr,omitempty"`
+	Network string `xml:"network,attr,omitempty"`
+}
+
+type DomainGraphicListenerSocket struct {
+	Socket string `xml:"socket,attr,omitempty"`
+}
+
+type DomainGraphicListener struct {
+	Address *DomainGraphicListenerAddress `xml:"-"`
+	Network *DomainGraphicListenerNetwork `xml:"-"`
+	Socket  *DomainGraphicListenerSocket  `xml:"-"`
+}
+
+type DomainGraphicChannel struct {
+	Name string `xml:"name,attr,omitempty"`
+	Mode string `xml:"mode,attr,omitempty"`
+}
+
+type DomainGraphicFileTransfer struct {
+	Enable string `xml:"enable,attr,omitempty"`
+}
+
+type DomainGraphicSDL struct {
+	Display    string `xml:"display,attr,omitempty"`
+	XAuth      string `xml:"xauth,attr,omitempty"`
+	FullScreen string `xml:"fullscreen,attr,omitempty"`
+}
+
+type DomainGraphicVNC struct {
 	Socket        string                  `xml:"socket,attr,omitempty"`
+	Port          int                     `xml:"port,attr,omitempty"`
+	AutoPort      string                  `xml:"autoport,attr,omitempty"`
+	WebSocket     int                     `xml:"websocket,attr,omitempty"`
 	Keymap        string                  `xml:"keymap,attr,omitempty"`
+	SharePolicy   string                  `xml:"sharePolicy,attr,omitempty"`
 	Passwd        string                  `xml:"passwd,attr,omitempty"`
 	PasswdValidTo string                  `xml:"passwdValidTo,attr,omitempty"`
 	Connected     string                  `xml:"connected,attr,omitempty"`
-	SharePolicy   string                  `xml:"sharePolicy,attr,omitempty"`
-	DefaultMode   string                  `xml:"defaultMode,attr,omitempty"`
-	Display       string                  `xml:"display,attr,omitempty"`
-	XAuth         string                  `xml:"xauth,attr,omitempty"`
-	FullScreen    string                  `xml:"fullscreen,attr,omitempty"`
-	ReplaceUser   string                  `xml:"replaceUser,attr,omitempty"`
-	MultiUser     string                  `xml:"multiUser,attr,omitempty"`
+	Listen        string                  `xml:"listen,attr,omitempty"`
 	Listeners     []DomainGraphicListener `xml:"listen"`
+}
+
+type DomainGraphicRDP struct {
+	Port        int                     `xml:"port,attr,omitempty"`
+	AutoPort    string                  `xml:"autoport,attr,omitempty"`
+	ReplaceUser string                  `xml:"replaceUser,attr,omitempty"`
+	MultiUser   string                  `xml:"multiUser,attr,omitempty"`
+	Listen      string                  `xml:"listen,attr,omitempty"`
+	Listeners   []DomainGraphicListener `xml:"listen"`
+}
+
+type DomainGraphicDesktop struct {
+	Display    string `xml:"display,attr,omitempty"`
+	FullScreen string `xml:"fullscreen,attr,omitempty"`
+}
+
+type DomainGraphicSpiceChannel struct {
+	Name string `xml:"name,attr"`
+	Mode string `xml:"mode,attr"`
+}
+
+type DomainGraphicSpiceImage struct {
+	Compression string `xml:"compression,attr"`
+}
+
+type DomainGraphicSpiceJPEG struct {
+	Compression string `xml:"compression,attr"`
+}
+
+type DomainGraphicSpiceZLib struct {
+	Compression string `xml:"compression,attr"`
+}
+
+type DomainGraphicSpicePlayback struct {
+	Compression string `xml:"compression,attr"`
+}
+
+type DomainGraphicSpiceStreaming struct {
+	Mode string `xml:"mode,attr"`
+}
+
+type DomainGraphicSpiceMouse struct {
+	Mode string `xml:"mode,attr"`
+}
+
+type DomainGraphicSpiceClipBoard struct {
+	CopyPaste string `xml:"copypaste,attr"`
+}
+
+type DomainGraphicSpiceFileTransfer struct {
+	Enable string `xml:"enable,attr"`
+}
+
+type DomainGraphicSpiceGL struct {
+	Enable     string `xml:"enable,attr,omitempty"`
+	RenderNode string `xml:"rendernode,attr,omitempty"`
+}
+
+type DomainGraphicSpice struct {
+	Port          int                             `xml:"port,attr,omitempty"`
+	TLSPort       int                             `xml:"tlsPort,attr,omitempty"`
+	AutoPort      string                          `xml:"autoport,attr,omitempty"`
+	Listen        string                          `xml:"listen,attr,omitempty"`
+	Keymap        string                          `xml:"keymap,attr,omitempty"`
+	DefaultMode   string                          `xml:"defaultMode,attr,omitempty"`
+	Passwd        string                          `xml:"passwd,attr,omitempty"`
+	PasswdValidTo string                          `xml:"passwdValidTo,attr,omitempty"`
+	Connected     string                          `xml:"connected,attr,omitempty"`
+	Listeners     []DomainGraphicListener         `xml:"listen"`
+	Channel       []DomainGraphicSpiceChannel     `xml:"channel"`
+	Image         *DomainGraphicSpiceImage        `xml:"image"`
+	JPEG          *DomainGraphicSpiceJPEG         `xml:"jpeg"`
+	ZLib          *DomainGraphicSpiceZLib         `xml:"zlib"`
+	Playback      *DomainGraphicSpicePlayback     `xml:"playback"`
+	Streaming     *DomainGraphicSpiceStreaming    `xml:"streaming"`
+	Mouse         *DomainGraphicSpiceMouse        `xml:"mouse"`
+	ClipBoard     *DomainGraphicSpiceClipBoard    `xml:"clipboard"`
+	FileTransfer  *DomainGraphicSpiceFileTransfer `xml:"filetransfer"`
+	GL            *DomainGraphicSpiceGL           `xml:"gl"`
+}
+
+type DomainGraphic struct {
+	XMLName xml.Name              `xml:"graphics"`
+	SDL     *DomainGraphicSDL     `xml:"-"`
+	VNC     *DomainGraphicVNC     `xml:"-"`
+	RDP     *DomainGraphicRDP     `xml:"-"`
+	Desktop *DomainGraphicDesktop `xml:"-"`
+	Spice   *DomainGraphicSpice   `xml:"-"`
 }
 
 type DomainVideoAccel struct {
@@ -2532,6 +2638,148 @@ func (d *DomainHostdev) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainGraphicListener) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "listen"
+	if a.Address != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "address",
+		})
+		return e.EncodeElement(a.Address, start)
+	} else if a.Network != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "network",
+		})
+		return e.EncodeElement(a.Network, start)
+	} else if a.Socket != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "socket",
+		})
+		return e.EncodeElement(a.Socket, start)
+	} else {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "none",
+		})
+		e.EncodeToken(start)
+		e.EncodeToken(start.End())
+	}
+	return nil
+}
+
+func (a *DomainGraphicListener) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing 'type' attribute on domain graphics listen")
+	}
+	if typ == "address" {
+		var addr DomainGraphicListenerAddress
+		err := d.DecodeElement(&addr, &start)
+		if err != nil {
+			return err
+		}
+		a.Address = &addr
+		return nil
+	} else if typ == "network" {
+		var net DomainGraphicListenerNetwork
+		err := d.DecodeElement(&net, &start)
+		if err != nil {
+			return err
+		}
+		a.Network = &net
+		return nil
+	} else if typ == "socket" {
+		var sock DomainGraphicListenerSocket
+		err := d.DecodeElement(&sock, &start)
+		if err != nil {
+			return err
+		}
+		a.Socket = &sock
+		return nil
+	} else if typ == "none" {
+		d.Skip()
+	}
+	return nil
+}
+
+func (a *DomainGraphic) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "graphics"
+	if a.SDL != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "sdl",
+		})
+		return e.EncodeElement(a.SDL, start)
+	} else if a.VNC != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "vnc",
+		})
+		return e.EncodeElement(a.VNC, start)
+	} else if a.RDP != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "vnc",
+		})
+		return e.EncodeElement(a.RDP, start)
+	} else if a.Desktop != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "vnc",
+		})
+		return e.EncodeElement(a.Desktop, start)
+	} else if a.Spice != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "spice",
+		})
+		return e.EncodeElement(a.Spice, start)
+	}
+	return nil
+}
+
+func (a *DomainGraphic) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing 'type' attribute on domain graphics")
+	}
+	if typ == "sdl" {
+		var sdl DomainGraphicSDL
+		err := d.DecodeElement(&sdl, &start)
+		if err != nil {
+			return err
+		}
+		a.SDL = &sdl
+		return nil
+	} else if typ == "vnc" {
+		var vnc DomainGraphicVNC
+		err := d.DecodeElement(&vnc, &start)
+		if err != nil {
+			return err
+		}
+		a.VNC = &vnc
+		return nil
+	} else if typ == "rdp" {
+		var rdp DomainGraphicRDP
+		err := d.DecodeElement(&rdp, &start)
+		if err != nil {
+			return err
+		}
+		a.RDP = &rdp
+		return nil
+	} else if typ == "desktop" {
+		var desktop DomainGraphicDesktop
+		err := d.DecodeElement(&desktop, &start)
+		if err != nil {
+			return err
+		}
+		a.Desktop = &desktop
+		return nil
+	} else if typ == "spice" {
+		var spice DomainGraphicSpice
+		err := d.DecodeElement(&spice, &start)
+		if err != nil {
+			return err
+		}
+		a.Spice = &spice
+		return nil
+	}
+	return nil
 }
 
 func (d *DomainMemorydev) Unmarshal(doc string) error {

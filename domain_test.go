@@ -335,7 +335,7 @@ var domainTestData = []struct {
 				},
 				Graphics: []DomainGraphic{
 					DomainGraphic{
-						Type: "vnc",
+						VNC: &DomainGraphicVNC{},
 					},
 				},
 				MemBalloon: &DomainMemBalloon{
@@ -2256,6 +2256,109 @@ var domainTestData = []struct {
 			`<channel type="pty">`,
 			`  <target type="virtio" name="org.redhat.spice" state="connected"></target>`,
 			`</channel>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Name: "demo",
+			Devices: &DomainDeviceList{
+				Graphics: []DomainGraphic{
+					DomainGraphic{
+						Spice: &DomainGraphicSpice{
+							Port:        5903,
+							TLSPort:     5904,
+							AutoPort:    "no",
+							Listen:      "127.0.0.1",
+							DefaultMode: "secure",
+							Listeners: []DomainGraphicListener{
+								DomainGraphicListener{
+									Address: &DomainGraphicListenerAddress{
+										Address: "127.0.0.1",
+									},
+								},
+							},
+							Channel: []DomainGraphicSpiceChannel{
+								DomainGraphicSpiceChannel{
+									Name: "main",
+									Mode: "secure",
+								},
+								DomainGraphicSpiceChannel{
+									Name: "inputs",
+									Mode: "insecure",
+								},
+							},
+							Image: &DomainGraphicSpiceImage{
+								Compression: "auto_glz",
+							},
+							JPEG: &DomainGraphicSpiceJPEG{
+								Compression: "auto",
+							},
+							ZLib: &DomainGraphicSpiceZLib{
+								Compression: "auto",
+							},
+							Playback: &DomainGraphicSpicePlayback{
+								Compression: "on",
+							},
+							Streaming: &DomainGraphicSpiceStreaming{
+								Mode: "filter",
+							},
+							ClipBoard: &DomainGraphicSpiceClipBoard{
+								CopyPaste: "no",
+							},
+							FileTransfer: &DomainGraphicSpiceFileTransfer{
+								Enable: "no",
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain>`,
+			`  <name>demo</name>`,
+			`  <devices>`,
+			`    <graphics type="spice" port="5903" tlsPort="5904" autoport="no" listen="127.0.0.1" defaultMode="secure">`,
+			`      <listen type="address" address="127.0.0.1"></listen>`,
+			`      <channel name="main" mode="secure"></channel>`,
+			`      <channel name="inputs" mode="insecure"></channel>`,
+			`      <image compression="auto_glz"></image>`,
+			`      <jpeg compression="auto"></jpeg>`,
+			`      <zlib compression="auto"></zlib>`,
+			`      <playback compression="on"></playback>`,
+			`      <streaming mode="filter"></streaming>`,
+			`      <clipboard copypaste="no"></clipboard>`,
+			`      <filetransfer enable="no"></filetransfer>`,
+			`    </graphics>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Name: "demo",
+			Devices: &DomainDeviceList{
+				Graphics: []DomainGraphic{
+					DomainGraphic{
+						VNC: &DomainGraphicVNC{
+							Port:     5903,
+							AutoPort: "no",
+							Listeners: []DomainGraphicListener{
+								DomainGraphicListener{},
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain>`,
+			`  <name>demo</name>`,
+			`  <devices>`,
+			`    <graphics type="vnc" port="5903" autoport="no">`,
+			`      <listen type="none"></listen>`,
+			`    </graphics>`,
+			`  </devices>`,
+			`</domain>`,
 		},
 	},
 	{
