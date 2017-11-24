@@ -1953,6 +1953,40 @@ var domainTestData = []struct {
 					File: "/var/lib/libvirt/images/demo.qcow2",
 				},
 			},
+			BackingStore: &DomainDiskBackingStore{
+				Index: 1,
+				Format: &DomainDiskFormat{
+					Type: "qcow2",
+				},
+				Source: &DomainDiskSource{
+					Block: &DomainDiskSourceBlock{
+						Dev: "/dev/HostVG/QEMUGuest",
+					},
+				},
+				BackingStore: &DomainDiskBackingStore{
+					Index: 2,
+					Format: &DomainDiskFormat{
+						Type: "qcow2",
+					},
+					Source: &DomainDiskSource{
+						File: &DomainDiskSourceFile{
+							File: "/tmp/image2.qcow2",
+						},
+					},
+					BackingStore: &DomainDiskBackingStore{
+						Index: 3,
+						Format: &DomainDiskFormat{
+							Type: "raw",
+						},
+						Source: &DomainDiskSource{
+							File: &DomainDiskSourceFile{
+								File: "/tmp/image3.iso",
+							},
+						},
+						BackingStore: &DomainDiskBackingStore{},
+					},
+				},
+			},
 			Target: &DomainDiskTarget{
 				Dev: "vda",
 				Bus: "virtio",
@@ -1964,9 +1998,99 @@ var domainTestData = []struct {
 			`<disk type="file" device="cdrom">`,
 			`  <driver name="qemu" type="qcow2"></driver>`,
 			`  <source file="/var/lib/libvirt/images/demo.qcow2"></source>`,
+			`  <backingStore type="block" index="1">`,
+			`    <format type="qcow2"></format>`,
+			`    <source dev="/dev/HostVG/QEMUGuest"></source>`,
+			`    <backingStore type="file" index="2">`,
+			`      <format type="qcow2"></format>`,
+			`      <source file="/tmp/image2.qcow2"></source>`,
+			`      <backingStore type="file" index="3">`,
+			`        <format type="raw"></format>`,
+			`        <source file="/tmp/image3.iso"></source>`,
+			`        <backingStore></backingStore>`,
+			`      </backingStore>`,
+			`    </backingStore>`,
+			`  </backingStore>`,
 			`  <target dev="vda" bus="virtio"></target>`,
 			`  <serial>fishfood</serial>`,
 			`  <wwn>0123456789abcdef</wwn>`,
+			`</disk>`,
+		},
+	},
+	{
+		Object: &DomainDisk{
+			Device: "cdrom",
+			Driver: &DomainDiskDriver{
+				Name: "qemu",
+				Type: "qcow2",
+			},
+			Source: &DomainDiskSource{
+				Block: &DomainDiskSourceBlock{
+					Dev: "/dev/HostVG/QEMUGuest1",
+				},
+			},
+			Mirror: &DomainDiskMirror{
+				Job:   "copy",
+				Ready: "yes",
+				Source: &DomainDiskSource{
+					Block: &DomainDiskSourceBlock{
+						Dev: "/dev/HostVG/QEMUGuest1Copy",
+					},
+				},
+			},
+			Target: &DomainDiskTarget{
+				Dev: "vda",
+				Bus: "virtio",
+			},
+		},
+		Expected: []string{
+			`<disk type="block" device="cdrom">`,
+			`  <driver name="qemu" type="qcow2"></driver>`,
+			`  <source dev="/dev/HostVG/QEMUGuest1"></source>`,
+			`  <mirror type="block" job="copy" ready="yes">`,
+			`    <source dev="/dev/HostVG/QEMUGuest1Copy"></source>`,
+			`  </mirror>`,
+			`  <target dev="vda" bus="virtio"></target>`,
+			`</disk>`,
+		},
+	},
+	{
+		Object: &DomainDisk{
+			Device: "cdrom",
+			Driver: &DomainDiskDriver{
+				Name: "qemu",
+				Type: "qcow2",
+			},
+			Source: &DomainDiskSource{
+				File: &DomainDiskSourceFile{
+					File: "/var/lib/libvirt/images/demo.qcow2",
+				},
+			},
+			Mirror: &DomainDiskMirror{
+				Job: "copy",
+				Format: &DomainDiskFormat{
+					Type: "qcow2",
+				},
+				Source: &DomainDiskSource{
+					File: &DomainDiskSourceFile{
+						File: "/var/lib/libvirt/images/demo-copy.qcow2",
+					},
+				},
+			},
+			Target: &DomainDiskTarget{
+				Dev: "vda",
+				Bus: "virtio",
+			},
+		},
+		Expected: []string{
+			`<disk type="file" device="cdrom">`,
+			`  <driver name="qemu" type="qcow2"></driver>`,
+			`  <source file="/var/lib/libvirt/images/demo.qcow2"></source>`,
+			`  <mirror type="file" file="/var/lib/libvirt/images/demo-copy.qcow2" format="qcow2" job="copy">`,
+			`    <format type="qcow2"></format>`,
+			`    <source file="/var/lib/libvirt/images/demo-copy.qcow2"></source>`,
+			`  </mirror>`,
+			`  <target dev="vda" bus="virtio"></target>`,
 			`</disk>`,
 		},
 	},

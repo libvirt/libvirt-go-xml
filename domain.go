@@ -234,30 +234,50 @@ type DomainDiskBlockIO struct {
 	PhysicalBlockSize uint `xml:"physical_block_size,attr,omitempty"`
 }
 
+type DomainDiskFormat struct {
+	Type string `xml:"type,attr"`
+}
+
+type DomainDiskBackingStore struct {
+	Index        uint                    `xml:"index,attr,omitempty"`
+	Format       *DomainDiskFormat       `xml:"format"`
+	Source       *DomainDiskSource       `xml:"source"`
+	BackingStore *DomainDiskBackingStore `xml:"backingStore"`
+}
+
+type DomainDiskMirror struct {
+	Job    string            `xml:"job,attr,omitempty"`
+	Ready  string            `xml:"ready,attr,omitempty"`
+	Format *DomainDiskFormat `xml:"format"`
+	Source *DomainDiskSource `xml:"source"`
+}
+
 type DomainDisk struct {
-	XMLName    xml.Name              `xml:"disk"`
-	Device     string                `xml:"device,attr"`
-	RawIO      string                `xml:"rawio,attr,omitempty"`
-	SGIO       string                `xml:"sgio,attr,omitempty"`
-	Snapshot   string                `xml:"snapshot,attr,omitempty"`
-	Driver     *DomainDiskDriver     `xml:"driver"`
-	Auth       *DomainDiskAuth       `xml:"auth"`
-	Source     *DomainDiskSource     `xml:"source"`
-	Geometry   *DomainDiskGeometry   `xml:"geometry"`
-	BlockIO    *DomainDiskBlockIO    `xml:"blockio"`
-	Target     *DomainDiskTarget     `xml:"target"`
-	IOTune     *DomainDiskIOTune     `xml:"iotune"`
-	ReadOnly   *DomainDiskReadOnly   `xml:"readonly"`
-	Shareable  *DomainDiskShareable  `xml:"shareable"`
-	Transient  *DomainDiskTransient  `xml:"transient"`
-	Serial     string                `xml:"serial,omitempty"`
-	WWN        string                `xml:"wwn,omitempty"`
-	Vendor     string                `xml:"vendor,omitempty"`
-	Product    string                `xml:"product,omitempty"`
-	Encryption *DomainDiskEncryption `xml:"encryption"`
-	Boot       *DomainDeviceBoot     `xml:"boot"`
-	Alias      *DomainAlias          `xml:"alias"`
-	Address    *DomainAddress        `xml:"address"`
+	XMLName      xml.Name                `xml:"disk"`
+	Device       string                  `xml:"device,attr"`
+	RawIO        string                  `xml:"rawio,attr,omitempty"`
+	SGIO         string                  `xml:"sgio,attr,omitempty"`
+	Snapshot     string                  `xml:"snapshot,attr,omitempty"`
+	Driver       *DomainDiskDriver       `xml:"driver"`
+	Auth         *DomainDiskAuth         `xml:"auth"`
+	Source       *DomainDiskSource       `xml:"source"`
+	BackingStore *DomainDiskBackingStore `xml:"backingStore"`
+	Geometry     *DomainDiskGeometry     `xml:"geometry"`
+	BlockIO      *DomainDiskBlockIO      `xml:"blockio"`
+	Mirror       *DomainDiskMirror       `xml:"mirror"`
+	Target       *DomainDiskTarget       `xml:"target"`
+	IOTune       *DomainDiskIOTune       `xml:"iotune"`
+	ReadOnly     *DomainDiskReadOnly     `xml:"readonly"`
+	Shareable    *DomainDiskShareable    `xml:"shareable"`
+	Transient    *DomainDiskTransient    `xml:"transient"`
+	Serial       string                  `xml:"serial,omitempty"`
+	WWN          string                  `xml:"wwn,omitempty"`
+	Vendor       string                  `xml:"vendor,omitempty"`
+	Product      string                  `xml:"product,omitempty"`
+	Encryption   *DomainDiskEncryption   `xml:"encryption"`
+	Boot         *DomainDeviceBoot       `xml:"boot"`
+	Alias        *DomainAlias            `xml:"alias"`
+	Address      *DomainAddress          `xml:"address"`
 }
 
 type DomainFilesystemDriver struct {
@@ -1724,6 +1744,151 @@ func (a *DomainDiskSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		}
 		*a = DomainDiskSource(volume.domainDiskSource)
 		a.Volume = &volume.DomainDiskSourceVolume
+	}
+	return nil
+}
+
+type domainDiskBackingStore DomainDiskBackingStore
+
+func (a *DomainDiskBackingStore) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "backingStore"
+	if a.Source != nil {
+		if a.Source.File != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "file",
+			})
+		} else if a.Source.Block != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "block",
+			})
+		} else if a.Source.Dir != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "dir",
+			})
+		} else if a.Source.Network != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "network",
+			})
+		} else if a.Source.Volume != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "volume",
+			})
+		}
+	}
+	disk := domainDiskBackingStore(*a)
+	return e.EncodeElement(disk, start)
+}
+
+func (a *DomainDiskBackingStore) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "file"
+	}
+	a.Source = &DomainDiskSource{}
+	if typ == "file" {
+		a.Source.File = &DomainDiskSourceFile{}
+	} else if typ == "block" {
+		a.Source.Block = &DomainDiskSourceBlock{}
+	} else if typ == "network" {
+		a.Source.Network = &DomainDiskSourceNetwork{}
+	} else if typ == "dir" {
+		a.Source.Dir = &DomainDiskSourceDir{}
+	} else if typ == "volume" {
+		a.Source.Volume = &DomainDiskSourceVolume{}
+	}
+	disk := domainDiskBackingStore(*a)
+	err := d.DecodeElement(&disk, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainDiskBackingStore(disk)
+	if !ok && a.Source.File.File == "" {
+		a.Source.File = nil
+	}
+	return nil
+}
+
+type domainDiskMirror DomainDiskMirror
+
+func (a *DomainDiskMirror) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "mirror"
+	if a.Source != nil {
+		if a.Source.File != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "file",
+			})
+			if a.Source.File.File != "" {
+				start.Attr = append(start.Attr, xml.Attr{
+					xml.Name{Local: "file"}, a.Source.File.File,
+				})
+			}
+			if a.Format != nil && a.Format.Type != "" {
+				start.Attr = append(start.Attr, xml.Attr{
+					xml.Name{Local: "format"}, a.Format.Type,
+				})
+			}
+		} else if a.Source.Block != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "block",
+			})
+		} else if a.Source.Dir != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "dir",
+			})
+		} else if a.Source.Network != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "network",
+			})
+		} else if a.Source.Volume != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "volume",
+			})
+		}
+	}
+	disk := domainDiskMirror(*a)
+	return e.EncodeElement(disk, start)
+}
+
+func (a *DomainDiskMirror) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "file"
+	}
+	a.Source = &DomainDiskSource{}
+	if typ == "file" {
+		a.Source.File = &DomainDiskSourceFile{}
+	} else if typ == "block" {
+		a.Source.Block = &DomainDiskSourceBlock{}
+	} else if typ == "network" {
+		a.Source.Network = &DomainDiskSourceNetwork{}
+	} else if typ == "dir" {
+		a.Source.Dir = &DomainDiskSourceDir{}
+	} else if typ == "volume" {
+		a.Source.Volume = &DomainDiskSourceVolume{}
+	}
+	disk := domainDiskMirror(*a)
+	err := d.DecodeElement(&disk, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainDiskMirror(disk)
+	if !ok {
+		if a.Source.File.File == "" {
+			file, ok := getAttr(start.Attr, "file")
+			if ok {
+				a.Source.File.File = file
+			} else {
+				a.Source.File = nil
+			}
+		}
+		if a.Format != nil {
+			fmt, ok := getAttr(start.Attr, "format")
+			if ok {
+				a.Format = &DomainDiskFormat{
+					Type: fmt,
+				}
+			}
+		}
 	}
 	return nil
 }
