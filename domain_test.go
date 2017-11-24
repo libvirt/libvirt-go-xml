@@ -431,21 +431,22 @@ var domainTestData = []struct {
 							Bytes:  1234,
 						},
 						Backend: &DomainRNGBackend{
-							Model: "egd",
-							Type:  "udp",
-							Sources: []DomainInterfaceSource{
-								DomainInterfaceSource{
-									Mode:    "bind",
-									Service: "1234",
+							EGD: &DomainRNGBackendEGD{
+								Type: "udp",
+								Sources: []DomainInterfaceSource{
+									DomainInterfaceSource{
+										Mode:    "bind",
+										Service: "1234",
+									},
+									DomainInterfaceSource{
+										Mode:    "connect",
+										Host:    "1.2.3.4",
+										Service: "1234",
+									},
 								},
-								DomainInterfaceSource{
-									Mode:    "connect",
-									Host:    "1.2.3.4",
-									Service: "1234",
+								Protocol: &DomainRNGProtocol{
+									Type: "raw",
 								},
-							},
-							Protocol: &DomainRNGProtocol{
-								Type: "raw",
 							},
 						},
 					},
@@ -2103,8 +2104,9 @@ var domainTestData = []struct {
 				Bytes:  1234,
 			},
 			Backend: &DomainRNGBackend{
-				Device: "/dev/random",
-				Model:  "random",
+				Random: &DomainRNGBackendRandom{
+					Device: "/dev/random",
+				},
 			},
 			Address: &DomainAddress{
 				PCI: &DomainAddressPCI{
@@ -2132,17 +2134,18 @@ var domainTestData = []struct {
 				Bytes:  1234,
 			},
 			Backend: &DomainRNGBackend{
-				Model: "egd",
-				Type:  "udp",
-				Sources: []DomainInterfaceSource{
-					DomainInterfaceSource{
-						Mode:    "bind",
-						Service: "1234",
-					},
-					DomainInterfaceSource{
-						Mode:    "connect",
-						Host:    "1.2.3.4",
-						Service: "1234",
+				EGD: &DomainRNGBackendEGD{
+					Type: "udp",
+					Sources: []DomainInterfaceSource{
+						DomainInterfaceSource{
+							Mode:    "bind",
+							Service: "1234",
+						},
+						DomainInterfaceSource{
+							Mode:    "connect",
+							Host:    "1.2.3.4",
+							Service: "1234",
+						},
 					},
 				},
 			},

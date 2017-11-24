@@ -544,11 +544,18 @@ type DomainRNGProtocol struct {
 }
 
 type DomainRNGBackend struct {
-	Device   string                  `xml:",chardata"`
-	Model    string                  `xml:"model,attr"`
+	Random *DomainRNGBackendRandom `xml:"-"`
+	EGD    *DomainRNGBackendEGD    `xml:"-"`
+}
+
+type DomainRNGBackendEGD struct {
 	Type     string                  `xml:"type,attr,omitempty"`
 	Sources  []DomainInterfaceSource `xml:"source"`
 	Protocol *DomainRNGProtocol      `xml:"protocol"`
+}
+
+type DomainRNGBackendRandom struct {
+	Device string `xml:",chardata"`
 }
 
 type DomainRNG struct {
@@ -1498,6 +1505,43 @@ func (d *DomainSound) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainRNGBackend) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.Random != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "model"}, "random",
+		})
+		return e.EncodeElement(a.Random, start)
+	} else if a.EGD != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "model"}, "egd",
+		})
+		return e.EncodeElement(a.EGD, start)
+	}
+	return nil
+}
+
+func (a *DomainRNGBackend) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	model, ok := getAttr(start.Attr, "model")
+	if !ok {
+		return nil
+	}
+	if model == "random" {
+		a.Random = &DomainRNGBackendRandom{}
+		err := d.DecodeElement(a.Random, &start)
+		if err != nil {
+			return err
+		}
+	} else if model == "egd" {
+		a.EGD = &DomainRNGBackendEGD{}
+		err := d.DecodeElement(a.EGD, &start)
+		if err != nil {
+			return err
+		}
+	}
+	d.Skip()
+	return nil
 }
 
 func (d *DomainRNG) Unmarshal(doc string) error {
