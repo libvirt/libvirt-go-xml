@@ -1193,23 +1193,23 @@ type DomainWatchdog struct {
 
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
-	Controllers []DomainController `xml:"controller"`
 	Disks       []DomainDisk       `xml:"disk"`
+	Controllers []DomainController `xml:"controller"`
 	Filesystems []DomainFilesystem `xml:"filesystem"`
 	Interfaces  []DomainInterface  `xml:"interface"`
 	Serials     []DomainSerial     `xml:"serial"`
 	Consoles    []DomainConsole    `xml:"console"`
+	Channels    []DomainChannel    `xml:"channel"`
 	Inputs      []DomainInput      `xml:"input"`
 	Graphics    []DomainGraphic    `xml:"graphics"`
-	Videos      []DomainVideo      `xml:"video"`
-	Channels    []DomainChannel    `xml:"channel"`
-	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
-	Panics      []DomainPanic      `xml:"panic"`
 	Sounds      []DomainSound      `xml:"sound"`
-	RNGs        []DomainRNG        `xml:"rng"`
+	Videos      []DomainVideo      `xml:"video"`
 	Hostdevs    []DomainHostdev    `xml:"hostdev"`
-	Memorydevs  []DomainMemorydev  `xml:"memory"`
 	Watchdog    *DomainWatchdog    `xml:"watchdog"`
+	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
+	RNGs        []DomainRNG        `xml:"rng"`
+	Panics      []DomainPanic      `xml:"panic"`
+	Memorydevs  []DomainMemorydev  `xml:"memory"`
 }
 
 type DomainMemory struct {
