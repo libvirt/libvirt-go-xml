@@ -793,9 +793,9 @@ type DomainRNGBackend struct {
 }
 
 type DomainRNGBackendEGD struct {
-	Type     string                  `xml:"type,attr,omitempty"`
-	Sources  []DomainInterfaceSource `xml:"source"`
-	Protocol *DomainRNGProtocol      `xml:"protocol"`
+	Type     string                `xml:"type,attr,omitempty"`
+	Sources  []DomainChardevSource `xml:"source"`
+	Protocol *DomainRNGProtocol    `xml:"protocol"`
 }
 
 type DomainRNGBackendRandom struct {

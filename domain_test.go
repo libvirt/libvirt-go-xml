@@ -443,12 +443,12 @@ var domainTestData = []struct {
 						Backend: &DomainRNGBackend{
 							EGD: &DomainRNGBackendEGD{
 								Type: "udp",
-								Sources: []DomainInterfaceSource{
-									DomainInterfaceSource{
+								Sources: []DomainChardevSource{
+									DomainChardevSource{
 										Mode:    "bind",
 										Service: "1234",
 									},
-									DomainInterfaceSource{
+									DomainChardevSource{
 										Mode:    "connect",
 										Host:    "1.2.3.4",
 										Service: "1234",
@@ -530,7 +530,7 @@ var domainTestData = []struct {
 			`      <rate bytes="1234" period="2000"></rate>`,
 			`      <backend model="egd" type="udp">`,
 			`        <source mode="bind" service="1234"></source>`,
-			`        <source mode="connect" service="1234" host="1.2.3.4"></source>`,
+			`        <source mode="connect" host="1.2.3.4" service="1234"></source>`,
 			`        <protocol type="raw"></protocol>`,
 			`      </backend>`,
 			`    </rng>`,
@@ -2474,12 +2474,12 @@ var domainTestData = []struct {
 			Backend: &DomainRNGBackend{
 				EGD: &DomainRNGBackendEGD{
 					Type: "udp",
-					Sources: []DomainInterfaceSource{
-						DomainInterfaceSource{
+					Sources: []DomainChardevSource{
+						DomainChardevSource{
 							Mode:    "bind",
 							Service: "1234",
 						},
-						DomainInterfaceSource{
+						DomainChardevSource{
 							Mode:    "connect",
 							Host:    "1.2.3.4",
 							Service: "1234",
@@ -2494,7 +2494,7 @@ var domainTestData = []struct {
 			`  <rate bytes="1234" period="2000"></rate>`,
 			`  <backend model="egd" type="udp">`,
 			`    <source mode="bind" service="1234"></source>`,
-			`    <source mode="connect" service="1234" host="1.2.3.4"></source>`,
+			`    <source mode="connect" host="1.2.3.4" service="1234"></source>`,
 			`  </backend>`,
 			`</rng>`,
 		},
