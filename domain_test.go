@@ -1002,12 +1002,16 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "network",
 						MAC: &DomainInterfaceMAC{
 							Address: "00:11:22:33:44:55",
 						},
 						Model: &DomainInterfaceModel{
 							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							Network: &DomainInterfaceSourceNetwork{
+								Network: "default",
+							},
 						},
 						Virtualport: &DomainInterfaceVirtualport{
 							Type: "openvswitch",
@@ -1028,6 +1032,7 @@ var domainTestData = []struct {
 			`    <interface type="network">`,
 			`      <mac address="00:11:22:33:44:55"></mac>`,
 			`      <model type="virtio"></model>`,
+			`      <source network="default"></source>`,
 			`      <virtualport type="openvswitch"></virtualport>`,
 			`    </interface>`,
 			`  </devices>`,
@@ -1095,7 +1100,6 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "bridge",
 						MAC: &DomainInterfaceMAC{
 							Address: "06:39:b4:00:00:46",
 						},
@@ -1103,7 +1107,9 @@ var domainTestData = []struct {
 							Type: "virtio",
 						},
 						Source: &DomainInterfaceSource{
-							Bridge: "private",
+							Bridge: &DomainInterfaceSourceBridge{
+								Bridge: "private",
+							},
 						},
 						Target: &DomainInterfaceTarget{
 							Dev: "vnet3",
@@ -1137,7 +1143,6 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "network",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
@@ -1145,7 +1150,9 @@ var domainTestData = []struct {
 							Type: "e1000",
 						},
 						Source: &DomainInterfaceSource{
-							Network: "default",
+							Network: &DomainInterfaceSourceNetwork{
+								Network: "default",
+							},
 						},
 					},
 				},
@@ -1171,7 +1178,6 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "udp",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
@@ -1179,11 +1185,13 @@ var domainTestData = []struct {
 							Type: "virtio",
 						},
 						Source: &DomainInterfaceSource{
-							Address: "127.0.0.1",
-							Port:    1234,
-							Local: &DomainInterfaceSourceLocal{
+							UDP: &DomainInterfaceSourceUDP{
 								Address: "127.0.0.1",
-								Port:    1235,
+								Port:    1234,
+								Local: &DomainInterfaceSourceLocal{
+									Address: "127.0.0.1",
+									Port:    1235,
+								},
 							},
 						},
 					},
@@ -1212,7 +1220,6 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "direct",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
@@ -1220,8 +1227,10 @@ var domainTestData = []struct {
 							Type: "e1000",
 						},
 						Source: &DomainInterfaceSource{
-							Dev:  "eth0",
-							Mode: "bridge",
+							Direct: &DomainInterfaceSourceDirect{
+								Dev:  "eth0",
+								Mode: "bridge",
+							},
 						},
 					},
 				},
@@ -1247,12 +1256,14 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "user",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
 						Model: &DomainInterfaceModel{
 							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							User: &DomainInterfaceSourceUser{},
 						},
 						Link: &DomainInterfaceLink{
 							State: "up",
@@ -1290,7 +1301,6 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "server",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
@@ -1298,8 +1308,10 @@ var domainTestData = []struct {
 							Type: "virtio",
 						},
 						Source: &DomainInterfaceSource{
-							Address: "127.0.0.1",
-							Port:    1234,
+							Server: &DomainInterfaceSourceServer{
+								Address: "127.0.0.1",
+								Port:    1234,
+							},
 						},
 					},
 				},
@@ -1325,12 +1337,14 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "ethernet",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
 						Model: &DomainInterfaceModel{
 							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							Ethernet: &DomainInterfaceSourceEthernet{},
 						},
 						Script: &DomainInterfaceScript{
 							Path: "/etc/qemu-ifup",
@@ -1354,6 +1368,7 @@ var domainTestData = []struct {
 			`    <interface type="ethernet">`,
 			`      <mac address="52:54:00:39:97:ac"></mac>`,
 			`      <model type="virtio"></model>`,
+			`      <source></source>`,
 			`      <script path="/etc/qemu-ifup"></script>`,
 			`      <address type="pci" domain="0x0000" bus="0x00" slot="0x04" function="0x0"></address>`,
 			`    </interface>`,
@@ -1368,7 +1383,6 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "vhostuser",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
@@ -1376,9 +1390,11 @@ var domainTestData = []struct {
 							Type: "virtio",
 						},
 						Source: &DomainInterfaceSource{
-							Type: "unix",
-							Path: "/tmp/vhost0.sock",
-							Mode: "server",
+							VHostUser: &DomainInterfaceSourceVHostUser{
+								Type: "unix",
+								Path: "/tmp/vhost0.sock",
+								Mode: "server",
+							},
 						},
 					},
 				},
@@ -1404,12 +1420,18 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						Type: "vhostuser",
 						MAC: &DomainInterfaceMAC{
 							Address: "52:54:00:39:97:ac",
 						},
 						Model: &DomainInterfaceModel{
 							Type: "virtio",
+						},
+						Source: &DomainInterfaceSource{
+							VHostUser: &DomainInterfaceSourceVHostUser{
+								Type: "unix",
+								Path: "/tmp/vhost0.sock",
+								Mode: "server",
+							},
 						},
 						Bandwidth: &DomainInterfaceBandwidth{
 							Inbound: &DomainInterfaceBandwidthParams{
@@ -1432,6 +1454,7 @@ var domainTestData = []struct {
 			`    <interface type="vhostuser">`,
 			`      <mac address="52:54:00:39:97:ac"></mac>`,
 			`      <model type="virtio"></model>`,
+			`      <source type="unix" path="/tmp/vhost0.sock" mode="server"></source>`,
 			`      <bandwidth>`,
 			`        <inbound average="1000" burst="10000"></inbound>`,
 			`        <outbound average="0" burst="0"></outbound>`,
@@ -2140,18 +2163,23 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainInterface{
-			Type: "network",
 			MAC: &DomainInterfaceMAC{
 				Address: "00:11:22:33:44:55",
 			},
 			Model: &DomainInterfaceModel{
 				Type: "virtio",
 			},
+			Source: &DomainInterfaceSource{
+				Network: &DomainInterfaceSourceNetwork{
+					Network: "default",
+				},
+			},
 		},
 		Expected: []string{
 			`<interface type="network">`,
 			`  <mac address="00:11:22:33:44:55"></mac>`,
 			`  <model type="virtio"></model>`,
+			`  <source network="default"></source>`,
 			`</interface>`,
 		},
 	},

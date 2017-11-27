@@ -369,16 +369,71 @@ type DomainInterfaceModel struct {
 }
 
 type DomainInterfaceSource struct {
-	Bridge  string                      `xml:"bridge,attr,omitempty"`
-	Dev     string                      `xml:"dev,attr,omitempty"`
-	Network string                      `xml:"network,attr,omitempty"`
+	User      *DomainInterfaceSourceUser      `xml:"-"`
+	Ethernet  *DomainInterfaceSourceEthernet  `xml:"-"`
+	VHostUser *DomainInterfaceSourceVHostUser `xml:"-"`
+	Server    *DomainInterfaceSourceServer    `xml:"-"`
+	Client    *DomainInterfaceSourceClient    `xml:"-"`
+	MCast     *DomainInterfaceSourceMCast     `xml:"-"`
+	Network   *DomainInterfaceSourceNetwork   `xml:"-"`
+	Bridge    *DomainInterfaceSourceBridge    `xml:"-"`
+	Internal  *DomainInterfaceSourceInternal  `xml:"-"`
+	Direct    *DomainInterfaceSourceDirect    `xml:"-"`
+	Hostdev   *DomainHostdevSubsysPCISource   `xml:"-"`
+	UDP       *DomainInterfaceSourceUDP       `xml:"-"`
+}
+
+type DomainInterfaceSourceUser struct {
+}
+
+type DomainInterfaceSourceEthernet struct {
+}
+
+type DomainInterfaceSourceVHostUser struct {
+	Type string `xml:"type,attr"`
+	Path string `xml:"path,attr,omitempty"`
+	Mode string `xml:"mode,attr,omitempty"`
+}
+
+type DomainInterfaceSourceServer struct {
 	Address string                      `xml:"address,attr,omitempty"`
-	Type    string                      `xml:"type,attr,omitempty"`
-	Path    string                      `xml:"path,attr,omitempty"`
-	Mode    string                      `xml:"mode,attr,omitempty"`
 	Port    uint                        `xml:"port,attr,omitempty"`
-	Service string                      `xml:"service,attr,omitempty"`
-	Host    string                      `xml:"host,attr,omitempty"`
+	Local   *DomainInterfaceSourceLocal `xml:"local"`
+}
+
+type DomainInterfaceSourceClient struct {
+	Address string                      `xml:"address,attr,omitempty"`
+	Port    uint                        `xml:"port,attr,omitempty"`
+	Local   *DomainInterfaceSourceLocal `xml:"local"`
+}
+
+type DomainInterfaceSourceMCast struct {
+	Address string                      `xml:"address,attr,omitempty"`
+	Port    uint                        `xml:"port,attr,omitempty"`
+	Local   *DomainInterfaceSourceLocal `xml:"local"`
+}
+
+type DomainInterfaceSourceNetwork struct {
+	Network   string `xml:"network,attr,omitempty"`
+	PortGroup string `xml:"portgroup,attr,omitempty"`
+}
+
+type DomainInterfaceSourceBridge struct {
+	Bridge string `xml:"bridge,attr,omitempty"`
+}
+
+type DomainInterfaceSourceInternal struct {
+	Name string `xml:"name,attr,omitempty"`
+}
+
+type DomainInterfaceSourceDirect struct {
+	Dev  string `xml:"dev,attr,omitempty"`
+	Mode string `xml:"mode,attr,omitempty"`
+}
+
+type DomainInterfaceSourceUDP struct {
+	Address string                      `xml:"address,attr,omitempty"`
+	Port    uint                        `xml:"port,attr,omitempty"`
 	Local   *DomainInterfaceSourceLocal `xml:"local"`
 }
 
@@ -427,7 +482,6 @@ type DomainInterfaceBandwidth struct {
 
 type DomainInterface struct {
 	XMLName     xml.Name                    `xml:"interface"`
-	Type        string                      `xml:"type,attr"`
 	MAC         *DomainInterfaceMAC         `xml:"mac"`
 	Model       *DomainInterfaceModel       `xml:"model"`
 	Source      *DomainInterfaceSource      `xml:"source"`
@@ -2216,6 +2270,165 @@ func (d *DomainFilesystem) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainInterfaceSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.User != nil {
+		/* We don't want an empty <source></source> for User mode */
+		//return e.EncodeElement(a.User, start)
+		return nil
+	} else if a.Ethernet != nil {
+		return e.EncodeElement(a.Ethernet, start)
+	} else if a.VHostUser != nil {
+		return e.EncodeElement(a.VHostUser, start)
+	} else if a.Server != nil {
+		return e.EncodeElement(a.Server, start)
+	} else if a.Client != nil {
+		return e.EncodeElement(a.Client, start)
+	} else if a.MCast != nil {
+		return e.EncodeElement(a.MCast, start)
+	} else if a.Network != nil {
+		return e.EncodeElement(a.Network, start)
+	} else if a.Bridge != nil {
+		return e.EncodeElement(a.Bridge, start)
+	} else if a.Internal != nil {
+		return e.EncodeElement(a.Internal, start)
+	} else if a.Direct != nil {
+		return e.EncodeElement(a.Direct, start)
+	} else if a.Hostdev != nil {
+		return e.EncodeElement(a.Hostdev, start)
+	} else if a.UDP != nil {
+		return e.EncodeElement(a.UDP, start)
+	}
+	return nil
+}
+
+func (a *DomainInterfaceSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if a.User != nil {
+		return d.DecodeElement(a.User, &start)
+	} else if a.Ethernet != nil {
+		return d.DecodeElement(a.Ethernet, &start)
+	} else if a.VHostUser != nil {
+		return d.DecodeElement(a.VHostUser, &start)
+	} else if a.Server != nil {
+		return d.DecodeElement(a.Server, &start)
+	} else if a.Client != nil {
+		return d.DecodeElement(a.Client, &start)
+	} else if a.MCast != nil {
+		return d.DecodeElement(a.MCast, &start)
+	} else if a.Network != nil {
+		return d.DecodeElement(a.Network, &start)
+	} else if a.Bridge != nil {
+		return d.DecodeElement(a.Bridge, &start)
+	} else if a.Internal != nil {
+		return d.DecodeElement(a.Internal, &start)
+	} else if a.Direct != nil {
+		return d.DecodeElement(a.Direct, &start)
+	} else if a.Hostdev != nil {
+		return d.DecodeElement(a.Hostdev, &start)
+	} else if a.UDP != nil {
+		return d.DecodeElement(a.UDP, &start)
+	}
+	return nil
+}
+
+type domainInterface DomainInterface
+
+func (a *DomainInterface) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "interface"
+	if a.Source != nil {
+		if a.Source.User != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "user",
+			})
+		} else if a.Source.Ethernet != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "ethernet",
+			})
+		} else if a.Source.VHostUser != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "vhostuser",
+			})
+		} else if a.Source.Server != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "server",
+			})
+		} else if a.Source.Client != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "client",
+			})
+		} else if a.Source.MCast != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "mcast",
+			})
+		} else if a.Source.Network != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "network",
+			})
+		} else if a.Source.Bridge != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "bridge",
+			})
+		} else if a.Source.Internal != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "internal",
+			})
+		} else if a.Source.Direct != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "direct",
+			})
+		} else if a.Source.Hostdev != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "hostdev",
+			})
+		} else if a.Source.UDP != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "udp",
+			})
+		}
+	}
+	fs := domainInterface(*a)
+	return e.EncodeElement(fs, start)
+}
+
+func (a *DomainInterface) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing interface type attribute")
+	}
+	a.Source = &DomainInterfaceSource{}
+	if typ == "user" {
+		a.Source.User = &DomainInterfaceSourceUser{}
+	} else if typ == "ethernet" {
+		a.Source.Ethernet = &DomainInterfaceSourceEthernet{}
+	} else if typ == "vhostuser" {
+		a.Source.VHostUser = &DomainInterfaceSourceVHostUser{}
+	} else if typ == "server" {
+		a.Source.Server = &DomainInterfaceSourceServer{}
+	} else if typ == "client" {
+		a.Source.Client = &DomainInterfaceSourceClient{}
+	} else if typ == "mcast" {
+		a.Source.MCast = &DomainInterfaceSourceMCast{}
+	} else if typ == "network" {
+		a.Source.Network = &DomainInterfaceSourceNetwork{}
+	} else if typ == "bridge" {
+		a.Source.Bridge = &DomainInterfaceSourceBridge{}
+	} else if typ == "internal" {
+		a.Source.Internal = &DomainInterfaceSourceInternal{}
+	} else if typ == "direct" {
+		a.Source.Direct = &DomainInterfaceSourceDirect{}
+	} else if typ == "hostdev" {
+		a.Source.Hostdev = &DomainHostdevSubsysPCISource{}
+	} else if typ == "udp" {
+		a.Source.UDP = &DomainInterfaceSourceUDP{}
+	}
+	fs := domainInterface(*a)
+	err := d.DecodeElement(&fs, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainInterface(fs)
+	return nil
 }
 
 func (d *DomainInterface) Unmarshal(doc string) error {
