@@ -498,8 +498,45 @@ type DomainInterfaceDriverGuest struct {
 	UFO  string `xml:"ufo,attr,omitempty"`
 }
 
-type DomainInterfaceVirtualport struct {
-	Type string `xml:"type,attr"`
+type DomainInterfaceVirtualPort struct {
+	Params *DomainInterfaceVirtualPortParams `xml:"parameters"`
+}
+
+type DomainInterfaceVirtualPortParams struct {
+	Any          *DomainInterfaceVirtualPortParamsAny          `xml:"-"`
+	VEPA8021QBG  *DomainInterfaceVirtualPortParamsVEPA8021QBG  `xml:"-"`
+	VNTag8011QBH *DomainInterfaceVirtualPortParamsVNTag8021QBH `xml:"-"`
+	OpenVSwitch  *DomainInterfaceVirtualPortParamsOpenVSwitch  `xml:"-"`
+	MidoNet      *DomainInterfaceVirtualPortParamsMidoNet      `xml:"-"`
+}
+
+type DomainInterfaceVirtualPortParamsAny struct {
+	ManagerID     *uint  `xml:"managerid,attr"`
+	TypeID        *uint  `xml:"typeid,attr,omitempty"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	InstanceID    string `xml:"instanceid,attr,omitempty"`
+	ProfileID     string `xml:"profileid,attr,omitempty"`
+	InterfaceID   string `xml:"interfaceid,attr,omitempty"`
+}
+
+type DomainInterfaceVirtualPortParamsVEPA8021QBG struct {
+	ManagerID     *uint  `xml:"managerid,attr"`
+	TypeID        *uint  `xml:"typeid,attr,omitempty"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	InstanceID    string `xml:"instanceid,attr,omitempty"`
+}
+
+type DomainInterfaceVirtualPortParamsVNTag8021QBH struct {
+	ProfileID string `xml:"profileid,attr,omitempty"`
+}
+
+type DomainInterfaceVirtualPortParamsOpenVSwitch struct {
+	InterfaceID string `xml:"interfaceid,attr,omitempty"`
+	ProfileID   string `xml:"profileid,attr,omitempty"`
+}
+
+type DomainInterfaceVirtualPortParamsMidoNet struct {
+	InterfaceID string `xml:"interfaceid,attr,omitempty"`
 }
 
 type DomainInterfaceBandwidthParams struct {
@@ -593,7 +630,7 @@ type DomainInterface struct {
 	Source              *DomainInterfaceSource      `xml:"source"`
 	Boot                *DomainDeviceBoot           `xml:"boot"`
 	VLan                *DomainInterfaceVLan        `xml:"vlan"`
-	Virtualport         *DomainInterfaceVirtualport `xml:"virtualport"`
+	VirtualPort         *DomainInterfaceVirtualPort `xml:"virtualport"`
 	IP                  []DomainInterfaceIP         `xml:"ip"`
 	Route               []DomainInterfaceRoute      `xml:"route"`
 	Script              *DomainInterfaceScript      `xml:"script"`
@@ -2387,6 +2424,95 @@ func (d *DomainFilesystem) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainInterfaceVirtualPortParams) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "parameters"
+	if a.Any != nil {
+		return e.EncodeElement(a.Any, start)
+	} else if a.VEPA8021QBG != nil {
+		return e.EncodeElement(a.VEPA8021QBG, start)
+	} else if a.VNTag8011QBH != nil {
+		return e.EncodeElement(a.VNTag8011QBH, start)
+	} else if a.OpenVSwitch != nil {
+		return e.EncodeElement(a.OpenVSwitch, start)
+	} else if a.MidoNet != nil {
+		return e.EncodeElement(a.MidoNet, start)
+	}
+	return nil
+}
+
+func (a *DomainInterfaceVirtualPortParams) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if a.Any != nil {
+		return d.DecodeElement(a.Any, &start)
+	} else if a.VEPA8021QBG != nil {
+		return d.DecodeElement(a.VEPA8021QBG, &start)
+	} else if a.VNTag8011QBH != nil {
+		return d.DecodeElement(a.VNTag8011QBH, &start)
+	} else if a.OpenVSwitch != nil {
+		return d.DecodeElement(a.OpenVSwitch, &start)
+	} else if a.MidoNet != nil {
+		return d.DecodeElement(a.MidoNet, &start)
+	}
+	return nil
+}
+
+type domainInterfaceVirtualPort DomainInterfaceVirtualPort
+
+func (a *DomainInterfaceVirtualPort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "virtualport"
+	if a.Params != nil {
+		if a.Params.Any != nil {
+			/* no type attr wanted */
+		} else if a.Params.VEPA8021QBG != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "802.1Qbg",
+			})
+		} else if a.Params.VNTag8011QBH != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "802.1Qbh",
+			})
+		} else if a.Params.OpenVSwitch != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "openvswitch",
+			})
+		} else if a.Params.MidoNet != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "midonet",
+			})
+		}
+	}
+	vp := domainInterfaceVirtualPort(*a)
+	return e.EncodeElement(&vp, start)
+}
+
+func (a *DomainInterfaceVirtualPort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	a.Params = &DomainInterfaceVirtualPortParams{}
+	if !ok {
+		var any DomainInterfaceVirtualPortParamsAny
+		a.Params.Any = &any
+	} else if typ == "802.1Qbg" {
+		var vepa DomainInterfaceVirtualPortParamsVEPA8021QBG
+		a.Params.VEPA8021QBG = &vepa
+	} else if typ == "802.1Qbh" {
+		var vntag DomainInterfaceVirtualPortParamsVNTag8021QBH
+		a.Params.VNTag8011QBH = &vntag
+	} else if typ == "openvswitch" {
+		var ovs DomainInterfaceVirtualPortParamsOpenVSwitch
+		a.Params.OpenVSwitch = &ovs
+	} else if typ == "midonet" {
+		var mido DomainInterfaceVirtualPortParamsMidoNet
+		a.Params.MidoNet = &mido
+	}
+
+	vp := domainInterfaceVirtualPort(*a)
+	err := d.DecodeElement(&vp, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainInterfaceVirtualPort(vp)
+	return nil
 }
 
 func (a *DomainInterfaceSourceHostdev) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

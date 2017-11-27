@@ -106,6 +106,18 @@ var ipv6Prefix uint = 24
 var iothreadPriority int = -3
 var vcpuPriority int = -5
 
+var vepaManagerID uint = 5
+var vepaTypeID uint = 3
+var vepaTypeIDVersion uint = 12
+var vepaInstanceID = "c7bb5ab2-d42f-4690-89d6-f590eb199d0f"
+
+var vntagProfileID = "c7bb5ab2-d42f-4690-89d6-f590eb199d0f"
+
+var ovsProfileID = "c7bb5ab2-d42f-4690-89d6-f590eb199d0f"
+var ovsInterfaceID = "73728ac4-53d9-44de-8438-8d8f90beca00"
+
+var midoInterfaceID = "73728ac4-53d9-44de-8438-8d8f90beca00"
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -1013,9 +1025,6 @@ var domainTestData = []struct {
 								Network: "default",
 							},
 						},
-						Virtualport: &DomainInterfaceVirtualport{
-							Type: "openvswitch",
-						},
 					},
 				},
 			},
@@ -1032,7 +1041,6 @@ var domainTestData = []struct {
 			`    <interface type="network">`,
 			`      <mac address="00:11:22:33:44:55"></mac>`,
 			`      <source network="default"></source>`,
-			`      <virtualport type="openvswitch"></virtualport>`,
 			`      <model type="virtio"></model>`,
 			`    </interface>`,
 			`  </devices>`,
@@ -1220,16 +1228,20 @@ var domainTestData = []struct {
 			Devices: &DomainDeviceList{
 				Interfaces: []DomainInterface{
 					DomainInterface{
-						MAC: &DomainInterfaceMAC{
-							Address: "52:54:00:39:97:ac",
-						},
-						Model: &DomainInterfaceModel{
-							Type: "e1000",
-						},
 						Source: &DomainInterfaceSource{
 							Direct: &DomainInterfaceSourceDirect{
 								Dev:  "eth0",
 								Mode: "bridge",
+							},
+						},
+						VirtualPort: &DomainInterfaceVirtualPort{
+							Params: &DomainInterfaceVirtualPortParams{
+								VEPA8021QBG: &DomainInterfaceVirtualPortParamsVEPA8021QBG{
+									ManagerID:     &vepaManagerID,
+									TypeID:        &vepaTypeID,
+									TypeIDVersion: &vepaTypeIDVersion,
+									InstanceID:    vepaInstanceID,
+								},
 							},
 						},
 					},
@@ -1241,9 +1253,125 @@ var domainTestData = []struct {
 			`  <name>test</name>`,
 			`  <devices>`,
 			`    <interface type="direct">`,
-			`      <mac address="52:54:00:39:97:ac"></mac>`,
 			`      <source dev="eth0" mode="bridge"></source>`,
-			`      <model type="e1000"></model>`,
+			`      <virtualport type="802.1Qbg">`,
+			`        <parameters managerid="5" typeid="3" typeidversion="12" instanceid="c7bb5ab2-d42f-4690-89d6-f590eb199d0f"></parameters>`,
+			`      </virtualport>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Source: &DomainInterfaceSource{
+							Direct: &DomainInterfaceSourceDirect{
+								Dev:  "eth0",
+								Mode: "bridge",
+							},
+						},
+						VirtualPort: &DomainInterfaceVirtualPort{
+							Params: &DomainInterfaceVirtualPortParams{
+								VNTag8011QBH: &DomainInterfaceVirtualPortParamsVNTag8021QBH{
+									ProfileID: vntagProfileID,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="direct">`,
+			`      <source dev="eth0" mode="bridge"></source>`,
+			`      <virtualport type="802.1Qbh">`,
+			`        <parameters profileid="c7bb5ab2-d42f-4690-89d6-f590eb199d0f"></parameters>`,
+			`      </virtualport>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Source: &DomainInterfaceSource{
+							Direct: &DomainInterfaceSourceDirect{
+								Dev:  "eth0",
+								Mode: "bridge",
+							},
+						},
+						VirtualPort: &DomainInterfaceVirtualPort{
+							Params: &DomainInterfaceVirtualPortParams{
+								OpenVSwitch: &DomainInterfaceVirtualPortParamsOpenVSwitch{
+									ProfileID:   ovsProfileID,
+									InterfaceID: ovsInterfaceID,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="direct">`,
+			`      <source dev="eth0" mode="bridge"></source>`,
+			`      <virtualport type="openvswitch">`,
+			`        <parameters interfaceid="73728ac4-53d9-44de-8438-8d8f90beca00" profileid="c7bb5ab2-d42f-4690-89d6-f590eb199d0f"></parameters>`,
+			`      </virtualport>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						Source: &DomainInterfaceSource{
+							Direct: &DomainInterfaceSourceDirect{
+								Dev:  "eth0",
+								Mode: "bridge",
+							},
+						},
+						VirtualPort: &DomainInterfaceVirtualPort{
+							Params: &DomainInterfaceVirtualPortParams{
+								MidoNet: &DomainInterfaceVirtualPortParamsMidoNet{
+									InterfaceID: midoInterfaceID,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="direct">`,
+			`      <source dev="eth0" mode="bridge"></source>`,
+			`      <virtualport type="midonet">`,
+			`        <parameters interfaceid="73728ac4-53d9-44de-8438-8d8f90beca00"></parameters>`,
+			`      </virtualport>`,
 			`    </interface>`,
 			`  </devices>`,
 			`</domain>`,
