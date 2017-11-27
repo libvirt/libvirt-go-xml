@@ -789,11 +789,22 @@ type DomainChannel struct {
 }
 
 type DomainInput struct {
-	XMLName xml.Name       `xml:"input"`
-	Type    string         `xml:"type,attr"`
-	Bus     string         `xml:"bus,attr"`
-	Alias   *DomainAlias   `xml:"alias"`
-	Address *DomainAddress `xml:"address"`
+	XMLName xml.Name           `xml:"input"`
+	Type    string             `xml:"type,attr"`
+	Bus     string             `xml:"bus,attr"`
+	Driver  *DomainInputDriver `xml:"driver"`
+	Source  *DomainInputSource `xml:"source"`
+	Alias   *DomainAlias       `xml:"alias"`
+	Address *DomainAddress     `xml:"address"`
+}
+
+type DomainInputDriver struct {
+	IOMMU string `xml:"iommu,attr,omitempty"`
+	ATS   string `xml:"ats,attr,omitempty"`
+}
+
+type DomainInputSource struct {
+	EVDev string `xml:"evdev,attr"`
 }
 
 type DomainGraphicListenerAddress struct {
@@ -948,10 +959,16 @@ type DomainVideoModel struct {
 }
 
 type DomainVideo struct {
-	XMLName xml.Name         `xml:"video"`
-	Model   DomainVideoModel `xml:"model"`
-	Alias   *DomainAlias     `xml:"alias"`
-	Address *DomainAddress   `xml:"address"`
+	XMLName xml.Name           `xml:"video"`
+	Model   DomainVideoModel   `xml:"model"`
+	Driver  *DomainVideoDriver `xml:"driver"`
+	Alias   *DomainAlias       `xml:"alias"`
+	Address *DomainAddress     `xml:"address"`
+}
+
+type DomainVideoDriver struct {
+	IOMMU string `xml:"iommu,attr,omitempty"`
+	ATS   string `xml:"ats,attr,omitempty"`
 }
 
 type DomainMemBalloonStats struct {
@@ -959,12 +976,18 @@ type DomainMemBalloonStats struct {
 }
 
 type DomainMemBalloon struct {
-	XMLName     xml.Name               `xml:"memballoon"`
-	Model       string                 `xml:"model,attr"`
-	AutoDeflate string                 `xml:"autodeflate,attr,omitempty"`
-	Stats       *DomainMemBalloonStats `xml:"stats"`
-	Alias       *DomainAlias           `xml:"alias"`
-	Address     *DomainAddress         `xml:"address"`
+	XMLName     xml.Name                `xml:"memballoon"`
+	Model       string                  `xml:"model,attr"`
+	AutoDeflate string                  `xml:"autodeflate,attr,omitempty"`
+	Driver      *DomainMemBalloonDriver `xml:"driver"`
+	Stats       *DomainMemBalloonStats  `xml:"stats"`
+	Alias       *DomainAlias            `xml:"alias"`
+	Address     *DomainAddress          `xml:"address"`
+}
+
+type DomainMemBalloonDriver struct {
+	IOMMU string `xml:"iommu,attr,omitempty"`
+	ATS   string `xml:"ats,attr,omitempty"`
 }
 
 type DomainPanic struct {
@@ -1013,10 +1036,16 @@ type DomainRNGBackendRandom struct {
 type DomainRNG struct {
 	XMLName xml.Name          `xml:"rng"`
 	Model   string            `xml:"model,attr"`
+	Driver  *DomainRNGDriver  `xml:"driver"`
 	Rate    *DomainRNGRate    `xml:"rate"`
 	Backend *DomainRNGBackend `xml:"backend"`
 	Alias   *DomainAlias      `xml:"alias"`
 	Address *DomainAddress    `xml:"address"`
+}
+
+type DomainRNGDriver struct {
+	IOMMU string `xml:"iommu,attr,omitempty"`
+	ATS   string `xml:"ats,attr,omitempty"`
 }
 
 type DomainHostdevSubsysUSB struct {
