@@ -118,6 +118,8 @@ var ovsInterfaceID = "73728ac4-53d9-44de-8438-8d8f90beca00"
 
 var midoInterfaceID = "73728ac4-53d9-44de-8438-8d8f90beca00"
 
+var nvramReg uint64 = 0x4000
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -1932,6 +1934,31 @@ var domainTestData = []struct {
 			`    <iommu model="intel">`,
 			`      <driver intremap="on" caching_mode="on" eim="on"></driver>`,
 			`    </iommu>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				NVRAM: &DomainNVRAM{
+					Address: &DomainAddress{
+						SpaprVIO: &DomainAddressSpaprVIO{
+							Reg: &nvramReg,
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <nvram>`,
+			`      <address type="spapr-vio" reg="0x4000"></address>`,
+			`    </nvram>`,
 			`  </devices>`,
 			`</domain>`,
 		},

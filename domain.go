@@ -1209,6 +1209,11 @@ type DomainIOMMUDriver struct {
 	IOTLB       string `xml:"iotlb,attr,omitempty"`
 }
 
+type DomainNVRAM struct {
+	Alias   *DomainAlias   `xml:"alias"`
+	Address *DomainAddress `xml:"address"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Disks       []DomainDisk       `xml:"disk"`
@@ -1227,6 +1232,7 @@ type DomainDeviceList struct {
 	Watchdog    *DomainWatchdog    `xml:"watchdog"`
 	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
 	RNGs        []DomainRNG        `xml:"rng"`
+	NVRAM       *DomainNVRAM       `xml:"nvram"`
 	Panics      []DomainPanic      `xml:"panic"`
 	Memorydevs  []DomainMemorydev  `xml:"memory"`
 	IOMMU       *DomainIOMMU       `xml:"iommu"`
