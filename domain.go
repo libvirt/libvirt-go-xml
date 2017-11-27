@@ -379,7 +379,7 @@ type DomainInterfaceSource struct {
 	Bridge    *DomainInterfaceSourceBridge    `xml:"-"`
 	Internal  *DomainInterfaceSourceInternal  `xml:"-"`
 	Direct    *DomainInterfaceSourceDirect    `xml:"-"`
-	Hostdev   *DomainHostdevSubsysPCISource   `xml:"-"`
+	Hostdev   *DomainInterfaceSourceHostdev   `xml:"-"`
 	UDP       *DomainInterfaceSourceUDP       `xml:"-"`
 }
 
@@ -387,6 +387,8 @@ type DomainInterfaceSourceUser struct {
 }
 
 type DomainInterfaceSourceEthernet struct {
+	IP    []DomainInterfaceIP    `xml:"ip"`
+	Route []DomainInterfaceRoute `xml:"route"`
 }
 
 type DomainInterfaceSourceVHostUser struct {
@@ -431,6 +433,11 @@ type DomainInterfaceSourceDirect struct {
 	Mode string `xml:"mode,attr,omitempty"`
 }
 
+type DomainInterfaceSourceHostdev struct {
+	PCI *DomainHostdevSubsysPCISource `xml:"-"`
+	USB *DomainHostdevSubsysUSBSource `xml:"-"`
+}
+
 type DomainInterfaceSourceUDP struct {
 	Address string                      `xml:"address,attr,omitempty"`
 	Port    uint                        `xml:"port,attr,omitempty"`
@@ -460,8 +467,35 @@ type DomainInterfaceScript struct {
 }
 
 type DomainInterfaceDriver struct {
-	Name   string `xml:"name,attr"`
-	Queues uint   `xml:"queues,attr,omitempty"`
+	Name        string                      `xml:"name,attr,omitempty"`
+	TXMode      string                      `xml:"txmode,attr,omitempty"`
+	IOEventFD   string                      `xml:"ioeventfd,attr,omitempty"`
+	EventIDX    string                      `xml:"event_idx,attr,omitempty"`
+	Queues      uint                        `xml:"queues,attr,omitempty"`
+	RXQueueSize uint                        `xml:"rx_queue_size,attr,omitempty"`
+	TXQueueSize uint                        `xml:"tx_queue_size,attr,omitempty"`
+	IOMMU       string                      `xml:"iommu,attr,omitempty"`
+	ATS         string                      `xml:"ats,attr,omitempty"`
+	Host        *DomainInterfaceDriverHost  `xml:"host"`
+	Guest       *DomainInterfaceDriverGuest `xml:"guest"`
+}
+
+type DomainInterfaceDriverHost struct {
+	CSum     string `xml:"csum,attr,omitempty"`
+	GSO      string `xml:"gso,attr,omitempty"`
+	TSO4     string `xml:"tso4,attr,omitempty"`
+	TSO6     string `xml:"tso6,attr,omitempty"`
+	ECN      string `xml:"ecn,attr,omitempty"`
+	UFO      string `xml:"ufo,attr,omitempty"`
+	MrgRXBuf string `xml:"mrg_rxbuf,attr,omitempty"`
+}
+
+type DomainInterfaceDriverGuest struct {
+	CSum string `xml:"csum,attr,omitempty"`
+	TSO4 string `xml:"tso4,attr,omitempty"`
+	TSO6 string `xml:"tso6,attr,omitempty"`
+	ECN  string `xml:"ecn,attr,omitempty"`
+	UFO  string `xml:"ufo,attr,omitempty"`
 }
 
 type DomainInterfaceVirtualport struct {
@@ -480,20 +514,103 @@ type DomainInterfaceBandwidth struct {
 	Outbound *DomainInterfaceBandwidthParams `xml:"outbound"`
 }
 
+type DomainInterfaceVLan struct {
+	Trunk string                   `xml:"trunk,attr,omitempty"`
+	Tags  []DomainInterfaceVLanTag `xml:"tag"`
+}
+
+type DomainInterfaceVLanTag struct {
+	ID         uint   `xml:"id,attr"`
+	NativeMode string `xml:"nativeMode,attr,omitempty"`
+}
+
+type DomainInterfaceGuest struct {
+	Dev    string `xml:"dev,attr,omitempty"`
+	Actual string `xml:"actual,attr,omitempty"`
+}
+
+type DomainInterfaceFilterRef struct {
+	Filter      string                       `xml:"filter,attr"`
+	Pararmeters []DomainInterfaceFilterParam `xml:"parameter"`
+}
+
+type DomainInterfaceFilterParam struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value,attr"`
+}
+
+type DomainInterfaceBackend struct {
+	Tap   string `xml:"tap,attr,omitempty"`
+	VHost string `xml:"vhost,attr,omitempty"`
+}
+
+type DomainInterfaceTune struct {
+	SndBuf uint `xml:"sndbuf"`
+}
+
+type DomainInterfaceMTU struct {
+	Size uint `xml:"size,attr"`
+}
+
+type DomainInterfaceCoalesce struct {
+	RX *DomainInterfaceCoalesceRX `xml:"rx"`
+}
+
+type DomainInterfaceCoalesceRX struct {
+	Frames *DomainInterfaceCoalesceRXFrames `xml:"frames"`
+}
+
+type DomainInterfaceCoalesceRXFrames struct {
+	Max *uint `xml:"max,attr,omitempty"`
+}
+
+type DomainROM struct {
+	Bar  string `xml:"bar,attr,omitempty"`
+	File string `xml:"file,attr,omitempty"`
+}
+
+type DomainInterfaceIP struct {
+	Address string `xml:"address,attr"`
+	Family  string `xml:"family,attr,omitempty"`
+	Prefix  uint   `xml:"prefix,attr,omitempty"`
+	Peer    string `xml:"peer,attr,omitempty"`
+}
+
+type DomainInterfaceRoute struct {
+	Family  string `xml:"family,attr,omitempty"`
+	Address string `xml:"address,attr"`
+	Netmask string `xml:"netmask,attr,omitempty"`
+	Prefix  uint   `xml:"prefix,attr,omitempty"`
+	Gateway string `xml:"gateway,attr"`
+	Metric  uint   `xml:"metric,attr,omitempty"`
+}
+
 type DomainInterface struct {
-	XMLName     xml.Name                    `xml:"interface"`
-	MAC         *DomainInterfaceMAC         `xml:"mac"`
-	Model       *DomainInterfaceModel       `xml:"model"`
-	Source      *DomainInterfaceSource      `xml:"source"`
-	Target      *DomainInterfaceTarget      `xml:"target"`
-	Link        *DomainInterfaceLink        `xml:"link"`
-	Boot        *DomainDeviceBoot           `xml:"boot"`
-	Script      *DomainInterfaceScript      `xml:"script"`
-	Driver      *DomainInterfaceDriver      `xml:"driver"`
-	Virtualport *DomainInterfaceVirtualport `xml:"virtualport"`
-	Bandwidth   *DomainInterfaceBandwidth   `xml:"bandwidth"`
-	Alias       *DomainAlias                `xml:"alias"`
-	Address     *DomainAddress              `xml:"address"`
+	XMLName             xml.Name                    `xml:"interface"`
+	Managed             string                      `xml:"managed,attr,omitempty"`
+	TrustGuestRXFilters string                      `xml:"trustGuestRxFilters,attr,omitempty"`
+	MAC                 *DomainInterfaceMAC         `xml:"mac"`
+	Source              *DomainInterfaceSource      `xml:"source"`
+	Boot                *DomainDeviceBoot           `xml:"boot"`
+	VLan                *DomainInterfaceVLan        `xml:"vlan"`
+	Virtualport         *DomainInterfaceVirtualport `xml:"virtualport"`
+	IP                  []DomainInterfaceIP         `xml:"ip"`
+	Route               []DomainInterfaceRoute      `xml:"route"`
+	Script              *DomainInterfaceScript      `xml:"script"`
+	Target              *DomainInterfaceTarget      `xml:"target"`
+	Guest               *DomainInterfaceGuest       `xml:"guest"`
+	Model               *DomainInterfaceModel       `xml:"model"`
+	Driver              *DomainInterfaceDriver      `xml:"driver"`
+	Backend             *DomainInterfaceBackend     `xml:"backend"`
+	FilterRef           *DomainInterfaceFilterRef   `xml:"filterref"`
+	Tune                *DomainInterfaceTune        `xml:"tune"`
+	Link                *DomainInterfaceLink        `xml:"link"`
+	MTU                 *DomainInterfaceMTU         `xml:"mtu"`
+	Bandwidth           *DomainInterfaceBandwidth   `xml:"bandwidth"`
+	Coalesce            *DomainInterfaceCoalesce    `xml:"coalesce"`
+	ROM                 *DomainROM                  `xml:"rom"`
+	Alias               *DomainAlias                `xml:"alias"`
+	Address             *DomainAddress              `xml:"address"`
 }
 
 type DomainChardevSource struct {
@@ -2272,13 +2389,81 @@ func (d *DomainFilesystem) Marshal() (string, error) {
 	return string(doc), nil
 }
 
+func (a *DomainInterfaceSourceHostdev) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	if a.PCI != nil {
+		addr := xml.StartElement{
+			Name: xml.Name{Local: "address"},
+		}
+		addr.Attr = append(addr.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "pci",
+		})
+		e.EncodeElement(a.PCI.Address, addr)
+	} else if a.USB != nil {
+		addr := xml.StartElement{
+			Name: xml.Name{Local: "address"},
+		}
+		addr.Attr = append(addr.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "usb",
+		})
+		e.EncodeElement(a.USB.Address, addr)
+	}
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainInterfaceSourceHostdev) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return err
+		}
+
+		switch tok := tok.(type) {
+		case xml.StartElement:
+			if tok.Name.Local == "address" {
+				typ, ok := getAttr(tok.Attr, "type")
+				if !ok {
+					return fmt.Errorf("Missing hostdev address type attribute")
+				}
+
+				if typ == "pci" {
+					a.PCI = &DomainHostdevSubsysPCISource{
+						&DomainAddressPCI{},
+					}
+					err := d.DecodeElement(a.PCI.Address, &tok)
+					if err != nil {
+						return err
+					}
+				} else if typ == "usb" {
+					a.USB = &DomainHostdevSubsysUSBSource{
+						&DomainAddressUSB{},
+					}
+					err := d.DecodeElement(a.USB, &tok)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+	d.Skip()
+	return nil
+}
+
 func (a *DomainInterfaceSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.User != nil {
 		/* We don't want an empty <source></source> for User mode */
 		//return e.EncodeElement(a.User, start)
 		return nil
 	} else if a.Ethernet != nil {
-		return e.EncodeElement(a.Ethernet, start)
+		if len(a.Ethernet.IP) > 0 && len(a.Ethernet.Route) > 0 {
+			return e.EncodeElement(a.Ethernet, start)
+		}
+		return nil
 	} else if a.VHostUser != nil {
 		return e.EncodeElement(a.VHostUser, start)
 	} else if a.Server != nil {
@@ -2418,7 +2603,7 @@ func (a *DomainInterface) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	} else if typ == "direct" {
 		a.Source.Direct = &DomainInterfaceSourceDirect{}
 	} else if typ == "hostdev" {
-		a.Source.Hostdev = &DomainHostdevSubsysPCISource{}
+		a.Source.Hostdev = &DomainInterfaceSourceHostdev{}
 	} else if typ == "udp" {
 		a.Source.UDP = &DomainInterfaceSourceUDP{}
 	}
