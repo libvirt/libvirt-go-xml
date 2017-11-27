@@ -1191,6 +1191,12 @@ type DomainWatchdog struct {
 	Address *DomainAddress `xml:"address"`
 }
 
+type DomainHub struct {
+	Type    string         `xml:"type,attr"`
+	Alias   *DomainAlias   `xml:"alias"`
+	Address *DomainAddress `xml:"address"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Disks       []DomainDisk       `xml:"disk"`
@@ -1205,6 +1211,7 @@ type DomainDeviceList struct {
 	Sounds      []DomainSound      `xml:"sound"`
 	Videos      []DomainVideo      `xml:"video"`
 	Hostdevs    []DomainHostdev    `xml:"hostdev"`
+	Hubs        []DomainHub        `xml:"hub"`
 	Watchdog    *DomainWatchdog    `xml:"watchdog"`
 	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
 	RNGs        []DomainRNG        `xml:"rng"`

@@ -1891,6 +1891,27 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Hubs: []DomainHub{
+					DomainHub{
+						Type: "usb",
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <hub type="usb"></hub>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
 			Type: "qemu",
 			Name: "test",
 			QEMUCommandline: &DomainQEMUCommandline{
