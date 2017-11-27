@@ -1685,6 +1685,18 @@ type DomainQEMUCommandline struct {
 	Envs    []DomainQEMUCommandlineEnv `xml:"env"`
 }
 
+type DomainLXCNamespace struct {
+	XMLName  xml.Name               `xml:"http://libvirt.org/schemas/domain/lxc/1.0 namespace"`
+	ShareNet *DomainLXCNamespaceMap `xml:"sharenet"`
+	ShareIPC *DomainLXCNamespaceMap `xml:"shareipc"`
+	ShareUTS *DomainLXCNamespaceMap `xml:"shareuts"`
+}
+
+type DomainLXCNamespaceMap struct {
+	Type  string `xml:"type,attr"`
+	Value string `xml:"value,attr"`
+}
+
 type DomainBlockIOTune struct {
 	Weight uint                      `xml:"weight,omitempty"`
 	Device []DomainBlockIOTuneDevice `xml:"device"`
@@ -1820,6 +1832,7 @@ type Domain struct {
 	Devices         *DomainDeviceList    `xml:"devices"`
 	SecLabel        []DomainSecLabel     `xml:"seclabel"`
 	QEMUCommandline *DomainQEMUCommandline
+	LXCNamespace    *DomainLXCNamespace
 	KeyWrap         *DomainKeyWrap `xml:"keywrap"`
 }
 

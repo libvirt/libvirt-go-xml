@@ -2022,6 +2022,36 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &Domain{
+			Type: "lxc",
+			Name: "test",
+			LXCNamespace: &DomainLXCNamespace{
+				ShareNet: &DomainLXCNamespaceMap{
+					Type:  "netns",
+					Value: "red",
+				},
+				ShareIPC: &DomainLXCNamespaceMap{
+					Type:  "pid",
+					Value: "12345",
+				},
+				ShareUTS: &DomainLXCNamespaceMap{
+					Type:  "name",
+					Value: "container1",
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="lxc">`,
+			`  <name>test</name>`,
+			`  <namespace xmlns="http://libvirt.org/schemas/domain/lxc/1.0">`,
+			`    <sharenet type="netns" value="red"></sharenet>`,
+			`    <shareipc type="pid" value="12345"></shareipc>`,
+			`    <shareuts type="name" value="container1"></shareuts>`,
+			`  </namespace>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
 			Name:      "test",
 			IOThreads: 4,
 			IOThreadIDs: &DomainIOThreadIDs{
