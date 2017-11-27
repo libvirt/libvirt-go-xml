@@ -1197,6 +1197,18 @@ type DomainHub struct {
 	Address *DomainAddress `xml:"address"`
 }
 
+type DomainIOMMU struct {
+	Model  string             `xml:"model,attr"`
+	Driver *DomainIOMMUDriver `xml:"driver"`
+}
+
+type DomainIOMMUDriver struct {
+	IntRemap    string `xml:"intremap,attr,omitempty"`
+	CachingMode string `xml:"caching_mode,attr,omitempty"`
+	EIM         string `xml:"eim,attr,omitempty"`
+	IOTLB       string `xml:"iotlb,attr,omitempty"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Disks       []DomainDisk       `xml:"disk"`
@@ -1217,6 +1229,7 @@ type DomainDeviceList struct {
 	RNGs        []DomainRNG        `xml:"rng"`
 	Panics      []DomainPanic      `xml:"panic"`
 	Memorydevs  []DomainMemorydev  `xml:"memory"`
+	IOMMU       *DomainIOMMU       `xml:"iommu"`
 }
 
 type DomainMemory struct {

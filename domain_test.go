@@ -1912,6 +1912,32 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				IOMMU: &DomainIOMMU{
+					Model: "intel",
+					Driver: &DomainIOMMUDriver{
+						EIM:         "on",
+						IntRemap:    "on",
+						CachingMode: "on",
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <iommu model="intel">`,
+			`      <driver intremap="on" caching_mode="on" eim="on"></driver>`,
+			`    </iommu>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
 			Type: "qemu",
 			Name: "test",
 			QEMUCommandline: &DomainQEMUCommandline{
