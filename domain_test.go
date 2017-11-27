@@ -1943,6 +1943,36 @@ var domainTestData = []struct {
 			Type: "kvm",
 			Name: "test",
 			Devices: &DomainDeviceList{
+				Leases: []DomainLease{
+					DomainLease{
+						Lockspace: "foo",
+						Key:       "bar",
+						Target: &DomainLeaseTarget{
+							Path:   "/some/file",
+							Offset: 1024,
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <lease>`,
+			`      <lockspace>foo</lockspace>`,
+			`      <key>bar</key>`,
+			`      <target path="/some/file" offset="1024"></target>`,
+			`    </lease>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Devices: &DomainDeviceList{
 				NVRAM: &DomainNVRAM{
 					Address: &DomainAddress{
 						SpaprVIO: &DomainAddressSpaprVIO{

@@ -1214,10 +1214,22 @@ type DomainNVRAM struct {
 	Address *DomainAddress `xml:"address"`
 }
 
+type DomainLease struct {
+	Lockspace string             `xml:"lockspace"`
+	Key       string             `xml:"key"`
+	Target    *DomainLeaseTarget `xml:"target"`
+}
+
+type DomainLeaseTarget struct {
+	Path   string `xml:"path,attr"`
+	Offset uint64 `xml:"offset,attr,omitempty"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Disks       []DomainDisk       `xml:"disk"`
 	Controllers []DomainController `xml:"controller"`
+	Leases      []DomainLease      `xml:"lease"`
 	Filesystems []DomainFilesystem `xml:"filesystem"`
 	Interfaces  []DomainInterface  `xml:"interface"`
 	Serials     []DomainSerial     `xml:"serial"`
