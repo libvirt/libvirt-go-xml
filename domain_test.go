@@ -124,6 +124,9 @@ var nvramReg uint64 = 0x4000
 var smartcardController uint = 0
 var smartcardSlot uint = 7
 
+var redirBus uint = 0
+var redirPort string = "3"
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -472,6 +475,20 @@ var domainTestData = []struct {
 						},
 					},
 				},
+				RedirDevs: []DomainRedirDev{
+					DomainRedirDev{
+						Bus: "usb",
+						Source: &DomainChardevSource{
+							SpiceVMC: &DomainChardevSourceSpiceVMC{},
+						},
+						Address: &DomainAddress{
+							USB: &DomainAddressUSB{
+								Bus:  &redirBus,
+								Port: redirPort,
+							},
+						},
+					},
+				},
 				RNGs: []DomainRNG{
 					DomainRNG{
 						Model: "virtio",
@@ -556,6 +573,9 @@ var domainTestData = []struct {
 			`      <model type="cirrus" heads="1" ram="4096" vram="8192" vgamem="256"></model>`,
 			`      <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"></address>`,
 			`    </video>`,
+			`    <redirdev type="spicevmc" bus="usb">`,
+			`      <address type="usb" bus="0" port="3"></address>`,
+			`    </redirdev>`,
 			`    <memballoon model="virtio">`,
 			`      <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"></address>`,
 			`    </memballoon>`,
@@ -2779,6 +2799,59 @@ var domainTestData = []struct {
 			`<channel type="pty">`,
 			`  <target type="xen" name="org.redhat.spice" state="connected"></target>`,
 			`</channel>`,
+		},
+	},
+	{
+		Object: &DomainRedirDev{
+			Bus: "usb",
+			Source: &DomainChardevSource{
+				SpiceVMC: &DomainChardevSourceSpiceVMC{},
+			},
+			Address: &DomainAddress{
+				USB: &DomainAddressUSB{
+					Bus:  &redirBus,
+					Port: redirPort,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<redirdev type="spicevmc" bus="usb">`,
+			`  <address type="usb" bus="0" port="3"></address>`,
+			`</redirdev>`,
+		},
+	},
+	{
+		Object: &DomainRedirDev{
+			Bus: "usb",
+			Source: &DomainChardevSource{
+				TCP: &DomainChardevSourceTCP{
+					Mode:    "connect",
+					Host:    "localhost",
+					Service: "1234",
+				},
+			},
+			Protocol: &DomainChardevProtocol{
+				Type: "raw",
+			},
+			Boot: &DomainDeviceBoot{
+				Order: 1,
+			},
+			Address: &DomainAddress{
+				USB: &DomainAddressUSB{
+					Bus:  &redirBus,
+					Port: redirPort,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<redirdev type="tcp" bus="usb">`,
+			`  <source mode="connect" host="localhost" service="1234"></source>`,
+			`  <protocol type="raw"></protocol>`,
+			`  <boot order="1"></boot>`,
+			`  <address type="usb" bus="0" port="3"></address>`,
+			`</redirdev>`,
 		},
 	},
 	{

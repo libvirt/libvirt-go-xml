@@ -903,6 +903,16 @@ type DomainChannel struct {
 	Address  *DomainAddress         `xml:"address"`
 }
 
+type DomainRedirDev struct {
+	XMLName  xml.Name               `xml:"redirdev"`
+	Bus      string                 `xml:"bus,attr,omitempty"`
+	Source   *DomainChardevSource   `xml:"source"`
+	Protocol *DomainChardevProtocol `xml:"protocol"`
+	Boot     *DomainDeviceBoot      `xml:"boot"`
+	Alias    *DomainAlias           `xml:"alias"`
+	Address  *DomainAddress         `xml:"address"`
+}
+
 type DomainInput struct {
 	XMLName xml.Name           `xml:"input"`
 	Type    string             `xml:"type,attr"`
@@ -1450,6 +1460,7 @@ type DomainDeviceList struct {
 	Sounds      []DomainSound      `xml:"sound"`
 	Videos      []DomainVideo      `xml:"video"`
 	Hostdevs    []DomainHostdev    `xml:"hostdev"`
+	RedirDevs   []DomainRedirDev   `xml:"redirdev"`
 	Hubs        []DomainHub        `xml:"hub"`
 	Watchdog    *DomainWatchdog    `xml:"watchdog"`
 	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
@@ -3560,6 +3571,49 @@ func (d *DomainChannel) Unmarshal(doc string) error {
 }
 
 func (d *DomainChannel) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+type domainRedirDev DomainRedirDev
+
+func (a *DomainRedirDev) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "redirdev"
+	if a.Source != nil {
+		typ := getChardevSourceType(a.Source)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
+	}
+	fs := domainRedirDev(*a)
+	return e.EncodeElement(fs, start)
+}
+
+func (a *DomainRedirDev) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "pty"
+	}
+	a.Source = createChardevSource(typ)
+	con := domainRedirDev(*a)
+	err := d.DecodeElement(&con, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainRedirDev(con)
+	return nil
+}
+
+func (d *DomainRedirDev) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainRedirDev) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err
