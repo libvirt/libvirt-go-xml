@@ -832,16 +832,26 @@ type DomainAddressSpaprVIO struct {
 	Reg *uint64 `xml:"reg,attr"`
 }
 
+type DomainAddressCCID struct {
+	Controller *uint `xml:"controller,attr"`
+	Slot       *uint `xml:"slot,attr"`
+}
+
+type DomainAddressVirtioS390 struct {
+}
+
 type DomainAddress struct {
-	USB          *DomainAddressUSB
 	PCI          *DomainAddressPCI
 	Drive        *DomainAddressDrive
-	DIMM         *DomainAddressDIMM
-	ISA          *DomainAddressISA
-	VirtioMMIO   *DomainAddressVirtioMMIO
-	CCW          *DomainAddressCCW
 	VirtioSerial *DomainAddressVirtioSerial
+	CCID         *DomainAddressCCID
+	USB          *DomainAddressUSB
 	SpaprVIO     *DomainAddressSpaprVIO
+	VirtioS390   *DomainAddressVirtioS390
+	CCW          *DomainAddressCCW
+	VirtioMMIO   *DomainAddressVirtioMMIO
+	ISA          *DomainAddressISA
+	DIMM         *DomainAddressDIMM
 }
 
 type DomainChardevLog struct {
@@ -4018,6 +4028,20 @@ func (a *DomainAddressSpaprVIO) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	return nil
 }
 
+func (a *DomainAddressCCID) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	marshallUintAttr(&start, "controller", a.Controller, "%d")
+	marshallUintAttr(&start, "slot", a.Slot, "%d")
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainAddressVirtioS390) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
 		start.Attr = append(start.Attr, xml.Attr{
@@ -4064,6 +4088,16 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 			xml.Name{Local: "type"}, "spapr-vio",
 		})
 		return a.SpaprVIO.MarshalXML(e, start)
+	} else if a.CCID != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "ccid",
+		})
+		return a.CCID.MarshalXML(e, start)
+	} else if a.VirtioS390 != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "virtio-s390",
+		})
+		return a.VirtioS390.MarshalXML(e, start)
 	} else {
 		return nil
 	}
@@ -4251,6 +4285,27 @@ func (a *DomainAddressSpaprVIO) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	return nil
 }
 
+func (a *DomainAddressCCID) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "controller" {
+			if err := unmarshallUintAttr(attr.Value, &a.Controller, 10); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "slot" {
+			if err := unmarshallUintAttr(attr.Value, &a.Slot, 10); err != nil {
+				return err
+			}
+		}
+	}
+	d.Skip()
+	return nil
+}
+
+func (a *DomainAddressVirtioS390) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	d.Skip()
+	return nil
+}
+
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
 	for _, attr := range start.Attr {
@@ -4291,6 +4346,12 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "spapr-vio" {
 		a.SpaprVIO = &DomainAddressSpaprVIO{}
 		return a.SpaprVIO.UnmarshalXML(d, start)
+	} else if typ == "ccid" {
+		a.CCID = &DomainAddressCCID{}
+		return a.CCID.UnmarshalXML(d, start)
+	} else if typ == "spapr-vio" {
+		a.VirtioS390 = &DomainAddressVirtioS390{}
+		return a.VirtioS390.UnmarshalXML(d, start)
 	}
 
 	return nil
