@@ -830,35 +830,37 @@ type DomainChardevLog struct {
 }
 
 type DomainConsole struct {
-	XMLName xml.Name             `xml:"console"`
-	Source  *DomainChardevSource `xml:"source"`
-	Target  *DomainConsoleTarget `xml:"target"`
-	Log     *DomainChardevLog    `xml:"log"`
-	Alias   *DomainAlias         `xml:"alias"`
-	Address *DomainAddress       `xml:"address"`
+	XMLName  xml.Name               `xml:"console"`
+	Source   *DomainChardevSource   `xml:"source"`
+	Protocol *DomainChardevProtocol `xml:"protocol"`
+	Target   *DomainConsoleTarget   `xml:"target"`
+	Log      *DomainChardevLog      `xml:"log"`
+	Alias    *DomainAlias           `xml:"alias"`
+	Address  *DomainAddress         `xml:"address"`
 }
 
 type DomainSerial struct {
-	XMLName  xml.Name              `xml:"serial"`
-	Source   *DomainChardevSource  `xml:"source"`
-	Protocol *DomainSerialProtocol `xml:"protocol"`
-	Target   *DomainSerialTarget   `xml:"target"`
-	Log      *DomainChardevLog     `xml:"log"`
-	Alias    *DomainAlias          `xml:"alias"`
-	Address  *DomainAddress        `xml:"address"`
+	XMLName  xml.Name               `xml:"serial"`
+	Source   *DomainChardevSource   `xml:"source"`
+	Protocol *DomainChardevProtocol `xml:"protocol"`
+	Target   *DomainSerialTarget    `xml:"target"`
+	Log      *DomainChardevLog      `xml:"log"`
+	Alias    *DomainAlias           `xml:"alias"`
+	Address  *DomainAddress         `xml:"address"`
 }
 
-type DomainSerialProtocol struct {
+type DomainChardevProtocol struct {
 	Type string `xml:"type,attr"`
 }
 
 type DomainChannel struct {
-	XMLName xml.Name             `xml:"channel"`
-	Source  *DomainChardevSource `xml:"source"`
-	Target  *DomainChannelTarget `xml:"target"`
-	Log     *DomainChardevLog    `xml:"log"`
-	Alias   *DomainAlias         `xml:"alias"`
-	Address *DomainAddress       `xml:"address"`
+	XMLName  xml.Name               `xml:"channel"`
+	Source   *DomainChardevSource   `xml:"source"`
+	Protocol *DomainChardevProtocol `xml:"protocol"`
+	Target   *DomainChannelTarget   `xml:"target"`
+	Log      *DomainChardevLog      `xml:"log"`
+	Alias    *DomainAlias           `xml:"alias"`
+	Address  *DomainAddress         `xml:"address"`
 }
 
 type DomainInput struct {
@@ -1087,18 +1089,14 @@ type DomainRNGRate struct {
 	Period uint `xml:"period,attr,omitempty"`
 }
 
-type DomainRNGProtocol struct {
-	Type string `xml:"type,attr"`
-}
-
 type DomainRNGBackend struct {
 	Random *DomainRNGBackendRandom `xml:"-"`
 	EGD    *DomainRNGBackendEGD    `xml:"-"`
 }
 
 type DomainRNGBackendEGD struct {
-	Source   *DomainChardevSource `xml:"source"`
-	Protocol *DomainRNGProtocol   `xml:"protocol"`
+	Source   *DomainChardevSource   `xml:"source"`
+	Protocol *DomainChardevProtocol `xml:"protocol"`
 }
 
 type DomainRNGBackendRandom struct {

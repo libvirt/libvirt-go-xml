@@ -417,7 +417,7 @@ var domainTestData = []struct {
 								TLS:     "yes",
 							},
 						},
-						Protocol: &DomainSerialProtocol{
+						Protocol: &DomainChardevProtocol{
 							Type: "telnet",
 						},
 						Target: &DomainSerialTarget{
@@ -469,7 +469,7 @@ var domainTestData = []struct {
 										Path: "/dev/ttyS0",
 									},
 								},
-								Protocol: &DomainRNGProtocol{
+								Protocol: &DomainChardevProtocol{
 									Type: "raw",
 								},
 							},
