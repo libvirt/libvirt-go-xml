@@ -351,6 +351,18 @@ var domainTestData = []struct {
 						},
 					},
 				},
+				TPMs: []DomainTPM{
+					DomainTPM{
+						Model: "tpm-tis",
+						Backend: &DomainTPMBackend{
+							Passthrough: &DomainTPMBackendPassthrough{
+								Device: &DomainTPMBackendDevice{
+									Path: "/dev/tpm0",
+								},
+							},
+						},
+					},
+				},
 				Graphics: []DomainGraphic{
 					DomainGraphic{
 						VNC: &DomainGraphicVNC{},
@@ -530,6 +542,11 @@ var domainTestData = []struct {
 			`      <address type="usb" bus="0" port="1.1"></address>`,
 			`    </input>`,
 			`    <input type="keyboard" bus="ps2"></input>`,
+			`    <tpm model="tpm-tis">`,
+			`      <backend type="passthrough">`,
+			`        <device path="/dev/tpm0"></device>`,
+			`      </backend>`,
+			`    </tpm>`,
 			`    <graphics type="vnc"></graphics>`,
 			`    <sound model="ich6">`,
 			`      <codec type="duplex"></codec>`,
@@ -2623,6 +2640,26 @@ var domainTestData = []struct {
 			`  <certificate>/some/cert3</certificate>`,
 			`  <address type="ccid" controller="0" slot="7"></address>`,
 			`</smartcard>`,
+		},
+	},
+	{
+		Object: &DomainTPM{
+			Model: "tpm-tis",
+			Backend: &DomainTPMBackend{
+				Passthrough: &DomainTPMBackendPassthrough{
+					Device: &DomainTPMBackendDevice{
+						Path: "/dev/tpm0",
+					},
+				},
+			},
+		},
+
+		Expected: []string{
+			`<tpm model="tpm-tis">`,
+			`  <backend type="passthrough">`,
+			`    <device path="/dev/tpm0"></device>`,
+			`  </backend>`,
+			`</tpm>`,
 		},
 	},
 	{

@@ -1366,6 +1366,7 @@ type DomainLeaseTarget struct {
 }
 
 type DomainSmartcard struct {
+	XMLName     xml.Name                  `xml:"smartcard"`
 	Passthrough *DomainChardevSource      `xml:"source"`
 	Protocol    *DomainChardevProtocol    `xml:"protocol"`
 	Host        *DomainSmartcardHost      `xml:"-"`
@@ -1381,6 +1382,26 @@ type DomainSmartcardHostCert struct {
 	File string `xml:",chardata"`
 }
 
+type DomainTPM struct {
+	XMLName xml.Name          `xml:"tpm"`
+	Model   string            `xml:"model,attr,omitempty"`
+	Backend *DomainTPMBackend `xml:"backend"`
+	Alias   *DomainAlias      `xml:"alias"`
+	Address *DomainAddress    `xml:"address"`
+}
+
+type DomainTPMBackend struct {
+	Passthrough *DomainTPMBackendPassthrough `xml:"-"`
+}
+
+type DomainTPMBackendPassthrough struct {
+	Device *DomainTPMBackendDevice `xml:"device"`
+}
+
+type DomainTPMBackendDevice struct {
+	Path string `xml:"path,attr"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Disks       []DomainDisk       `xml:"disk"`
@@ -1394,6 +1415,7 @@ type DomainDeviceList struct {
 	Consoles    []DomainConsole    `xml:"console"`
 	Channels    []DomainChannel    `xml:"channel"`
 	Inputs      []DomainInput      `xml:"input"`
+	TPMs        []DomainTPM        `xml:"tpm"`
 	Graphics    []DomainGraphic    `xml:"graphics"`
 	Sounds      []DomainSound      `xml:"sound"`
 	Videos      []DomainVideo      `xml:"video"`
@@ -3018,6 +3040,49 @@ func (d *DomainSmartcard) Unmarshal(doc string) error {
 }
 
 func (d *DomainSmartcard) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (a *DomainTPMBackend) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "backend"
+	if a.Passthrough != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "passthrough",
+		})
+		err := e.EncodeElement(a.Passthrough, start)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (a *DomainTPMBackend) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing TPM backend type")
+	}
+	if typ == "passthrough" {
+		a.Passthrough = &DomainTPMBackendPassthrough{}
+		err := d.DecodeElement(a.Passthrough, &start)
+		if err != nil {
+			return err
+		}
+	} else {
+		d.Skip()
+	}
+	return nil
+}
+
+func (d *DomainTPM) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainTPM) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err
