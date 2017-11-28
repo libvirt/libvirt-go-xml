@@ -1402,6 +1402,36 @@ type DomainTPMBackendDevice struct {
 	Path string `xml:"path,attr"`
 }
 
+type DomainShmem struct {
+	XMLName xml.Name           `xml:"shmem"`
+	Name    string             `xml:"name,attr"`
+	Size    *DomainShmemSize   `xml:"size"`
+	Model   *DomainShmemModel  `xml:"model"`
+	Server  *DomainShmemServer `xml:"server"`
+	MSI     *DomainShmemMSI    `xml:"msi"`
+	Alias   *DomainAlias       `xml:"alias"`
+	Address *DomainAddress     `xml:"address"`
+}
+
+type DomainShmemSize struct {
+	Value uint   `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+}
+
+type DomainShmemModel struct {
+	Type string `xml:"type,attr"`
+}
+
+type DomainShmemServer struct {
+	Path string `xml:"path,attr,omitempty"`
+}
+
+type DomainShmemMSI struct {
+	Enabled   string `xml:"enabled,attr,omitempty"`
+	Vectors   uint   `xml:"vectors,attr,omitempty"`
+	IOEventFD string `xml:"ioeventfd,attr,omitempty"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Disks       []DomainDisk       `xml:"disk"`
@@ -1426,6 +1456,7 @@ type DomainDeviceList struct {
 	RNGs        []DomainRNG        `xml:"rng"`
 	NVRAM       *DomainNVRAM       `xml:"nvram"`
 	Panics      []DomainPanic      `xml:"panic"`
+	Shmems      []DomainShmem      `xml:"shmem"`
 	Memorydevs  []DomainMemorydev  `xml:"memory"`
 	IOMMU       *DomainIOMMU       `xml:"iommu"`
 }
@@ -3083,6 +3114,18 @@ func (d *DomainTPM) Unmarshal(doc string) error {
 }
 
 func (d *DomainTPM) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainShmem) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainShmem) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err

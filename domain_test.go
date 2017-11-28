@@ -2663,6 +2663,35 @@ var domainTestData = []struct {
 		},
 	},
 	{
+		Object: &DomainShmem{
+			Name: "demo",
+			Size: &DomainShmemSize{
+				Value: 1,
+				Unit:  "GiB",
+			},
+			Model: &DomainShmemModel{
+				Type: "ivshmem-doorbell",
+			},
+			Server: &DomainShmemServer{
+				Path: "/some/server",
+			},
+			MSI: &DomainShmemMSI{
+				Enabled:   "yes",
+				Vectors:   5,
+				IOEventFD: "yes",
+			},
+		},
+
+		Expected: []string{
+			`<shmem name="demo">`,
+			`  <size unit="GiB">1</size>`,
+			`  <model type="ivshmem-doorbell"></model>`,
+			`  <server path="/some/server"></server>`,
+			`  <msi enabled="yes" vectors="5" ioeventfd="yes"></msi>`,
+			`</shmem>`,
+		},
+	},
+	{
 		Object: &DomainInput{
 			Type: "tablet",
 			Bus:  "usb",
