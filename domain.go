@@ -913,6 +913,18 @@ type DomainRedirDev struct {
 	Address  *DomainAddress         `xml:"address"`
 }
 
+type DomainRedirFilter struct {
+	USB []DomainRedirFilterUSB `xml:"usbdev"`
+}
+
+type DomainRedirFilterUSB struct {
+	Class   *uint  `xml:"class,attr"`
+	Vendor  *uint  `xml:"vendor,attr"`
+	Product *uint  `xml:"product,attr"`
+	Version string `xml:"version,attr,omitempty"`
+	Allow   string `xml:"allow,attr"`
+}
+
 type DomainInput struct {
 	XMLName xml.Name           `xml:"input"`
 	Type    string             `xml:"type,attr"`
@@ -1443,33 +1455,34 @@ type DomainShmemMSI struct {
 }
 
 type DomainDeviceList struct {
-	Emulator    string             `xml:"emulator,omitempty"`
-	Disks       []DomainDisk       `xml:"disk"`
-	Controllers []DomainController `xml:"controller"`
-	Leases      []DomainLease      `xml:"lease"`
-	Filesystems []DomainFilesystem `xml:"filesystem"`
-	Interfaces  []DomainInterface  `xml:"interface"`
-	Smartcards  []DomainSmartcard  `xml:"smartcard"`
-	Serials     []DomainSerial     `xml:"serial"`
-	Parallels   []DomainParallel   `xml:"parallel"`
-	Consoles    []DomainConsole    `xml:"console"`
-	Channels    []DomainChannel    `xml:"channel"`
-	Inputs      []DomainInput      `xml:"input"`
-	TPMs        []DomainTPM        `xml:"tpm"`
-	Graphics    []DomainGraphic    `xml:"graphics"`
-	Sounds      []DomainSound      `xml:"sound"`
-	Videos      []DomainVideo      `xml:"video"`
-	Hostdevs    []DomainHostdev    `xml:"hostdev"`
-	RedirDevs   []DomainRedirDev   `xml:"redirdev"`
-	Hubs        []DomainHub        `xml:"hub"`
-	Watchdog    *DomainWatchdog    `xml:"watchdog"`
-	MemBalloon  *DomainMemBalloon  `xml:"memballoon"`
-	RNGs        []DomainRNG        `xml:"rng"`
-	NVRAM       *DomainNVRAM       `xml:"nvram"`
-	Panics      []DomainPanic      `xml:"panic"`
-	Shmems      []DomainShmem      `xml:"shmem"`
-	Memorydevs  []DomainMemorydev  `xml:"memory"`
-	IOMMU       *DomainIOMMU       `xml:"iommu"`
+	Emulator     string              `xml:"emulator,omitempty"`
+	Disks        []DomainDisk        `xml:"disk"`
+	Controllers  []DomainController  `xml:"controller"`
+	Leases       []DomainLease       `xml:"lease"`
+	Filesystems  []DomainFilesystem  `xml:"filesystem"`
+	Interfaces   []DomainInterface   `xml:"interface"`
+	Smartcards   []DomainSmartcard   `xml:"smartcard"`
+	Serials      []DomainSerial      `xml:"serial"`
+	Parallels    []DomainParallel    `xml:"parallel"`
+	Consoles     []DomainConsole     `xml:"console"`
+	Channels     []DomainChannel     `xml:"channel"`
+	Inputs       []DomainInput       `xml:"input"`
+	TPMs         []DomainTPM         `xml:"tpm"`
+	Graphics     []DomainGraphic     `xml:"graphics"`
+	Sounds       []DomainSound       `xml:"sound"`
+	Videos       []DomainVideo       `xml:"video"`
+	Hostdevs     []DomainHostdev     `xml:"hostdev"`
+	RedirDevs    []DomainRedirDev    `xml:"redirdev"`
+	RedirFilters []DomainRedirFilter `xml:"redirfilter"`
+	Hubs         []DomainHub         `xml:"hub"`
+	Watchdog     *DomainWatchdog     `xml:"watchdog"`
+	MemBalloon   *DomainMemBalloon   `xml:"memballoon"`
+	RNGs         []DomainRNG         `xml:"rng"`
+	NVRAM        *DomainNVRAM        `xml:"nvram"`
+	Panics       []DomainPanic       `xml:"panic"`
+	Shmems       []DomainShmem       `xml:"shmem"`
+	Memorydevs   []DomainMemorydev   `xml:"memory"`
+	IOMMU        *DomainIOMMU        `xml:"iommu"`
 }
 
 type DomainMemory struct {
@@ -3576,6 +3589,47 @@ func (d *DomainChannel) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainRedirFilterUSB) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	marshallUintAttr(&start, "class", a.Class, "0x%02x")
+	marshallUintAttr(&start, "vendor", a.Vendor, "0x%04x")
+	marshallUintAttr(&start, "product", a.Product, "0x%04x")
+	if a.Version != "" {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "version"}, a.Version,
+		})
+	}
+	start.Attr = append(start.Attr, xml.Attr{
+		xml.Name{Local: "allow"}, a.Allow,
+	})
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *DomainRedirFilterUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "class" && attr.Value != "-1" {
+			if err := unmarshallUintAttr(attr.Value, &a.Class, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "product" && attr.Value != "-1" {
+			if err := unmarshallUintAttr(attr.Value, &a.Product, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "vendor" && attr.Value != "-1" {
+			if err := unmarshallUintAttr(attr.Value, &a.Vendor, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "version" && attr.Value != "-1" {
+			a.Version = attr.Value
+		} else if attr.Name.Local == "allow" {
+			a.Allow = attr.Value
+		}
+	}
+	d.Skip()
+	return nil
 }
 
 type domainRedirDev DomainRedirDev

@@ -127,6 +127,10 @@ var smartcardSlot uint = 7
 var redirBus uint = 0
 var redirPort string = "3"
 
+var redirfilterClass uint = 0x08
+var redirfilterProduct uint = 0x2007
+var redirfilterVendor uint = 0x15e1
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -489,6 +493,26 @@ var domainTestData = []struct {
 						},
 					},
 				},
+				RedirFilters: []DomainRedirFilter{
+					DomainRedirFilter{
+						USB: []DomainRedirFilterUSB{
+							DomainRedirFilterUSB{
+								Class:   &redirfilterClass,
+								Product: &redirfilterProduct,
+								Vendor:  &redirfilterVendor,
+								Version: "1.10",
+								Allow:   "yes",
+							},
+							DomainRedirFilterUSB{
+								Version: "1.10",
+								Allow:   "no",
+							},
+							DomainRedirFilterUSB{
+								Allow: "yes",
+							},
+						},
+					},
+				},
 				RNGs: []DomainRNG{
 					DomainRNG{
 						Model: "virtio",
@@ -576,6 +600,11 @@ var domainTestData = []struct {
 			`    <redirdev type="spicevmc" bus="usb">`,
 			`      <address type="usb" bus="0" port="3"></address>`,
 			`    </redirdev>`,
+			`    <redirfilter>`,
+			`      <usbdev class="0x08" vendor="0x15e1" product="0x2007" version="1.10" allow="yes"></usbdev>`,
+			`      <usbdev version="1.10" allow="no"></usbdev>`,
+			`      <usbdev allow="yes"></usbdev>`,
+			`    </redirfilter>`,
 			`    <memballoon model="virtio">`,
 			`      <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"></address>`,
 			`    </memballoon>`,
