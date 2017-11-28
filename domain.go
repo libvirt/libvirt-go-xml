@@ -651,12 +651,88 @@ type DomainInterface struct {
 }
 
 type DomainChardevSource struct {
-	Mode    string `xml:"mode,attr,omitempty"`
-	Path    string `xml:"path,attr,omitempty"`
-	Append  string `xml:"append,attr,omitempty"`
-	Host    string `xml:"host,attr,omitempty"`
-	Service string `xml:"service,attr,omitempty"`
-	TLS     string `xml:"tls,attr,omitempty"`
+	Null      *DomainChardevSourceNull      `xml:"-"`
+	VC        *DomainChardevSourceVC        `xml:"-"`
+	Pty       *DomainChardevSourcePty       `xml:"-"`
+	Dev       *DomainChardevSourceDev       `xml:"-"`
+	File      *DomainChardevSourceFile      `xml:"-"`
+	Pipe      *DomainChardevSourcePipe      `xml:"-"`
+	StdIO     *DomainChardevSourceStdIO     `xml:"-"`
+	UDP       *DomainChardevSourceUDP       `xml:"-"`
+	TCP       *DomainChardevSourceTCP       `xml:"-"`
+	UNIX      *DomainChardevSourceUNIX      `xml:"-"`
+	SpiceVMC  *DomainChardevSourceSpiceVMC  `xml:"-"`
+	SpicePort *DomainChardevSourceSpicePort `xml:"-"`
+	NMDM      *DomainChardevSourceNMDM      `xml:"-"`
+}
+
+type DomainChardevSourceNull struct {
+}
+
+type DomainChardevSourceVC struct {
+}
+
+type DomainChardevSourcePty struct {
+	Path     string                 `xml:"path,attr"`
+	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
+}
+
+type DomainChardevSourceDev struct {
+	Path     string                 `xml:"path,attr"`
+	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
+}
+
+type DomainChardevSourceFile struct {
+	Path     string                 `xml:"path,attr"`
+	Append   string                 `xml:"append,attr,omitempty"`
+	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
+}
+
+type DomainChardevSourcePipe struct {
+	Path     string                 `xml:"path,attr"`
+	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
+}
+
+type DomainChardevSourceStdIO struct {
+}
+
+type DomainChardevSourceUDP struct {
+	BindHost       string `xml:"-"`
+	BindService    string `xml:"-"`
+	ConnectHost    string `xml:"-"`
+	ConnectService string `xml:"-"`
+}
+
+type DomainChardevSourceReconnect struct {
+	Enabled string `xml:"enabled,attr"`
+	Timeout *uint  `xml:"timeout,attr"`
+}
+
+type DomainChardevSourceTCP struct {
+	Mode      string                        `xml:"mode,attr"`
+	Host      string                        `xml:"host,attr"`
+	Service   string                        `xml:"service,attr"`
+	TLS       string                        `xml:"tls,attr,omitempty"`
+	Reconnect *DomainChardevSourceReconnect `xml:"reconnect"`
+}
+
+type DomainChardevSourceUNIX struct {
+	Mode      string                        `xml:"mode,attr"`
+	Path      string                        `xml:"path,attr"`
+	Reconnect *DomainChardevSourceReconnect `xml:"reconnect"`
+	SecLabel  []DomainDeviceSecLabel        `xml:"seclabel"`
+}
+
+type DomainChardevSourceSpiceVMC struct {
+}
+
+type DomainChardevSourceSpicePort struct {
+	Channel string `xml:"channel,attr"`
+}
+
+type DomainChardevSourceNMDM struct {
+	Master string `xml:"master,attr"`
+	Slave  string `xml:"slave,attr"`
 }
 
 type DomainChardevTarget struct {
@@ -755,7 +831,6 @@ type DomainChardevLog struct {
 
 type DomainConsole struct {
 	XMLName xml.Name             `xml:"console"`
-	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
 	Target  *DomainConsoleTarget `xml:"target"`
 	Log     *DomainChardevLog    `xml:"log"`
@@ -765,7 +840,6 @@ type DomainConsole struct {
 
 type DomainSerial struct {
 	XMLName  xml.Name              `xml:"serial"`
-	Type     string                `xml:"type,attr"`
 	Source   *DomainChardevSource  `xml:"source"`
 	Protocol *DomainSerialProtocol `xml:"protocol"`
 	Target   *DomainSerialTarget   `xml:"target"`
@@ -780,7 +854,6 @@ type DomainSerialProtocol struct {
 
 type DomainChannel struct {
 	XMLName xml.Name             `xml:"channel"`
-	Type    string               `xml:"type,attr"`
 	Source  *DomainChardevSource `xml:"source"`
 	Target  *DomainChannelTarget `xml:"target"`
 	Log     *DomainChardevLog    `xml:"log"`
@@ -1024,9 +1097,8 @@ type DomainRNGBackend struct {
 }
 
 type DomainRNGBackendEGD struct {
-	Type     string                `xml:"type,attr,omitempty"`
-	Sources  []DomainChardevSource `xml:"source"`
-	Protocol *DomainRNGProtocol    `xml:"protocol"`
+	Source   *DomainChardevSource `xml:"source"`
+	Protocol *DomainRNGProtocol   `xml:"protocol"`
 }
 
 type DomainRNGBackendRandom struct {
@@ -2834,6 +2906,234 @@ func (d *DomainInterface) Marshal() (string, error) {
 	return string(doc), nil
 }
 
+func getChardevSourceType(s *DomainChardevSource) string {
+	if s.Null != nil {
+		return "null"
+	} else if s.VC != nil {
+		return "vc"
+	} else if s.Pty != nil {
+		return "pty"
+	} else if s.Dev != nil {
+		return "dev"
+	} else if s.File != nil {
+		return "file"
+	} else if s.Pipe != nil {
+		return "pipe"
+	} else if s.StdIO != nil {
+		return "stdio"
+	} else if s.UDP != nil {
+		return "udp"
+	} else if s.TCP != nil {
+		return "tcp"
+	} else if s.UNIX != nil {
+		return "unix"
+	} else if s.SpiceVMC != nil {
+		return "spicevmc"
+	} else if s.SpicePort != nil {
+		return "spiceport"
+	} else if s.NMDM != nil {
+		return "nmdm"
+	}
+	return ""
+}
+
+func createChardevSource(typ string) *DomainChardevSource {
+	switch typ {
+	case "null":
+		return &DomainChardevSource{
+			Null: &DomainChardevSourceNull{},
+		}
+	case "vc":
+		return &DomainChardevSource{
+			VC: &DomainChardevSourceVC{},
+		}
+	case "pty":
+		return &DomainChardevSource{
+			Pty: &DomainChardevSourcePty{},
+		}
+	case "dev":
+		return &DomainChardevSource{
+			Dev: &DomainChardevSourceDev{},
+		}
+	case "file":
+		return &DomainChardevSource{
+			File: &DomainChardevSourceFile{},
+		}
+	case "pipe":
+		return &DomainChardevSource{
+			Pipe: &DomainChardevSourcePipe{},
+		}
+	case "stdio":
+		return &DomainChardevSource{
+			StdIO: &DomainChardevSourceStdIO{},
+		}
+	case "udp":
+		return &DomainChardevSource{
+			UDP: &DomainChardevSourceUDP{},
+		}
+	case "tcp":
+		return &DomainChardevSource{
+			TCP: &DomainChardevSourceTCP{},
+		}
+	case "unix":
+		return &DomainChardevSource{
+			UNIX: &DomainChardevSourceUNIX{},
+		}
+	case "spicevmc":
+		return &DomainChardevSource{
+			SpiceVMC: &DomainChardevSourceSpiceVMC{},
+		}
+	case "spiceport":
+		return &DomainChardevSource{
+			SpicePort: &DomainChardevSourceSpicePort{},
+		}
+	case "nmdm":
+		return &DomainChardevSource{
+			NMDM: &DomainChardevSourceNMDM{},
+		}
+	}
+
+	return nil
+}
+
+type domainChardevSourceUDPFlat struct {
+	Mode    string `xml:"mode,attr"`
+	Host    string `xml:"host,attr,omitempty"`
+	Service string `xml:"service,attr"`
+}
+
+func (a *DomainChardevSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.Null != nil {
+		return nil
+	} else if a.VC != nil {
+		return nil
+	} else if a.Pty != nil {
+		if a.Pty.Path != "" {
+			return e.EncodeElement(a.Pty, start)
+		}
+		return nil
+	} else if a.Dev != nil {
+		return e.EncodeElement(a.Dev, start)
+	} else if a.File != nil {
+		return e.EncodeElement(a.File, start)
+	} else if a.Pipe != nil {
+		return e.EncodeElement(a.Pipe, start)
+	} else if a.StdIO != nil {
+		return nil
+	} else if a.UDP != nil {
+		srcs := []domainChardevSourceUDPFlat{
+			domainChardevSourceUDPFlat{
+				Mode:    "bind",
+				Host:    a.UDP.BindHost,
+				Service: a.UDP.BindService,
+			},
+			domainChardevSourceUDPFlat{
+				Mode:    "connect",
+				Host:    a.UDP.ConnectHost,
+				Service: a.UDP.ConnectService,
+			},
+		}
+		if srcs[0].Host != "" || srcs[0].Service != "" {
+			err := e.EncodeElement(&srcs[0], start)
+			if err != nil {
+				return err
+			}
+		}
+		if srcs[1].Host != "" || srcs[1].Service != "" {
+			err := e.EncodeElement(&srcs[1], start)
+			if err != nil {
+				return err
+			}
+		}
+	} else if a.TCP != nil {
+		return e.EncodeElement(a.TCP, start)
+	} else if a.UNIX != nil {
+		return e.EncodeElement(a.UNIX, start)
+	} else if a.SpiceVMC != nil {
+		return nil
+	} else if a.SpicePort != nil {
+		return e.EncodeElement(a.SpicePort, start)
+	} else if a.NMDM != nil {
+		return e.EncodeElement(a.NMDM, start)
+	}
+	return nil
+}
+
+func (a *DomainChardevSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if a.Null != nil {
+		d.Skip()
+		return nil
+	} else if a.VC != nil {
+		d.Skip()
+		return nil
+	} else if a.Pty != nil {
+		return d.DecodeElement(a.Pty, &start)
+	} else if a.Dev != nil {
+		return d.DecodeElement(a.Dev, &start)
+	} else if a.File != nil {
+		return d.DecodeElement(a.File, &start)
+	} else if a.Pipe != nil {
+		return d.DecodeElement(a.Pipe, &start)
+	} else if a.StdIO != nil {
+		d.Skip()
+		return nil
+	} else if a.UDP != nil {
+		src := domainChardevSourceUDPFlat{}
+		err := d.DecodeElement(&src, &start)
+		if src.Mode == "connect" {
+			a.UDP.ConnectHost = src.Host
+			a.UDP.ConnectService = src.Service
+		} else {
+			a.UDP.BindHost = src.Host
+			a.UDP.BindService = src.Service
+		}
+		return err
+	} else if a.TCP != nil {
+		return d.DecodeElement(a.TCP, &start)
+	} else if a.UNIX != nil {
+		return d.DecodeElement(a.UNIX, &start)
+	} else if a.SpiceVMC != nil {
+		d.Skip()
+		return nil
+	} else if a.SpicePort != nil {
+		return d.DecodeElement(a.SpicePort, &start)
+	} else if a.NMDM != nil {
+		return d.DecodeElement(a.NMDM, &start)
+	}
+	return nil
+}
+
+type domainConsole DomainConsole
+
+func (a *DomainConsole) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "console"
+	if a.Source != nil {
+		typ := getChardevSourceType(a.Source)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
+	}
+	fs := domainConsole(*a)
+	return e.EncodeElement(fs, start)
+}
+
+func (a *DomainConsole) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "pty"
+	}
+	a.Source = createChardevSource(typ)
+	con := domainConsole(*a)
+	err := d.DecodeElement(&con, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainConsole(con)
+	return nil
+}
+
 func (d *DomainConsole) Unmarshal(doc string) error {
 	return xml.Unmarshal([]byte(doc), d)
 }
@@ -2844,6 +3144,37 @@ func (d *DomainConsole) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+type domainSerial DomainSerial
+
+func (a *DomainSerial) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "serial"
+	if a.Source != nil {
+		typ := getChardevSourceType(a.Source)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
+	}
+	s := domainSerial(*a)
+	return e.EncodeElement(s, start)
+}
+
+func (a *DomainSerial) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "pty"
+	}
+	a.Source = createChardevSource(typ)
+	con := domainSerial(*a)
+	err := d.DecodeElement(&con, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainSerial(con)
+	return nil
 }
 
 func (d *DomainSerial) Unmarshal(doc string) error {
@@ -2882,6 +3213,37 @@ func (d *DomainVideo) Marshal() (string, error) {
 	return string(doc), nil
 }
 
+type domainChannel DomainChannel
+
+func (a *DomainChannel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "channel"
+	if a.Source != nil {
+		typ := getChardevSourceType(a.Source)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
+	}
+	fs := domainChannel(*a)
+	return e.EncodeElement(fs, start)
+}
+
+func (a *DomainChannel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "pty"
+	}
+	a.Source = createChardevSource(typ)
+	con := domainChannel(*a)
+	err := d.DecodeElement(&con, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainChannel(con)
+	return nil
+}
+
 func (d *DomainChannel) Unmarshal(doc string) error {
 	return xml.Unmarshal([]byte(doc), d)
 }
@@ -2916,6 +3278,37 @@ func (d *DomainSound) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+type domainRNGBackendEGD DomainRNGBackendEGD
+
+func (a *DomainRNGBackendEGD) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "backend"
+	if a.Source != nil {
+		typ := getChardevSourceType(a.Source)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
+	}
+	egd := domainRNGBackendEGD(*a)
+	return e.EncodeElement(egd, start)
+}
+
+func (a *DomainRNGBackendEGD) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "pty"
+	}
+	a.Source = createChardevSource(typ)
+	con := domainRNGBackendEGD(*a)
+	err := d.DecodeElement(&con, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainRNGBackendEGD(con)
+	return nil
 }
 
 func (a *DomainRNGBackend) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

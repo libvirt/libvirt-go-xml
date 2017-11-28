@@ -378,7 +378,9 @@ var domainTestData = []struct {
 				},
 				Consoles: []DomainConsole{
 					DomainConsole{
-						Type: "pty",
+						Source: &DomainChardevSource{
+							Pty: &DomainChardevSourcePty{},
+						},
 						Target: &DomainConsoleTarget{
 							Type: "virtio",
 							Port: &serialPort,
@@ -387,29 +389,33 @@ var domainTestData = []struct {
 				},
 				Serials: []DomainSerial{
 					DomainSerial{
-						Type: "pty",
+						Source: &DomainChardevSource{
+							Pty: &DomainChardevSourcePty{},
+						},
 						Target: &DomainSerialTarget{
 							Type: "isa",
 							Port: &serialPort,
 						},
 					},
 					DomainSerial{
-						Type: "file",
 						Source: &DomainChardevSource{
-							Path:   "/tmp/serial.log",
-							Append: "off",
+							File: &DomainChardevSourceFile{
+								Path:   "/tmp/serial.log",
+								Append: "off",
+							},
 						},
 						Target: &DomainSerialTarget{
 							Port: &serialPort,
 						},
 					},
 					DomainSerial{
-						Type: "tcp",
 						Source: &DomainChardevSource{
-							Mode:    "bind",
-							Host:    "127.0.0.1",
-							Service: "1234",
-							TLS:     "yes",
+							TCP: &DomainChardevSourceTCP{
+								Mode:    "bind",
+								Host:    "127.0.0.1",
+								Service: "1234",
+								TLS:     "yes",
+							},
 						},
 						Protocol: &DomainSerialProtocol{
 							Type: "telnet",
@@ -421,7 +427,9 @@ var domainTestData = []struct {
 				},
 				Channels: []DomainChannel{
 					DomainChannel{
-						Type: "pty",
+						Source: &DomainChardevSource{
+							Pty: &DomainChardevSourcePty{},
+						},
 						Target: &DomainChannelTarget{
 							Type:  "virtio",
 							Name:  "org.redhat.spice",
@@ -456,16 +464,9 @@ var domainTestData = []struct {
 						},
 						Backend: &DomainRNGBackend{
 							EGD: &DomainRNGBackendEGD{
-								Type: "udp",
-								Sources: []DomainChardevSource{
-									DomainChardevSource{
-										Mode:    "bind",
-										Service: "1234",
-									},
-									DomainChardevSource{
-										Mode:    "connect",
-										Host:    "1.2.3.4",
-										Service: "1234",
+								Source: &DomainChardevSource{
+									Dev: &DomainChardevSourceDev{
+										Path: "/dev/ttyS0",
 									},
 								},
 								Protocol: &DomainRNGProtocol{
@@ -538,9 +539,8 @@ var domainTestData = []struct {
 			`    </memballoon>`,
 			`    <rng model="virtio">`,
 			`      <rate bytes="1234" period="2000"></rate>`,
-			`      <backend model="egd" type="udp">`,
-			`        <source mode="bind" service="1234"></source>`,
-			`        <source mode="connect" host="1.2.3.4" service="1234"></source>`,
+			`      <backend model="egd" type="dev">`,
+			`        <source path="/dev/ttyS0"></source>`,
 			`        <protocol type="raw"></protocol>`,
 			`      </backend>`,
 			`    </rng>`,
@@ -2486,7 +2486,9 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainSerial{
-			Type: "pty",
+			Source: &DomainChardevSource{
+				Pty: &DomainChardevSourcePty{},
+			},
 			Target: &DomainSerialTarget{
 				Type: "isa",
 				Port: &serialPort,
@@ -2506,7 +2508,9 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainConsole{
-			Type: "pty",
+			Source: &DomainChardevSource{
+				Pty: &DomainChardevSourcePty{},
+			},
 			Target: &DomainConsoleTarget{
 				Type: "virtio",
 				Port: &serialPort,
@@ -2573,7 +2577,9 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainChannel{
-			Type: "pty",
+			Source: &DomainChardevSource{
+				Pty: &DomainChardevSourcePty{},
+			},
 			Target: &DomainChannelTarget{
 				Type:  "virtio",
 				Name:  "org.redhat.spice",
@@ -2764,6 +2770,193 @@ var domainTestData = []struct {
 		},
 	},
 	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				Null: &DomainChardevSourceNull{},
+			},
+		},
+
+		Expected: []string{
+			`<console type="null"></console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				VC: &DomainChardevSourceVC{},
+			},
+		},
+
+		Expected: []string{
+			`<console type="vc"></console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				Pty: &DomainChardevSourcePty{
+					Path: "/dev/pts/3",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="pty">`,
+			`  <source path="/dev/pts/3"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				Dev: &DomainChardevSourceDev{
+					Path: "/dev/ttyS0",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="dev">`,
+			`  <source path="/dev/ttyS0"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				File: &DomainChardevSourceFile{
+					Path: "/tmp/file.log",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="file">`,
+			`  <source path="/tmp/file.log"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				Pipe: &DomainChardevSourcePipe{
+					Path: "/tmp/file.fifo",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="pipe">`,
+			`  <source path="/tmp/file.fifo"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				StdIO: &DomainChardevSourceStdIO{},
+			},
+		},
+
+		Expected: []string{
+			`<console type="stdio"></console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				UDP: &DomainChardevSourceUDP{
+					ConnectHost:    "some.server",
+					ConnectService: "4999",
+					BindHost:       "my.server",
+					BindService:    "5921",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="udp">`,
+			`  <source mode="bind" host="my.server" service="5921"></source>`,
+			`  <source mode="connect" host="some.server" service="4999"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				TCP: &DomainChardevSourceTCP{
+					Mode:    "connect",
+					Host:    "localhost",
+					Service: "25",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="tcp">`,
+			`  <source mode="connect" host="localhost" service="25"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				UNIX: &DomainChardevSourceUNIX{
+					Mode: "connect",
+					Path: "/tmp/myvm.sock",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="unix">`,
+			`  <source mode="connect" path="/tmp/myvm.sock"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				SpiceVMC: &DomainChardevSourceSpiceVMC{},
+			},
+		},
+
+		Expected: []string{
+			`<console type="spicevmc"></console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				SpicePort: &DomainChardevSourceSpicePort{
+					Channel: "org.qemu.console.serial.0",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="spiceport">`,
+			`  <source channel="org.qemu.console.serial.0"></source>`,
+			`</console>`,
+		},
+	},
+	{
+		Object: &DomainConsole{
+			Source: &DomainChardevSource{
+				NMDM: &DomainChardevSourceNMDM{
+					Master: "/dev/nmdm0A",
+					Slave:  "/dev/nmdm0B",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<console type="nmdm">`,
+			`  <source master="/dev/nmdm0A" slave="/dev/nmdm0B"></source>`,
+			`</console>`,
+		},
+	},
+	{
 		Object: &DomainRNG{
 			Model: "virtio",
 			Rate: &DomainRNGRate{
@@ -2802,16 +2995,11 @@ var domainTestData = []struct {
 			},
 			Backend: &DomainRNGBackend{
 				EGD: &DomainRNGBackendEGD{
-					Type: "udp",
-					Sources: []DomainChardevSource{
-						DomainChardevSource{
-							Mode:    "bind",
-							Service: "1234",
-						},
-						DomainChardevSource{
-							Mode:    "connect",
-							Host:    "1.2.3.4",
-							Service: "1234",
+					Source: &DomainChardevSource{
+						UDP: &DomainChardevSourceUDP{
+							BindService:    "1234",
+							ConnectHost:    "1.2.3.4",
+							ConnectService: "1234",
 						},
 					},
 				},
