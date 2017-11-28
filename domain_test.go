@@ -121,6 +121,9 @@ var midoInterfaceID = "73728ac4-53d9-44de-8438-8d8f90beca00"
 
 var nvramReg uint64 = 0x4000
 
+var smartcardController uint = 0
+var smartcardSlot uint = 7
+
 var domainTestData = []struct {
 	Object   Document
 	Expected []string
@@ -2545,6 +2548,81 @@ var domainTestData = []struct {
 			`<console type="pty">`,
 			`  <target type="virtio" port="0"></target>`,
 			`</console>`,
+		},
+	},
+	{
+		Object: &DomainSmartcard{
+			Host: &DomainSmartcardHost{},
+			Address: &DomainAddress{
+				CCID: &DomainAddressCCID{
+					Controller: &smartcardController,
+					Slot:       &smartcardSlot,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<smartcard mode="host">`,
+			`  <address type="ccid" controller="0" slot="7"></address>`,
+			`</smartcard>`,
+		},
+	},
+	{
+		Object: &DomainSmartcard{
+			Passthrough: &DomainChardevSource{
+				TCP: &DomainChardevSourceTCP{
+					Mode:    "connect",
+					Host:    "localhost",
+					Service: "12345",
+				},
+			},
+			Protocol: &DomainChardevProtocol{
+				Type: "raw",
+			},
+			Address: &DomainAddress{
+				CCID: &DomainAddressCCID{
+					Controller: &smartcardController,
+					Slot:       &smartcardSlot,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<smartcard mode="passthrough" type="tcp">`,
+			`  <source mode="connect" host="localhost" service="12345"></source>`,
+			`  <protocol type="raw"></protocol>`,
+			`  <address type="ccid" controller="0" slot="7"></address>`,
+			`</smartcard>`,
+		},
+	},
+	{
+		Object: &DomainSmartcard{
+			HostCerts: []DomainSmartcardHostCert{
+				DomainSmartcardHostCert{
+					File: "/some/cert1",
+				},
+				DomainSmartcardHostCert{
+					File: "/some/cert2",
+				},
+				DomainSmartcardHostCert{
+					File: "/some/cert3",
+				},
+			},
+			Address: &DomainAddress{
+				CCID: &DomainAddressCCID{
+					Controller: &smartcardController,
+					Slot:       &smartcardSlot,
+				},
+			},
+		},
+
+		Expected: []string{
+			`<smartcard mode="host-certificates">`,
+			`  <certificate>/some/cert1</certificate>`,
+			`  <certificate>/some/cert2</certificate>`,
+			`  <certificate>/some/cert3</certificate>`,
+			`  <address type="ccid" controller="0" slot="7"></address>`,
+			`</smartcard>`,
 		},
 	},
 	{

@@ -1365,6 +1365,22 @@ type DomainLeaseTarget struct {
 	Offset uint64 `xml:"offset,attr,omitempty"`
 }
 
+type DomainSmartcard struct {
+	Passthrough *DomainChardevSource      `xml:"source"`
+	Protocol    *DomainChardevProtocol    `xml:"protocol"`
+	Host        *DomainSmartcardHost      `xml:"-"`
+	HostCerts   []DomainSmartcardHostCert `xml:"certificate"`
+	Alias       *DomainAlias              `xml:"alias"`
+	Address     *DomainAddress            `xml:"address"`
+}
+
+type DomainSmartcardHost struct {
+}
+
+type DomainSmartcardHostCert struct {
+	File string `xml:",chardata"`
+}
+
 type DomainDeviceList struct {
 	Emulator    string             `xml:"emulator,omitempty"`
 	Disks       []DomainDisk       `xml:"disk"`
@@ -1372,6 +1388,7 @@ type DomainDeviceList struct {
 	Leases      []DomainLease      `xml:"lease"`
 	Filesystems []DomainFilesystem `xml:"filesystem"`
 	Interfaces  []DomainInterface  `xml:"interface"`
+	Smartcards  []DomainSmartcard  `xml:"smartcard"`
 	Serials     []DomainSerial     `xml:"serial"`
 	Parallels   []DomainParallel   `xml:"parallel"`
 	Consoles    []DomainConsole    `xml:"console"`
@@ -2939,6 +2956,68 @@ func (d *DomainInterface) Unmarshal(doc string) error {
 }
 
 func (d *DomainInterface) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+type domainSmartcard DomainSmartcard
+
+func (a *DomainSmartcard) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "smartcard"
+	if a.Passthrough != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "passthrough",
+		})
+		typ := getChardevSourceType(a.Passthrough)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
+	} else if a.Host != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "host",
+		})
+	} else if len(a.HostCerts) != 0 {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "mode"}, "host-certificates",
+		})
+	}
+	smartcard := domainSmartcard(*a)
+	return e.EncodeElement(smartcard, start)
+}
+
+func (a *DomainSmartcard) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	mode, ok := getAttr(start.Attr, "mode")
+	if !ok {
+		return fmt.Errorf("Missing mode on smartcard device")
+	}
+	if mode == "host" {
+		a.Host = &DomainSmartcardHost{}
+	} else if mode == "passthrough" {
+		typ, ok := getAttr(start.Attr, "type")
+		if !ok {
+			typ = "pty"
+		}
+		a.Passthrough = createChardevSource(typ)
+	}
+	smartcard := domainSmartcard(*a)
+	err := d.DecodeElement(&smartcard, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainSmartcard(smartcard)
+	return nil
+}
+
+func (d *DomainSmartcard) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainSmartcard) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err
