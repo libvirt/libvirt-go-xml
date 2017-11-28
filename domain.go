@@ -1253,6 +1253,7 @@ type DomainHostdev struct {
 	CapsMisc       *DomainHostdevCapsMisc       `xml:"-"`
 	CapsNet        *DomainHostdevCapsNet        `xml:"-"`
 	Boot           *DomainDeviceBoot            `xml:"boot"`
+	ROM            *DomainROM                   `xml:"rom"`
 	Alias          *DomainAlias                 `xml:"alias"`
 	Address        *DomainAddress               `xml:"address"`
 }
