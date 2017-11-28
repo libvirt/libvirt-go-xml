@@ -85,6 +85,7 @@ var rngAddr = PCIAddress{0, 0, 9, 0}
 var hostdevSCSI = DriveAddress{0, 0, 3, 0}
 
 var serialPort uint = 0
+var parallelPort uint = 0
 var tabletBus uint = 0
 var tabletPort string = "1.1"
 
@@ -2505,6 +2506,28 @@ var domainTestData = []struct {
 			`  <target type="isa" port="0"></target>`,
 			`  <log file="/some/path" append="on"></log>`,
 			`</serial>`,
+		},
+	},
+	{
+		Object: &DomainParallel{
+			Source: &DomainChardevSource{
+				Pty: &DomainChardevSourcePty{},
+			},
+			Target: &DomainParallelTarget{
+				Type: "isa",
+				Port: &parallelPort,
+			},
+			Log: &DomainChardevLog{
+				File:   "/some/path",
+				Append: "on",
+			},
+		},
+
+		Expected: []string{
+			`<parallel type="pty">`,
+			`  <target type="isa" port="0"></target>`,
+			`  <log file="/some/path" append="on"></log>`,
+			`</parallel>`,
 		},
 	},
 	{

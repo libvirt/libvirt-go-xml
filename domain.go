@@ -752,6 +752,11 @@ type DomainSerialTarget struct {
 	Port *uint  `xml:"port,attr"`
 }
 
+type DomainParallelTarget struct {
+	Type string `xml:"type,attr,omitempty"`
+	Port *uint  `xml:"port,attr"`
+}
+
 type DomainChannelTarget struct {
 	VirtIO   *DomainChannelTargetVirtIO   `xml:"-"`
 	Xen      *DomainChannelTargetXen      `xml:"-"`
@@ -859,6 +864,16 @@ type DomainSerial struct {
 	Source   *DomainChardevSource   `xml:"source"`
 	Protocol *DomainChardevProtocol `xml:"protocol"`
 	Target   *DomainSerialTarget    `xml:"target"`
+	Log      *DomainChardevLog      `xml:"log"`
+	Alias    *DomainAlias           `xml:"alias"`
+	Address  *DomainAddress         `xml:"address"`
+}
+
+type DomainParallel struct {
+	XMLName  xml.Name               `xml:"parallel"`
+	Source   *DomainChardevSource   `xml:"source"`
+	Protocol *DomainChardevProtocol `xml:"protocol"`
+	Target   *DomainParallelTarget  `xml:"target"`
 	Log      *DomainChardevLog      `xml:"log"`
 	Alias    *DomainAlias           `xml:"alias"`
 	Address  *DomainAddress         `xml:"address"`
@@ -1348,6 +1363,7 @@ type DomainDeviceList struct {
 	Filesystems []DomainFilesystem `xml:"filesystem"`
 	Interfaces  []DomainInterface  `xml:"interface"`
 	Serials     []DomainSerial     `xml:"serial"`
+	Parallels   []DomainParallel   `xml:"parallel"`
 	Consoles    []DomainConsole    `xml:"console"`
 	Channels    []DomainChannel    `xml:"channel"`
 	Inputs      []DomainInput      `xml:"input"`
@@ -3196,6 +3212,49 @@ func (d *DomainSerial) Unmarshal(doc string) error {
 }
 
 func (d *DomainSerial) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+type domainParallel DomainParallel
+
+func (a *DomainParallel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "parallel"
+	if a.Source != nil {
+		typ := getChardevSourceType(a.Source)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
+	}
+	s := domainParallel(*a)
+	return e.EncodeElement(s, start)
+}
+
+func (a *DomainParallel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "pty"
+	}
+	a.Source = createChardevSource(typ)
+	con := domainParallel(*a)
+	err := d.DecodeElement(&con, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainParallel(con)
+	return nil
+}
+
+func (d *DomainParallel) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainParallel) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err
