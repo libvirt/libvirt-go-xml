@@ -753,9 +753,24 @@ type DomainSerialTarget struct {
 }
 
 type DomainChannelTarget struct {
-	Type  string `xml:"type,attr,omitempty"`
+	VirtIO   *DomainChannelTargetVirtIO   `xml:"-"`
+	Xen      *DomainChannelTargetXen      `xml:"-"`
+	GuestFWD *DomainChannelTargetGuestFWD `xml:"-"`
+}
+
+type DomainChannelTargetVirtIO struct {
 	Name  string `xml:"name,attr,omitempty"`
 	State string `xml:"state,attr,omitempty"` // is guest agent connected?
+}
+
+type DomainChannelTargetXen struct {
+	Name  string `xml:"name,attr,omitempty"`
+	State string `xml:"state,attr,omitempty"` // is guest agent connected?
+}
+
+type DomainChannelTargetGuestFWD struct {
+	Address string `xml:"address,attr,omitempty"`
+	Port    string `xml:"port,attr,omitempty"`
 }
 
 type DomainAlias struct {
@@ -3209,6 +3224,47 @@ func (d *DomainVideo) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+type domainChannelTarget DomainChannelTarget
+
+func (a *DomainChannelTarget) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.VirtIO != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "virtio",
+		})
+		return e.EncodeElement(a.VirtIO, start)
+	} else if a.Xen != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "xen",
+		})
+		return e.EncodeElement(a.Xen, start)
+	} else if a.GuestFWD != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "guestfwd",
+		})
+		return e.EncodeElement(a.GuestFWD, start)
+	}
+	return nil
+}
+
+func (a *DomainChannelTarget) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing channel target type")
+	}
+	if typ == "virtio" {
+		a.VirtIO = &DomainChannelTargetVirtIO{}
+		return d.DecodeElement(a.VirtIO, &start)
+	} else if typ == "xen" {
+		a.Xen = &DomainChannelTargetXen{}
+		return d.DecodeElement(a.Xen, &start)
+	} else if typ == "guestfwd" {
+		a.GuestFWD = &DomainChannelTargetGuestFWD{}
+		return d.DecodeElement(a.GuestFWD, &start)
+	}
+	d.Skip()
+	return nil
 }
 
 type domainChannel DomainChannel

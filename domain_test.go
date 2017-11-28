@@ -431,9 +431,10 @@ var domainTestData = []struct {
 							Pty: &DomainChardevSourcePty{},
 						},
 						Target: &DomainChannelTarget{
-							Type:  "virtio",
-							Name:  "org.redhat.spice",
-							State: "connected",
+							VirtIO: &DomainChannelTargetVirtIO{
+								Name:  "org.redhat.spice",
+								State: "connected",
+							},
 						},
 					},
 				},
@@ -2581,15 +2582,54 @@ var domainTestData = []struct {
 				Pty: &DomainChardevSourcePty{},
 			},
 			Target: &DomainChannelTarget{
-				Type:  "virtio",
-				Name:  "org.redhat.spice",
-				State: "connected",
+				VirtIO: &DomainChannelTargetVirtIO{
+					Name:  "org.redhat.spice",
+					State: "connected",
+				},
 			},
 		},
 
 		Expected: []string{
 			`<channel type="pty">`,
 			`  <target type="virtio" name="org.redhat.spice" state="connected"></target>`,
+			`</channel>`,
+		},
+	},
+	{
+		Object: &DomainChannel{
+			Source: &DomainChardevSource{
+				Pty: &DomainChardevSourcePty{},
+			},
+			Target: &DomainChannelTarget{
+				Xen: &DomainChannelTargetXen{
+					Name:  "org.redhat.spice",
+					State: "connected",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<channel type="pty">`,
+			`  <target type="xen" name="org.redhat.spice" state="connected"></target>`,
+			`</channel>`,
+		},
+	},
+	{
+		Object: &DomainChannel{
+			Source: &DomainChardevSource{
+				Pty: &DomainChardevSourcePty{},
+			},
+			Target: &DomainChannelTarget{
+				GuestFWD: &DomainChannelTargetGuestFWD{
+					Address: "192.168.1.1",
+					Port:    "123",
+				},
+			},
+		},
+
+		Expected: []string{
+			`<channel type="pty">`,
+			`  <target type="guestfwd" address="192.168.1.1" port="123"></target>`,
 			`</channel>`,
 		},
 	},
