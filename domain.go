@@ -2028,6 +2028,15 @@ type DomainMemoryTune struct {
 	SwapHardLimit *DomainMemoryTuneLimit `xml:"swap_hard_limit"`
 }
 
+type DomainMetadata struct {
+	Entry []DomainMetadataEntry `xml:",any"`
+}
+
+type DomainMetadataEntry struct {
+	XMLName xml.Name
+	XML     string `xml:",innerxml"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -2039,6 +2048,7 @@ type Domain struct {
 	UUID            string               `xml:"uuid,omitempty"`
 	Title           string               `xml:"title,omitempty"`
 	Description     string               `xml:"description,omitempty"`
+	Metadata        *DomainMetadata      `xml:"metadata"`
 	MaximumMemory   *DomainMaxMemory     `xml:"maxMemory"`
 	Memory          *DomainMemory        `xml:"memory"`
 	CurrentMemory   *DomainCurrentMemory `xml:"currentMemory"`
