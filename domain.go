@@ -1854,6 +1854,7 @@ type DomainFeatureList struct {
 	IOAPIC       *DomainFeatureIOAPIC       `xml:"ioapic"`
 	HPT          *DomainFeatureHPT          `xml:"hpt"`
 	Capabilities *DomainFeatureCapabilities `xml:"capabilities"`
+	VMCoreInfo   *DomainFeature             `xml:"vmcoreinfo"`
 }
 
 type DomainCPUTuneShares struct {
