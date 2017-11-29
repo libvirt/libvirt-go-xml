@@ -2181,6 +2181,21 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &Domain{
+			Type: "vmware",
+			Name: "test",
+			VMWareDataCenterPath: &DomainVMWareDataCenterPath{
+				Value: "folder1/folder2/datacenter1",
+			},
+		},
+		Expected: []string{
+			`<domain type="vmware">`,
+			`  <name>test</name>`,
+			`  <datacenterpath xmlns="http://libvirt.org/schemas/domain/vmware/1.0">folder1/folder2/datacenter1</datacenterpath>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
 			Name:      "test",
 			IOThreads: 4,
 			IOThreadIDs: &DomainIOThreadIDs{

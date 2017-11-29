@@ -2037,48 +2037,54 @@ type DomainMetadataEntry struct {
 	XML     string `xml:",innerxml"`
 }
 
+type DomainVMWareDataCenterPath struct {
+	XMLName xml.Name `xml:"http://libvirt.org/schemas/domain/vmware/1.0 datacenterpath"`
+	Value   string   `xml:",chardata"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
 type Domain struct {
-	XMLName         xml.Name             `xml:"domain"`
-	Type            string               `xml:"type,attr,omitempty"`
-	ID              *int                 `xml:"id,attr"`
-	Name            string               `xml:"name"`
-	UUID            string               `xml:"uuid,omitempty"`
-	Title           string               `xml:"title,omitempty"`
-	Description     string               `xml:"description,omitempty"`
-	Metadata        *DomainMetadata      `xml:"metadata"`
-	MaximumMemory   *DomainMaxMemory     `xml:"maxMemory"`
-	Memory          *DomainMemory        `xml:"memory"`
-	CurrentMemory   *DomainCurrentMemory `xml:"currentMemory"`
-	BlockIOTune     *DomainBlockIOTune   `xml:"blkiotune"`
-	MemoryTune      *DomainMemoryTune    `xml:"memtune"`
-	MemoryBacking   *DomainMemoryBacking `xml:"memoryBacking"`
-	VCPU            *DomainVCPU          `xml:"vcpu"`
-	VCPUs           *DomainVCPUs         `xml:"vcpus"`
-	IOThreads       uint                 `xml:"iothreads,omitempty"`
-	IOThreadIDs     *DomainIOThreadIDs   `xml:"iothreadids"`
-	CPUTune         *DomainCPUTune       `xml:"cputune"`
-	NUMATune        *DomainNUMATune      `xml:"numatune"`
-	Resource        *DomainResource      `xml:"resource"`
-	SysInfo         *DomainSysInfo       `xml:"sysinfo"`
-	Bootloader      string               `xml:"bootloader,omitempty"`
-	BootloaderArgs  string               `xml:"bootloader_args,omitempty"`
-	OS              *DomainOS            `xml:"os"`
-	IDMap           *DomainIDMap         `xml:"idmap"`
-	Features        *DomainFeatureList   `xml:"features"`
-	CPU             *DomainCPU           `xml:"cpu"`
-	Clock           *DomainClock         `xml:"clock,omitempty"`
-	OnPoweroff      string               `xml:"on_poweroff,omitempty"`
-	OnReboot        string               `xml:"on_reboot,omitempty"`
-	OnCrash         string               `xml:"on_crash,omitempty"`
-	PM              *DomainPM            `xml:"pm"`
-	Devices         *DomainDeviceList    `xml:"devices"`
-	SecLabel        []DomainSecLabel     `xml:"seclabel"`
-	QEMUCommandline *DomainQEMUCommandline
-	LXCNamespace    *DomainLXCNamespace
-	KeyWrap         *DomainKeyWrap `xml:"keywrap"`
+	XMLName              xml.Name             `xml:"domain"`
+	Type                 string               `xml:"type,attr,omitempty"`
+	ID                   *int                 `xml:"id,attr"`
+	Name                 string               `xml:"name"`
+	UUID                 string               `xml:"uuid,omitempty"`
+	Title                string               `xml:"title,omitempty"`
+	Description          string               `xml:"description,omitempty"`
+	Metadata             *DomainMetadata      `xml:"metadata"`
+	MaximumMemory        *DomainMaxMemory     `xml:"maxMemory"`
+	Memory               *DomainMemory        `xml:"memory"`
+	CurrentMemory        *DomainCurrentMemory `xml:"currentMemory"`
+	BlockIOTune          *DomainBlockIOTune   `xml:"blkiotune"`
+	MemoryTune           *DomainMemoryTune    `xml:"memtune"`
+	MemoryBacking        *DomainMemoryBacking `xml:"memoryBacking"`
+	VCPU                 *DomainVCPU          `xml:"vcpu"`
+	VCPUs                *DomainVCPUs         `xml:"vcpus"`
+	IOThreads            uint                 `xml:"iothreads,omitempty"`
+	IOThreadIDs          *DomainIOThreadIDs   `xml:"iothreadids"`
+	CPUTune              *DomainCPUTune       `xml:"cputune"`
+	NUMATune             *DomainNUMATune      `xml:"numatune"`
+	Resource             *DomainResource      `xml:"resource"`
+	SysInfo              *DomainSysInfo       `xml:"sysinfo"`
+	Bootloader           string               `xml:"bootloader,omitempty"`
+	BootloaderArgs       string               `xml:"bootloader_args,omitempty"`
+	OS                   *DomainOS            `xml:"os"`
+	IDMap                *DomainIDMap         `xml:"idmap"`
+	Features             *DomainFeatureList   `xml:"features"`
+	CPU                  *DomainCPU           `xml:"cpu"`
+	Clock                *DomainClock         `xml:"clock,omitempty"`
+	OnPoweroff           string               `xml:"on_poweroff,omitempty"`
+	OnReboot             string               `xml:"on_reboot,omitempty"`
+	OnCrash              string               `xml:"on_crash,omitempty"`
+	PM                   *DomainPM            `xml:"pm"`
+	Devices              *DomainDeviceList    `xml:"devices"`
+	SecLabel             []DomainSecLabel     `xml:"seclabel"`
+	QEMUCommandline      *DomainQEMUCommandline
+	LXCNamespace         *DomainLXCNamespace
+	VMWareDataCenterPath *DomainVMWareDataCenterPath
+	KeyWrap              *DomainKeyWrap `xml:"keywrap"`
 }
 
 func (d *Domain) Unmarshal(doc string) error {
