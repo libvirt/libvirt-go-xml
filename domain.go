@@ -933,7 +933,7 @@ type DomainRedirFilterUSB struct {
 type DomainInput struct {
 	XMLName xml.Name           `xml:"input"`
 	Type    string             `xml:"type,attr"`
-	Bus     string             `xml:"bus,attr"`
+	Bus     string             `xml:"bus,attr,omitempty"`
 	Driver  *DomainInputDriver `xml:"driver"`
 	Source  *DomainInputSource `xml:"source"`
 	Alias   *DomainAlias       `xml:"alias"`
