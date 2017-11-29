@@ -866,6 +866,7 @@ type DomainChardevLog struct {
 
 type DomainConsole struct {
 	XMLName  xml.Name               `xml:"console"`
+	TTY      string                 `xml:"tty,attr,omitempty"`
 	Source   *DomainChardevSource   `xml:"source"`
 	Protocol *DomainChardevProtocol `xml:"protocol"`
 	Target   *DomainConsoleTarget   `xml:"target"`

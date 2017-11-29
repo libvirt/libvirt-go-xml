@@ -3229,6 +3229,7 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainConsole{
+			TTY: "/dev/pts/3",
 			Source: &DomainChardevSource{
 				Pty: &DomainChardevSourcePty{
 					Path: "/dev/pts/3",
@@ -3237,7 +3238,7 @@ var domainTestData = []struct {
 		},
 
 		Expected: []string{
-			`<console type="pty">`,
+			`<console type="pty" tty="/dev/pts/3">`,
 			`  <source path="/dev/pts/3"></source>`,
 			`</console>`,
 		},
