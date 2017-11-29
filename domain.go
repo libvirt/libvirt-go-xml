@@ -2050,6 +2050,15 @@ type DomainVMWareDataCenterPath struct {
 	Value   string   `xml:",chardata"`
 }
 
+type DomainPerf struct {
+	Events []DomainPerfEvent `xml:"event"`
+}
+
+type DomainPerfEvent struct {
+	Name    string `xml:"name,attr"`
+	Enabled string `xml:"enabled,attr"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -2087,6 +2096,7 @@ type Domain struct {
 	OnReboot             string               `xml:"on_reboot,omitempty"`
 	OnCrash              string               `xml:"on_crash,omitempty"`
 	PM                   *DomainPM            `xml:"pm"`
+	Perf                 *DomainPerf          `xml:"perf"`
 	Devices              *DomainDeviceList    `xml:"devices"`
 	SecLabel             []DomainSecLabel     `xml:"seclabel"`
 	QEMUCommandline      *DomainQEMUCommandline

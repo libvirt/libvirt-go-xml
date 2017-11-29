@@ -2088,6 +2088,33 @@ var domainTestData = []struct {
 		Object: &Domain{
 			Type: "kvm",
 			Name: "test",
+			Perf: &DomainPerf{
+				Events: []DomainPerfEvent{
+					DomainPerfEvent{
+						Name:    "cmt",
+						Enabled: "yes",
+					},
+					DomainPerfEvent{
+						Name:    "mbmt",
+						Enabled: "no",
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <perf>`,
+			`    <event name="cmt" enabled="yes"></event>`,
+			`    <event name="mbmt" enabled="no"></event>`,
+			`  </perf>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
 			Devices: &DomainDeviceList{
 				Leases: []DomainLease{
 					DomainLease{
