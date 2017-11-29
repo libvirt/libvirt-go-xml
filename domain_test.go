@@ -1242,6 +1242,41 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &Domain{
+			Type: "vmware",
+			Name: "test",
+			Devices: &DomainDeviceList{
+				Interfaces: []DomainInterface{
+					DomainInterface{
+						MAC: &DomainInterfaceMAC{
+							Address: "06:39:b4:00:00:46",
+						},
+						Model: &DomainInterfaceModel{
+							Type: "e1000",
+						},
+						Source: &DomainInterfaceSource{
+							Bridge: &DomainInterfaceSourceBridge{
+								Bridge: "",
+							},
+						},
+					},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain type="vmware">`,
+			`  <name>test</name>`,
+			`  <devices>`,
+			`    <interface type="bridge">`,
+			`      <mac address="06:39:b4:00:00:46"></mac>`,
+			`      <source bridge=""></source>`,
+			`      <model type="e1000"></model>`,
+			`    </interface>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
 			Type: "kvm",
 			Name: "test",
 			Devices: &DomainDeviceList{

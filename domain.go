@@ -421,7 +421,7 @@ type DomainInterfaceSourceNetwork struct {
 }
 
 type DomainInterfaceSourceBridge struct {
-	Bridge string `xml:"bridge,attr,omitempty"`
+	Bridge string `xml:"bridge,attr"`
 }
 
 type DomainInterfaceSourceInternal struct {
