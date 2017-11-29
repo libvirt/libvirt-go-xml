@@ -802,7 +802,7 @@ var domainTestData = []struct {
 			Clock: &DomainClock{
 				Offset:     "variable",
 				Basis:      "utc",
-				Adjustment: 28794,
+				Adjustment: "28794",
 				TimeZone:   "Europe/Paris",
 				Timer: []DomainTimer{
 					DomainTimer{
@@ -877,6 +877,23 @@ var domainTestData = []struct {
 			`      <catchup threshold="123" slew="120" limit="10000"></catchup>`,
 			`    </timer>`,
 			`  </clock>`,
+			`</domain>`,
+		},
+	},
+	{
+		Object: &Domain{
+			Type: "kvm",
+			Name: "test",
+			Clock: &DomainClock{
+				Offset:     "variable",
+				Basis:      "utc",
+				Adjustment: "reset",
+			},
+		},
+		Expected: []string{
+			`<domain type="kvm">`,
+			`  <name>test</name>`,
+			`  <clock offset="variable" basis="utc" adjustment="reset"></clock>`,
 			`</domain>`,
 		},
 	},
