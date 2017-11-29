@@ -748,8 +748,13 @@ type DomainConsoleTarget struct {
 }
 
 type DomainSerialTarget struct {
-	Type string `xml:"type,attr,omitempty"`
-	Port *uint  `xml:"port,attr"`
+	Type  string                   `xml:"type,attr,omitempty"`
+	Port  *uint                    `xml:"port,attr"`
+	Model *DomainSerialTargetModel `xml:"model"`
+}
+
+type DomainSerialTargetModel struct {
+	Name string `xml:"name,attr,omitempty"`
 }
 
 type DomainParallelTarget struct {

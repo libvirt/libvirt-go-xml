@@ -2653,6 +2653,9 @@ var domainTestData = []struct {
 			Target: &DomainSerialTarget{
 				Type: "isa",
 				Port: &serialPort,
+				Model: &DomainSerialTargetModel{
+					Name: "isa-serial",
+				},
 			},
 			Log: &DomainChardevLog{
 				File:   "/some/path",
@@ -2662,7 +2665,9 @@ var domainTestData = []struct {
 
 		Expected: []string{
 			`<serial type="pty">`,
-			`  <target type="isa" port="0"></target>`,
+			`  <target type="isa" port="0">`,
+			`    <model name="isa-serial"></model>`,
+			`  </target>`,
 			`  <log file="/some/path" append="on"></log>`,
 			`</serial>`,
 		},
