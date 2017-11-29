@@ -1948,10 +1948,10 @@ type DomainBlockIOTune struct {
 type DomainBlockIOTuneDevice struct {
 	Path          string `xml:"path"`
 	Weight        uint   `xml:"weight,omitempty"`
-	ReadIopsSec   uint   `xml:"read_iops_sec"`
-	WriteIopsSec  uint   `xml:"write_iops_sec"`
-	ReadBytesSec  uint   `xml:"read_bytes_sec"`
-	WriteBytesSec uint   `xml:"write_bytes_sec"`
+	ReadIopsSec   uint   `xml:"read_iops_sec,omitempty"`
+	WriteIopsSec  uint   `xml:"write_iops_sec,omitempty"`
+	ReadBytesSec  uint   `xml:"read_bytes_sec,omitempty"`
+	WriteBytesSec uint   `xml:"write_bytes_sec,omitempty"`
 }
 
 type DomainPM struct {
