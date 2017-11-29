@@ -2049,7 +2049,7 @@ type Domain struct {
 	XMLName              xml.Name             `xml:"domain"`
 	Type                 string               `xml:"type,attr,omitempty"`
 	ID                   *int                 `xml:"id,attr"`
-	Name                 string               `xml:"name"`
+	Name                 string               `xml:"name,omitempty"`
 	UUID                 string               `xml:"uuid,omitempty"`
 	Title                string               `xml:"title,omitempty"`
 	Description          string               `xml:"description,omitempty"`
