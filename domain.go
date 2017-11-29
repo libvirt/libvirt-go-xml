@@ -1109,8 +1109,9 @@ type DomainVideo struct {
 }
 
 type DomainVideoDriver struct {
-	IOMMU string `xml:"iommu,attr,omitempty"`
-	ATS   string `xml:"ats,attr,omitempty"`
+	VGAConf string `xml:"vgaconf,attr,omitempty"`
+	IOMMU   string `xml:"iommu,attr,omitempty"`
+	ATS     string `xml:"ats,attr,omitempty"`
 }
 
 type DomainMemBalloonStats struct {

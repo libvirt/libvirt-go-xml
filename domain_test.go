@@ -2855,6 +2855,9 @@ var domainTestData = []struct {
 	},
 	{
 		Object: &DomainVideo{
+			Driver: &DomainVideoDriver{
+				VGAConf: "io",
+			},
 			Model: DomainVideoModel{
 				Type:    "cirrus",
 				Heads:   1,
@@ -2883,6 +2886,7 @@ var domainTestData = []struct {
 			`  <model type="cirrus" heads="1" ram="4096" vram="8192" vram64="8192" vgamem="256" primary="yes">`,
 			`    <acceleration accel3d="yes"></acceleration>`,
 			`  </model>`,
+			`  <driver vgaconf="io"></driver>`,
 			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0" multifunction="on"></address>`,
 			`</video>`,
 		},
