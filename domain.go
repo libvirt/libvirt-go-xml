@@ -1087,6 +1087,7 @@ type DomainGraphic struct {
 
 type DomainVideoAccel struct {
 	Accel3D string `xml:"accel3d,attr,omitempty"`
+	Accel2D string `xml:"accel2d,attr,omitempty"`
 }
 
 type DomainVideoModel struct {

@@ -2868,6 +2868,7 @@ var domainTestData = []struct {
 				Primary: "yes",
 				Accel: &DomainVideoAccel{
 					Accel3D: "yes",
+					Accel2D: "no",
 				},
 			},
 			Address: &DomainAddress{
@@ -2884,7 +2885,7 @@ var domainTestData = []struct {
 		Expected: []string{
 			`<video>`,
 			`  <model type="cirrus" heads="1" ram="4096" vram="8192" vram64="8192" vgamem="256" primary="yes">`,
-			`    <acceleration accel3d="yes"></acceleration>`,
+			`    <acceleration accel3d="yes" accel2d="no"></acceleration>`,
 			`  </model>`,
 			`  <driver vgaconf="io"></driver>`,
 			`  <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0" multifunction="on"></address>`,
