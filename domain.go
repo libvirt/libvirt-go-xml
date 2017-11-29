@@ -255,7 +255,7 @@ type DomainDiskMirror struct {
 
 type DomainDisk struct {
 	XMLName      xml.Name                `xml:"disk"`
-	Device       string                  `xml:"device,attr"`
+	Device       string                  `xml:"device,attr,omitempty"`
 	RawIO        string                  `xml:"rawio,attr,omitempty"`
 	SGIO         string                  `xml:"sgio,attr,omitempty"`
 	Snapshot     string                  `xml:"snapshot,attr,omitempty"`
