@@ -89,6 +89,11 @@ var networkTestData = []struct {
 						},
 					},
 				},
+				Interfaces: []NetworkForwardInterface{
+					NetworkForwardInterface{
+						Dev: "eth0",
+					},
+				},
 			},
 			IPs: []NetworkIP{
 				NetworkIP{
@@ -191,6 +196,7 @@ var networkTestData = []struct {
 			`      <address start="1.2.3.4" end="1.2.3.10"></address>`,
 			`      <port start="500" end="1000"></port>`,
 			`    </nat>`,
+			`    <interface dev="eth0"></interface>`,
 			`  </forward>`,
 			`  <ip address="192.168.122.1" netmask="255.255.255.0">`,
 			`    <dhcp>`,

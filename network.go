@@ -67,9 +67,14 @@ type NetworkForwardNAT struct {
 }
 
 type NetworkForward struct {
-	Mode string             `xml:"mode,attr,omitempty"`
-	Dev  string             `xml:"dev,attr,omitempty"`
-	NAT  *NetworkForwardNAT `xml:"nat"`
+	Mode       string                    `xml:"mode,attr,omitempty"`
+	Dev        string                    `xml:"dev,attr,omitempty"`
+	NAT        *NetworkForwardNAT        `xml:"nat"`
+	Interfaces []NetworkForwardInterface `xml:"interface"`
+}
+
+type NetworkForwardInterface struct {
+	Dev string `xml:"dev,attr,omitempty"`
 }
 
 type NetworkMAC struct {
