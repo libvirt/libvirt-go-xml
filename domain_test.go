@@ -26,7 +26,6 @@
 package libvirtxml
 
 import (
-	"encoding/xml"
 	"reflect"
 	"strings"
 	"testing"
@@ -156,22 +155,8 @@ var domainTestData = []struct {
 			Title:       "Test",
 			Description: "A test guest config",
 			Metadata: &DomainMetadata{
-				Entry: []DomainMetadataEntry{
-					DomainMetadataEntry{
-						XMLName: xml.Name{
-							Space: "http://myapp.com/schemeas/my/1.0",
-							Local: "myvalue",
-						},
-						XML: "<widget name='foo'/>",
-					},
-					DomainMetadataEntry{
-						XMLName: xml.Name{
-							Space: "http://myotherapp.com/schemeas/my/1.0",
-							Local: "myothervalue",
-						},
-						XML: "<gizmo name='foo'/>",
-					},
-				},
+				XML: "<myvalue xmlns='http://myapp.com/schemeas/my/1.0'><widget name='foo'/></myvalue>" +
+					"<myothervalue xmlns='http://myotherapp.com/schemeas/my/1.0'><gizmo name='foo'/></myothervalue>",
 			},
 			Devices: &DomainDeviceList{
 				Disks: []DomainDisk{
@@ -297,10 +282,10 @@ var domainTestData = []struct {
 			`  <name>test</name>`,
 			`  <title>Test</title>`,
 			`  <description>A test guest config</description>`,
-			`  <metadata>`,
-			`    <myvalue xmlns="http://myapp.com/schemeas/my/1.0"><widget name='foo'/></myvalue>`,
-			`    <myothervalue xmlns="http://myotherapp.com/schemeas/my/1.0"><gizmo name='foo'/></myothervalue>`,
-			`  </metadata>`,
+			`  <metadata>` +
+				`<myvalue xmlns='http://myapp.com/schemeas/my/1.0'><widget name='foo'/></myvalue>` +
+				`<myothervalue xmlns='http://myotherapp.com/schemeas/my/1.0'><gizmo name='foo'/></myothervalue>` +
+				`</metadata>`,
 			`  <devices>`,
 			`    <disk type="file" device="cdrom">`,
 			`      <driver name="qemu" type="qcow2"></driver>`,

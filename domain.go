@@ -2048,12 +2048,10 @@ type DomainMemoryTune struct {
 }
 
 type DomainMetadata struct {
-	Entry []DomainMetadataEntry `xml:",any"`
+	XML string `xml:",innerxml"`
 }
 
 type DomainMetadataEntry struct {
-	XMLName xml.Name
-	XML     string `xml:",innerxml"`
 }
 
 type DomainVMWareDataCenterPath struct {
@@ -2566,11 +2564,11 @@ func (a *DomainDiskMirror) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 				a.Source.File = nil
 			}
 		}
-		if a.Format != nil {
-			fmt, ok := getAttr(start.Attr, "format")
+		if a.Format == nil {
+			format, ok := getAttr(start.Attr, "format")
 			if ok {
 				a.Format = &DomainDiskFormat{
-					Type: fmt,
+					Type: format,
 				}
 			}
 		}
