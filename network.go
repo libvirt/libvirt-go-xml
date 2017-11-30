@@ -170,15 +170,15 @@ type Network struct {
 	TrustGuestRxFilters string          `xml:"trustGuestRxFilters,attr,omitempty"`
 	Name                string          `xml:"name,omitempty"`
 	UUID                string          `xml:"uuid,omitempty"`
-	MAC                 *NetworkMAC     `xml:"mac"`
-	Bridge              *NetworkBridge  `xml:"bridge"`
-	VirtualPort         *VirtualPort    `xml:"virtualport"`
 	Forward             *NetworkForward `xml:"forward"`
-	VLAN                *NetworkVLAN    `xml:"vlan"`
+	Bridge              *NetworkBridge  `xml:"bridge"`
+	MAC                 *NetworkMAC     `xml:"mac"`
 	Domain              *NetworkDomain  `xml:"domain"`
+	DNS                 *NetworkDNS     `xml:"dns"`
+	VLAN                *NetworkVLAN    `xml:"vlan"`
 	IPs                 []NetworkIP     `xml:"ip"`
 	Routes              []NetworkRoute  `xml:"route"`
-	DNS                 *NetworkDNS     `xml:"dns"`
+	VirtualPort         *VirtualPort    `xml:"virtualport"`
 }
 
 type NetworkVLAN struct {
