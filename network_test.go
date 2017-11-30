@@ -101,6 +101,24 @@ var networkTestData = []struct {
 					},
 				},
 			},
+			PortGroups: []NetworkPortGroup{
+				NetworkPortGroup{
+					Name:    "main",
+					Default: "yes",
+					VLAN: &NetworkVLAN{
+						Trunk: "yes",
+						Tags: []NetworkVLANTag{
+							NetworkVLANTag{
+								ID:         123,
+								NativeMode: "tagged",
+							},
+							NetworkVLANTag{
+								ID: 444,
+							},
+						},
+					},
+				},
+			},
 		},
 		Expected: []string{
 			`<network>`,
@@ -112,6 +130,12 @@ var networkTestData = []struct {
 			`    <address type="pci" domain="0x0000" bus="0x03" slot="0x00" function="0x2"></address>`,
 			`  </forward>`,
 			`  <domain name="example.com"></domain>`,
+			`  <portgroup name="main" default="yes">`,
+			`    <vlan trunk="yes">`,
+			`      <tag id="123" nativeMode="tagged"></tag>`,
+			`      <tag id="444"></tag>`,
+			`    </vlan>`,
+			`  </portgroup>`,
 			`</network>`,
 		},
 	},

@@ -193,26 +193,35 @@ type NetworkMetadata struct {
 }
 
 type Network struct {
-	XMLName             xml.Name          `xml:"network"`
-	IPv6                string            `xml:"ipv6,attr,omitempty"`
-	TrustGuestRxFilters string            `xml:"trustGuestRxFilters,attr,omitempty"`
-	Name                string            `xml:"name,omitempty"`
-	UUID                string            `xml:"uuid,omitempty"`
-	Metadata            *NetworkMetadata  `xml:"metadata"`
-	Forward             *NetworkForward   `xml:"forward"`
-	Bridge              *NetworkBridge    `xml:"bridge"`
-	MAC                 *NetworkMAC       `xml:"mac"`
-	Domain              *NetworkDomain    `xml:"domain"`
-	DNS                 *NetworkDNS       `xml:"dns"`
-	VLAN                *NetworkVLAN      `xml:"vlan"`
-	Bandwidth           *NetworkBandwidth `xml:"bandwidth"`
-	IPs                 []NetworkIP       `xml:"ip"`
-	Routes              []NetworkRoute    `xml:"route"`
-	VirtualPort         *VirtualPort      `xml:"virtualport"`
+	XMLName             xml.Name           `xml:"network"`
+	IPv6                string             `xml:"ipv6,attr,omitempty"`
+	TrustGuestRxFilters string             `xml:"trustGuestRxFilters,attr,omitempty"`
+	Name                string             `xml:"name,omitempty"`
+	UUID                string             `xml:"uuid,omitempty"`
+	Metadata            *NetworkMetadata   `xml:"metadata"`
+	Forward             *NetworkForward    `xml:"forward"`
+	Bridge              *NetworkBridge     `xml:"bridge"`
+	MAC                 *NetworkMAC        `xml:"mac"`
+	Domain              *NetworkDomain     `xml:"domain"`
+	DNS                 *NetworkDNS        `xml:"dns"`
+	VLAN                *NetworkVLAN       `xml:"vlan"`
+	Bandwidth           *NetworkBandwidth  `xml:"bandwidth"`
+	IPs                 []NetworkIP        `xml:"ip"`
+	Routes              []NetworkRoute     `xml:"route"`
+	VirtualPort         *VirtualPort       `xml:"virtualport"`
+	PortGroups          []NetworkPortGroup `xml:"portgroup"`
+}
+
+type NetworkPortGroup struct {
+	Name        string       `xml:"name,attr,omitempty"`
+	Default     string       `xml:"default,attr,omitempty"`
+	VLAN        *NetworkVLAN `xml:"vlan"`
+	VirtualPort *VirtualPort `xml:"virtualport"`
 }
 
 type NetworkVLAN struct {
-	Tags []NetworkVLANTag `xml:"tag"`
+	Trunk string           `xml:"trunk,attr,omitempty"`
+	Tags  []NetworkVLANTag `xml:"tag"`
 }
 
 type NetworkVLANTag struct {
