@@ -133,7 +133,7 @@ var networkTestData = []struct {
 				NetworkIP{
 					Family:  "ipv6",
 					Address: "2001:db8:ca2:2::1",
-					Prefix:  "64",
+					Prefix:  64,
 					DHCP: &NetworkDHCP{
 						Hosts: []NetworkDHCPHost{
 							NetworkDHCPHost{
@@ -203,6 +203,19 @@ var networkTestData = []struct {
 					Average: &nicOutAverage,
 				},
 			},
+			Routes: []NetworkRoute{
+				NetworkRoute{
+					Address: "192.168.222.0",
+					Netmask: "255.255.255.0",
+					Gateway: "192.168.122.10",
+				},
+				NetworkRoute{
+					Family:  "ipv6",
+					Address: "2001:db8:ac10:fc00::",
+					Prefix:  64,
+					Gateway: "2001:db8:ac10:fd01::1:24",
+				},
+			},
 			VLAN: &NetworkVLAN{
 				Tags: []NetworkVLANTag{
 					NetworkVLANTag{
@@ -259,6 +272,8 @@ var networkTestData = []struct {
 			`      <host id="0:1:0:1:18:aa:62:fe:0:16:3e:44:55:66" ip="2001:db8:ca2:2:3::2"></host>`,
 			`    </dhcp>`,
 			`  </ip>`,
+			`  <route address="192.168.222.0" netmask="255.255.255.0" gateway="192.168.122.10"></route>`,
+			`  <route family="ipv6" address="2001:db8:ac10:fc00::" prefix="64" gateway="2001:db8:ac10:fd01::1:24"></route>`,
 			`  <virtualport type="openvswitch">`,
 			`    <parameters interfaceid="09b11c53-8b5c-4eeb-8f00-d84eaa0aaa4f"></parameters>`,
 			`  </virtualport>`,
