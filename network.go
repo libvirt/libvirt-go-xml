@@ -69,8 +69,31 @@ type NetworkForwardNAT struct {
 type NetworkForward struct {
 	Mode       string                    `xml:"mode,attr,omitempty"`
 	Dev        string                    `xml:"dev,attr,omitempty"`
+	Managed    string                    `xml:"managed,attr,omitempty"`
+	Driver     *NetworkForwardDriver     `xml:"driver"`
+	PFs        []NetworkForwardPF        `xml:"pf"`
 	NAT        *NetworkForwardNAT        `xml:"nat"`
 	Interfaces []NetworkForwardInterface `xml:"interface"`
+	Addresses  []NetworkForwardAddress   `xml:"address"`
+}
+
+type NetworkForwardDriver struct {
+	Name string `xml:"name,attr"`
+}
+
+type NetworkForwardPF struct {
+	Dev string `xml:"dev,attr"`
+}
+
+type NetworkForwardAddress struct {
+	PCI *NetworkForwardAddressPCI `xml:"-"`
+}
+
+type NetworkForwardAddressPCI struct {
+	Domain   *uint `xml:"domain,attr"`
+	Bus      *uint `xml:"bus,attr"`
+	Slot     *uint `xml:"slot,attr"`
+	Function *uint `xml:"function,attr"`
 }
 
 type NetworkForwardInterface struct {
@@ -202,6 +225,72 @@ type NetworkBandwidthParams struct {
 type NetworkBandwidth struct {
 	Inbound  *NetworkBandwidthParams `xml:"inbound"`
 	Outbound *NetworkBandwidthParams `xml:"outbound"`
+}
+
+func (a *NetworkForwardAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	marshallUintAttr(&start, "domain", a.Domain, "0x%04x")
+	marshallUintAttr(&start, "bus", a.Bus, "0x%02x")
+	marshallUintAttr(&start, "slot", a.Slot, "0x%02x")
+	marshallUintAttr(&start, "function", a.Function, "0x%x")
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (a *NetworkForwardAddressPCI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "domain" {
+			if err := unmarshallUintAttr(attr.Value, &a.Domain, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "bus" {
+			if err := unmarshallUintAttr(attr.Value, &a.Bus, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "slot" {
+			if err := unmarshallUintAttr(attr.Value, &a.Slot, 0); err != nil {
+				return err
+			}
+		} else if attr.Name.Local == "function" {
+			if err := unmarshallUintAttr(attr.Value, &a.Function, 0); err != nil {
+				return err
+			}
+		}
+	}
+	d.Skip()
+	return nil
+}
+
+func (a *NetworkForwardAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.PCI != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "pci",
+		})
+		return a.PCI.MarshalXML(e, start)
+	} else {
+		return nil
+	}
+}
+
+func (a *NetworkForwardAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	var typ string
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "type" {
+			typ = attr.Value
+			break
+		}
+	}
+	if typ == "" {
+		d.Skip()
+		return nil
+	}
+
+	if typ == "pci" {
+		a.PCI = &NetworkForwardAddressPCI{}
+		return a.PCI.UnmarshalXML(d, start)
+	}
+
+	return nil
 }
 
 func (s *Network) Unmarshal(doc string) error {

@@ -36,6 +36,12 @@ var nicInPeak uint = 2000
 var nicInFloor uint = 500
 var nicOutAverage uint = 2000
 
+var netFwdDomain uint = 0
+var netFwdBus uint = 3
+var netFwdSlot uint = 0
+var netFwdFunc1 uint = 1
+var netFwdFunc2 uint = 2
+
 var networkTestData = []struct {
 	Object   *Network
 	Expected []string
@@ -57,10 +63,46 @@ var networkTestData = []struct {
 			Domain: &NetworkDomain{
 				Name: "example.com",
 			},
+			Forward: &NetworkForward{
+				Mode:    "hostdev",
+				Managed: "yes",
+				Driver: &NetworkForwardDriver{
+					Name: "vfio",
+				},
+				Addresses: []NetworkForwardAddress{
+					NetworkForwardAddress{
+						PCI: &NetworkForwardAddressPCI{
+							Domain:   &netFwdDomain,
+							Bus:      &netFwdBus,
+							Slot:     &netFwdSlot,
+							Function: &netFwdFunc1,
+						},
+					},
+					NetworkForwardAddress{
+						PCI: &NetworkForwardAddressPCI{
+							Domain:   &netFwdDomain,
+							Bus:      &netFwdBus,
+							Slot:     &netFwdSlot,
+							Function: &netFwdFunc2,
+						},
+					},
+				},
+				PFs: []NetworkForwardPF{
+					NetworkForwardPF{
+						Dev: "eth2",
+					},
+				},
+			},
 		},
 		Expected: []string{
 			`<network>`,
 			`  <name>test</name>`,
+			`  <forward mode="hostdev" managed="yes">`,
+			`    <driver name="vfio"></driver>`,
+			`    <pf dev="eth2"></pf>`,
+			`    <address type="pci" domain="0x0000" bus="0x03" slot="0x00" function="0x1"></address>`,
+			`    <address type="pci" domain="0x0000" bus="0x03" slot="0x00" function="0x2"></address>`,
+			`  </forward>`,
 			`  <domain name="example.com"></domain>`,
 			`</network>`,
 		},
