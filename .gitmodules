@@ -1,3 +1,0 @@
-[submodule "tests/libvirt"]
-	path = testdata/libvirt
-	url = git://libvirt.org/libvirt.git
