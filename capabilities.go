@@ -65,7 +65,7 @@ type CapsHostCPUFeatures struct {
 }
 
 type CapsHostNUMAMemory struct {
-	Size uint64 `xml:"size,attr"`
+	Size uint64 `xml:",chardata"`
 	Unit string `xml:"unit,attr"`
 }
 
