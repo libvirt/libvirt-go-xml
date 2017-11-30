@@ -139,9 +139,19 @@ type CapsHostMigrationURITransports struct {
 type CapsHost struct {
 	UUID              string                     `xml:"uuid,omitempty"`
 	CPU               *CapsHostCPU               `xml:"cpu"`
+	PowerManagement   *CapsHostPowerManagement   `xml:"power_management"`
 	MigrationFeatures *CapsHostMigrationFeatures `xml:"migration_features"`
 	NUMA              *CapsHostNUMATopology      `xml:"topology"`
 	SecModel          []CapsHostSecModel         `xml:"secmodel"`
+}
+
+type CapsHostPowerManagement struct {
+	SuspendMem    *CapsHostPowerManagementMode `xml:"suspend_mem"`
+	SuspendDisk   *CapsHostPowerManagementMode `xml:"suspend_disk"`
+	SuspendHybrid *CapsHostPowerManagementMode `xml:"suspend_hybrid"`
+}
+
+type CapsHostPowerManagementMode struct {
 }
 
 type CapsGuestMachine struct {
