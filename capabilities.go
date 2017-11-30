@@ -35,7 +35,7 @@ type CapsHostCPUTopology struct {
 	Threads int `xml:"threads,attr"`
 }
 
-type CapsHostCPUFeature struct {
+type CapsHostCPUFeatureFlag struct {
 	Name string `xml:"name,attr"`
 }
 
@@ -45,12 +45,23 @@ type CapsHostCPUPageSize struct {
 }
 
 type CapsHostCPU struct {
-	Arch      string                `xml:"arch,omitempty"`
-	Model     string                `xml:"model,omitempty"`
-	Vendor    string                `xml:"vendor,omitempty"`
-	Topology  *CapsHostCPUTopology  `xml:"topology"`
-	Features  []CapsHostCPUFeature  `xml:"feature"`
-	PageSizes []CapsHostCPUPageSize `xml:"pages"`
+	Arch         string                   `xml:"arch,omitempty"`
+	Model        string                   `xml:"model,omitempty"`
+	Vendor       string                   `xml:"vendor,omitempty"`
+	Topology     *CapsHostCPUTopology     `xml:"topology"`
+	FeatureFlags []CapsHostCPUFeatureFlag `xml:"feature"`
+	Features     *CapsHostCPUFeatures     `xml:"features"`
+	PageSizes    []CapsHostCPUPageSize    `xml:"pages"`
+}
+
+type CapsHostCPUFeature struct {
+}
+
+type CapsHostCPUFeatures struct {
+	PAE    *CapsHostCPUFeature `xml:"pae"`
+	NonPAE *CapsHostCPUFeature `xml:"nonpae"`
+	SVM    *CapsHostCPUFeature `xml:"svm"`
+	VMX    *CapsHostCPUFeature `xml:"vmx"`
 }
 
 type CapsHostNUMAMemory struct {
@@ -153,9 +164,35 @@ type CapsGuestArch struct {
 	Domains  []CapsGuestDomain  `xml:"domain"`
 }
 
+type CapsGuestFeatureCPUSelection struct {
+}
+
+type CapsGuestFeatureDeviceBoot struct {
+}
+
+type CapsGuestFeaturePAE struct {
+}
+
+type CapsGuestFeatureNonPAE struct {
+}
+
+type CapsGuestFeatureAPIC struct {
+	Default string `xml:"default,attr,omitempty"`
+	Toggle  string `xml:"toggle,attr,omitempty"`
+}
+
+type CapsGuestFeatureACPI struct {
+	Default string `xml:"default,attr,omitempty"`
+	Toggle  string `xml:"toggle,attr,omitempty"`
+}
+
 type CapsGuestFeatures struct {
-	CPUSelection *struct{} `xml:"cpuselection"`
-	DeviceBoot   *struct{} `xml:"deviceboot"`
+	CPUSelection *CapsGuestFeatureCPUSelection `xml:"cpuselection"`
+	DeviceBoot   *CapsGuestFeatureDeviceBoot   `xml:"deviceboot"`
+	PAE          *CapsGuestFeaturePAE          `xml:"pae"`
+	NonPAE       *CapsGuestFeatureNonPAE       `xml:"nonpae"`
+	APIC         *CapsGuestFeatureAPIC         `xml:"apic"`
+	ACPI         *CapsGuestFeatureACPI         `xml:"acpi"`
 }
 
 type CapsGuest struct {
