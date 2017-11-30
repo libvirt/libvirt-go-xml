@@ -111,6 +111,11 @@ type NetworkIP struct {
 	Prefix   string       `xml:"prefix,attr,omitempty"`
 	LocalPtr string       `xml:"localPtr,attr,omitempty"`
 	DHCP     *NetworkDHCP `xml:"dhcp"`
+	TFTP     *NetworkTFTP `xml:"tftp"`
+}
+
+type NetworkTFTP struct {
+	Root string `xml:"root,attr,omitempty"`
 }
 
 type NetworkRoute struct {

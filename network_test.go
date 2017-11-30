@@ -120,6 +120,9 @@ var networkTestData = []struct {
 							},
 						},
 					},
+					TFTP: &NetworkTFTP{
+						Root: "/var/lib/tftp",
+					},
 				},
 				NetworkIP{
 					Family:  "ipv6",
@@ -204,6 +207,7 @@ var networkTestData = []struct {
 			`      <host mac="00:16:3e:77:e2:ed" name="foo.example.com" ip="192.168.122.10"></host>`,
 			`      <bootp file="pxelinux.0" server="192.168.122.1"></bootp>`,
 			`    </dhcp>`,
+			`    <tftp root="/var/lib/tftp"></tftp>`,
 			`  </ip>`,
 			`  <ip address="2001:db8:ca2:2::1" family="ipv6" prefix="64">`,
 			`    <dhcp>`,
