@@ -165,20 +165,21 @@ type NetworkDNS struct {
 }
 
 type Network struct {
-	XMLName             xml.Name        `xml:"network"`
-	IPv6                string          `xml:"ipv6,attr,omitempty"`
-	TrustGuestRxFilters string          `xml:"trustGuestRxFilters,attr,omitempty"`
-	Name                string          `xml:"name,omitempty"`
-	UUID                string          `xml:"uuid,omitempty"`
-	Forward             *NetworkForward `xml:"forward"`
-	Bridge              *NetworkBridge  `xml:"bridge"`
-	MAC                 *NetworkMAC     `xml:"mac"`
-	Domain              *NetworkDomain  `xml:"domain"`
-	DNS                 *NetworkDNS     `xml:"dns"`
-	VLAN                *NetworkVLAN    `xml:"vlan"`
-	IPs                 []NetworkIP     `xml:"ip"`
-	Routes              []NetworkRoute  `xml:"route"`
-	VirtualPort         *VirtualPort    `xml:"virtualport"`
+	XMLName             xml.Name          `xml:"network"`
+	IPv6                string            `xml:"ipv6,attr,omitempty"`
+	TrustGuestRxFilters string            `xml:"trustGuestRxFilters,attr,omitempty"`
+	Name                string            `xml:"name,omitempty"`
+	UUID                string            `xml:"uuid,omitempty"`
+	Forward             *NetworkForward   `xml:"forward"`
+	Bridge              *NetworkBridge    `xml:"bridge"`
+	MAC                 *NetworkMAC       `xml:"mac"`
+	Domain              *NetworkDomain    `xml:"domain"`
+	DNS                 *NetworkDNS       `xml:"dns"`
+	VLAN                *NetworkVLAN      `xml:"vlan"`
+	Bandwidth           *NetworkBandwidth `xml:"bandwidth"`
+	IPs                 []NetworkIP       `xml:"ip"`
+	Routes              []NetworkRoute    `xml:"route"`
+	VirtualPort         *VirtualPort      `xml:"virtualport"`
 }
 
 type NetworkVLAN struct {
@@ -188,6 +189,18 @@ type NetworkVLAN struct {
 type NetworkVLANTag struct {
 	ID         uint   `xml:"id,attr"`
 	NativeMode string `xml:"nativeMode,attr,omitempty"`
+}
+
+type NetworkBandwidthParams struct {
+	Average *uint `xml:"average,attr,omitempty"`
+	Peak    *uint `xml:"peak,attr,omitempty"`
+	Burst   *uint `xml:"burst,attr,omitempty"`
+	Floor   *uint `xml:"floor,attr,omitempty"`
+}
+
+type NetworkBandwidth struct {
+	Inbound  *NetworkBandwidthParams `xml:"inbound"`
+	Outbound *NetworkBandwidthParams `xml:"outbound"`
 }
 
 func (s *Network) Unmarshal(doc string) error {

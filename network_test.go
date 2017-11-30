@@ -30,6 +30,12 @@ import (
 	"testing"
 )
 
+var nicInAverage uint = 1000
+var nicInBurst uint = 10000
+var nicInPeak uint = 2000
+var nicInFloor uint = 500
+var nicOutAverage uint = 2000
+
 var networkTestData = []struct {
 	Object   *Network
 	Expected []string
@@ -186,6 +192,17 @@ var networkTestData = []struct {
 					},
 				},
 			},
+			Bandwidth: &NetworkBandwidth{
+				Inbound: &NetworkBandwidthParams{
+					Average: &nicInAverage,
+					Peak:    &nicInPeak,
+					Burst:   &nicInBurst,
+					Floor:   &nicInFloor,
+				},
+				Outbound: &NetworkBandwidthParams{
+					Average: &nicOutAverage,
+				},
+			},
 			VLAN: &NetworkVLAN{
 				Tags: []NetworkVLANTag{
 					NetworkVLANTag{
@@ -224,6 +241,10 @@ var networkTestData = []struct {
 			`    <tag id="49"></tag>`,
 			`    <tag id="52" nativeMode="tagged"></tag>`,
 			`  </vlan>`,
+			`  <bandwidth>`,
+			`    <inbound average="1000" peak="2000" burst="10000" floor="500"></inbound>`,
+			`    <outbound average="2000"></outbound>`,
+			`  </bandwidth>`,
 			`  <ip address="192.168.122.1" netmask="255.255.255.0">`,
 			`    <dhcp>`,
 			`      <range start="192.168.122.2" end="192.168.122.254"></range>`,
