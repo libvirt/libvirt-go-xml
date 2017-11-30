@@ -2331,11 +2331,17 @@ type domainDiskSourceVolume struct {
 
 func (a *DomainDiskSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.File != nil {
+		if a.StartupPolicy == "" && a.Encryption == nil && a.File.File == "" {
+			return nil
+		}
 		file := domainDiskSourceFile{
 			*a.File, domainDiskSource(*a),
 		}
 		return e.EncodeElement(&file, start)
 	} else if a.Block != nil {
+		if a.StartupPolicy == "" && a.Encryption == nil && a.Block.Dev == "" {
+			return nil
+		}
 		block := domainDiskSourceBlock{
 			*a.Block, domainDiskSource(*a),
 		}
@@ -2351,6 +2357,9 @@ func (a *DomainDiskSource) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		}
 		return e.EncodeElement(&network, start)
 	} else if a.Volume != nil {
+		if a.StartupPolicy == "" && a.Encryption == nil && a.Volume.Pool == "" && a.Volume.Volume == "" {
+			return nil
+		}
 		volume := domainDiskSourceVolume{
 			*a.Volume, domainDiskSource(*a),
 		}
@@ -3334,6 +3343,9 @@ func (a *DomainChardevSource) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	} else if a.TCP != nil {
 		return e.EncodeElement(a.TCP, start)
 	} else if a.UNIX != nil {
+		if a.UNIX.Path == "" {
+			return nil
+		}
 		return e.EncodeElement(a.UNIX, start)
 	} else if a.SpiceVMC != nil {
 		return nil
