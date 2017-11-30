@@ -1713,11 +1713,21 @@ type DomainNuma struct {
 }
 
 type DomainCell struct {
-	ID        *uint  `xml:"id,attr"`
-	CPUs      string `xml:"cpus,attr"`
-	Memory    string `xml:"memory,attr"`
-	Unit      string `xml:"unit,attr,omitempty"`
-	MemAccess string `xml:"memAccess,attr,omitempty"`
+	ID        *uint                `xml:"id,attr"`
+	CPUs      string               `xml:"cpus,attr"`
+	Memory    string               `xml:"memory,attr"`
+	Unit      string               `xml:"unit,attr,omitempty"`
+	MemAccess string               `xml:"memAccess,attr,omitempty"`
+	Distances *DomainCellDistances `xml:"distances"`
+}
+
+type DomainCellDistances struct {
+	Siblings []DomainCellSibling `xml:"sibling"`
+}
+
+type DomainCellSibling struct {
+	ID    uint `xml:"id,attr"`
+	Value uint `xml:"value,attr"`
 }
 
 type DomainClock struct {

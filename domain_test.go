@@ -101,7 +101,8 @@ var memorydevAddressSlot uint = 0
 var memorydevAddressBase uint64 = 4294967296
 
 var rebootTimeout int = 0
-var cellID uint = 0
+var cellID0 uint = 0
+var cellID1 uint = 1
 
 var ipv6Prefix uint = 24
 
@@ -1187,7 +1188,36 @@ var domainTestData = []struct {
 				},
 				Numa: &DomainNuma{
 					[]DomainCell{
-						{ID: &cellID, CPUs: "0-3", Memory: "512000", Unit: "KiB", MemAccess: "private"},
+						{
+							ID:        &cellID0,
+							CPUs:      "0-1",
+							Memory:    "512000",
+							Unit:      "KiB",
+							MemAccess: "private",
+							Distances: &DomainCellDistances{
+								Siblings: []DomainCellSibling{
+									DomainCellSibling{
+										ID:    1,
+										Value: 20,
+									},
+								},
+							},
+						},
+						{
+							ID:        &cellID1,
+							CPUs:      "2-3",
+							Memory:    "512000",
+							Unit:      "KiB",
+							MemAccess: "private",
+							Distances: &DomainCellDistances{
+								Siblings: []DomainCellSibling{
+									DomainCellSibling{
+										ID:    0,
+										Value: 20,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -1205,7 +1235,16 @@ var domainTestData = []struct {
 			`    <cache level="1" mode="emulate"></cache>`,
 			`    <feature policy="disable" name="lahf_lm"></feature>`,
 			`    <numa>`,
-			`      <cell id="0" cpus="0-3" memory="512000" unit="KiB" memAccess="private"></cell>`,
+			`      <cell id="0" cpus="0-1" memory="512000" unit="KiB" memAccess="private">`,
+			`        <distances>`,
+			`          <sibling id="1" value="20"></sibling>`,
+			`        </distances>`,
+			`      </cell>`,
+			`      <cell id="1" cpus="2-3" memory="512000" unit="KiB" memAccess="private">`,
+			`        <distances>`,
+			`          <sibling id="0" value="20"></sibling>`,
+			`        </distances>`,
+			`      </cell>`,
 			`    </numa>`,
 			`  </cpu>`,
 			`  <devices>`,
