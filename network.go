@@ -215,7 +215,7 @@ type NetworkDNS struct {
 	ForwardPlainNames string                `xml:"forwardPlainNames,attr,omitempty"`
 	Forwarders        []NetworkDNSForwarder `xml:"forwarder"`
 	TXTs              []NetworkDNSTXT       `xml:"txt"`
-	Host              *NetworkDNSHost       `xml:"host"`
+	Host              []NetworkDNSHost      `xml:"host"`
 	SRVs              []NetworkDNSSRV       `xml:"srv"`
 }
 

@@ -246,14 +246,16 @@ var networkTestData = []struct {
 						Value: "example value",
 					},
 				},
-				Host: &NetworkDNSHost{
-					IP: "192.168.122.2",
-					Hostnames: []NetworkDNSHostHostname{
-						NetworkDNSHostHostname{
-							Hostname: "myhost",
-						},
-						NetworkDNSHostHostname{
-							Hostname: "myhostalias",
+				Host: []NetworkDNSHost{
+					NetworkDNSHost{
+						IP: "192.168.122.2",
+						Hostnames: []NetworkDNSHostHostname{
+							NetworkDNSHostHostname{
+								Hostname: "myhost",
+							},
+							NetworkDNSHostHostname{
+								Hostname: "myhostalias",
+							},
 						},
 					},
 				},
