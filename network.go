@@ -36,14 +36,45 @@ type NetworkBridge struct {
 	MACTableManager string `xml:"macTableManager,attr,omitempty"`
 }
 
-type VirtualPortParameters struct {
+type NetworkVirtualPort struct {
+	Params *NetworkVirtualPortParams `xml:"parameters"`
+}
+
+type NetworkVirtualPortParams struct {
+	Any          *NetworkVirtualPortParamsAny          `xml:"-"`
+	VEPA8021QBG  *NetworkVirtualPortParamsVEPA8021QBG  `xml:"-"`
+	VNTag8011QBH *NetworkVirtualPortParamsVNTag8021QBH `xml:"-"`
+	OpenVSwitch  *NetworkVirtualPortParamsOpenVSwitch  `xml:"-"`
+	MidoNet      *NetworkVirtualPortParamsMidoNet      `xml:"-"`
+}
+
+type NetworkVirtualPortParamsAny struct {
+	ManagerID     *uint  `xml:"managerid,attr"`
+	TypeID        *uint  `xml:"typeid,attr,omitempty"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	InstanceID    string `xml:"instanceid,attr,omitempty"`
+	ProfileID     string `xml:"profileid,attr,omitempty"`
+	InterfaceID   string `xml:"interfaceid,attr,omitempty"`
+}
+
+type NetworkVirtualPortParamsVEPA8021QBG struct {
+	ManagerID     *uint  `xml:"managerid,attr"`
+	TypeID        *uint  `xml:"typeid,attr,omitempty"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	InstanceID    string `xml:"instanceid,attr,omitempty"`
+}
+
+type NetworkVirtualPortParamsVNTag8021QBH struct {
+	ProfileID string `xml:"profileid,attr,omitempty"`
+}
+
+type NetworkVirtualPortParamsOpenVSwitch struct {
 	InterfaceID string `xml:"interfaceid,attr,omitempty"`
 	ProfileID   string `xml:"profileid,attr,omitempty"`
 }
 
-type VirtualPort struct {
-	Type       string                  `xml:"type,attr,omitempty"`
-	Parameters []VirtualPortParameters `xml:"parameters,omitempty"`
+type NetworkVirtualPortParamsMidoNet struct {
+	InterfaceID string `xml:"interfaceid,attr,omitempty"`
 }
 
 type NetworkDomain struct {
@@ -193,30 +224,30 @@ type NetworkMetadata struct {
 }
 
 type Network struct {
-	XMLName             xml.Name           `xml:"network"`
-	IPv6                string             `xml:"ipv6,attr,omitempty"`
-	TrustGuestRxFilters string             `xml:"trustGuestRxFilters,attr,omitempty"`
-	Name                string             `xml:"name,omitempty"`
-	UUID                string             `xml:"uuid,omitempty"`
-	Metadata            *NetworkMetadata   `xml:"metadata"`
-	Forward             *NetworkForward    `xml:"forward"`
-	Bridge              *NetworkBridge     `xml:"bridge"`
-	MAC                 *NetworkMAC        `xml:"mac"`
-	Domain              *NetworkDomain     `xml:"domain"`
-	DNS                 *NetworkDNS        `xml:"dns"`
-	VLAN                *NetworkVLAN       `xml:"vlan"`
-	Bandwidth           *NetworkBandwidth  `xml:"bandwidth"`
-	IPs                 []NetworkIP        `xml:"ip"`
-	Routes              []NetworkRoute     `xml:"route"`
-	VirtualPort         *VirtualPort       `xml:"virtualport"`
-	PortGroups          []NetworkPortGroup `xml:"portgroup"`
+	XMLName             xml.Name            `xml:"network"`
+	IPv6                string              `xml:"ipv6,attr,omitempty"`
+	TrustGuestRxFilters string              `xml:"trustGuestRxFilters,attr,omitempty"`
+	Name                string              `xml:"name,omitempty"`
+	UUID                string              `xml:"uuid,omitempty"`
+	Metadata            *NetworkMetadata    `xml:"metadata"`
+	Forward             *NetworkForward     `xml:"forward"`
+	Bridge              *NetworkBridge      `xml:"bridge"`
+	MAC                 *NetworkMAC         `xml:"mac"`
+	Domain              *NetworkDomain      `xml:"domain"`
+	DNS                 *NetworkDNS         `xml:"dns"`
+	VLAN                *NetworkVLAN        `xml:"vlan"`
+	Bandwidth           *NetworkBandwidth   `xml:"bandwidth"`
+	IPs                 []NetworkIP         `xml:"ip"`
+	Routes              []NetworkRoute      `xml:"route"`
+	VirtualPort         *NetworkVirtualPort `xml:"virtualport"`
+	PortGroups          []NetworkPortGroup  `xml:"portgroup"`
 }
 
 type NetworkPortGroup struct {
-	Name        string       `xml:"name,attr,omitempty"`
-	Default     string       `xml:"default,attr,omitempty"`
-	VLAN        *NetworkVLAN `xml:"vlan"`
-	VirtualPort *VirtualPort `xml:"virtualport"`
+	Name        string              `xml:"name,attr,omitempty"`
+	Default     string              `xml:"default,attr,omitempty"`
+	VLAN        *NetworkVLAN        `xml:"vlan"`
+	VirtualPort *NetworkVirtualPort `xml:"virtualport"`
 }
 
 type NetworkVLAN struct {
@@ -239,6 +270,95 @@ type NetworkBandwidthParams struct {
 type NetworkBandwidth struct {
 	Inbound  *NetworkBandwidthParams `xml:"inbound"`
 	Outbound *NetworkBandwidthParams `xml:"outbound"`
+}
+
+func (a *NetworkVirtualPortParams) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "parameters"
+	if a.Any != nil {
+		return e.EncodeElement(a.Any, start)
+	} else if a.VEPA8021QBG != nil {
+		return e.EncodeElement(a.VEPA8021QBG, start)
+	} else if a.VNTag8011QBH != nil {
+		return e.EncodeElement(a.VNTag8011QBH, start)
+	} else if a.OpenVSwitch != nil {
+		return e.EncodeElement(a.OpenVSwitch, start)
+	} else if a.MidoNet != nil {
+		return e.EncodeElement(a.MidoNet, start)
+	}
+	return nil
+}
+
+func (a *NetworkVirtualPortParams) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if a.Any != nil {
+		return d.DecodeElement(a.Any, &start)
+	} else if a.VEPA8021QBG != nil {
+		return d.DecodeElement(a.VEPA8021QBG, &start)
+	} else if a.VNTag8011QBH != nil {
+		return d.DecodeElement(a.VNTag8011QBH, &start)
+	} else if a.OpenVSwitch != nil {
+		return d.DecodeElement(a.OpenVSwitch, &start)
+	} else if a.MidoNet != nil {
+		return d.DecodeElement(a.MidoNet, &start)
+	}
+	return nil
+}
+
+type networkVirtualPort NetworkVirtualPort
+
+func (a *NetworkVirtualPort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "virtualport"
+	if a.Params != nil {
+		if a.Params.Any != nil {
+			/* no type attr wanted */
+		} else if a.Params.VEPA8021QBG != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "802.1Qbg",
+			})
+		} else if a.Params.VNTag8011QBH != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "802.1Qbh",
+			})
+		} else if a.Params.OpenVSwitch != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "openvswitch",
+			})
+		} else if a.Params.MidoNet != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "midonet",
+			})
+		}
+	}
+	vp := networkVirtualPort(*a)
+	return e.EncodeElement(&vp, start)
+}
+
+func (a *NetworkVirtualPort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	a.Params = &NetworkVirtualPortParams{}
+	if !ok {
+		var any NetworkVirtualPortParamsAny
+		a.Params.Any = &any
+	} else if typ == "802.1Qbg" {
+		var vepa NetworkVirtualPortParamsVEPA8021QBG
+		a.Params.VEPA8021QBG = &vepa
+	} else if typ == "802.1Qbh" {
+		var vntag NetworkVirtualPortParamsVNTag8021QBH
+		a.Params.VNTag8011QBH = &vntag
+	} else if typ == "openvswitch" {
+		var ovs NetworkVirtualPortParamsOpenVSwitch
+		a.Params.OpenVSwitch = &ovs
+	} else if typ == "midonet" {
+		var mido NetworkVirtualPortParamsMidoNet
+		a.Params.MidoNet = &mido
+	}
+
+	vp := networkVirtualPort(*a)
+	err := d.DecodeElement(&vp, &start)
+	if err != nil {
+		return err
+	}
+	*a = NetworkVirtualPort(vp)
+	return nil
 }
 
 func (a *NetworkForwardAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

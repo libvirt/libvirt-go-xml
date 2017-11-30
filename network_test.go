@@ -145,10 +145,9 @@ var networkTestData = []struct {
 			Bridge: &NetworkBridge{
 				Name: "virbr0",
 			},
-			VirtualPort: &VirtualPort{
-				Type: "openvswitch",
-				Parameters: []VirtualPortParameters{
-					VirtualPortParameters{
+			VirtualPort: &NetworkVirtualPort{
+				Params: &NetworkVirtualPortParams{
+					OpenVSwitch: &NetworkVirtualPortParamsOpenVSwitch{
 						InterfaceID: "09b11c53-8b5c-4eeb-8f00-d84eaa0aaa4f",
 					},
 				},
