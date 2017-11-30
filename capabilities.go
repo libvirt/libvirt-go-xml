@@ -45,10 +45,10 @@ type CapsHostCPUPageSize struct {
 }
 
 type CapsHostCPU struct {
-	Arch      string                `xml:"arch"`
-	Model     string                `xml:"model"`
-	Vendor    string                `xml:"vendor"`
-	Topology  CapsHostCPUTopology   `xml:"topology"`
+	Arch      string                `xml:"arch,omitempty"`
+	Model     string                `xml:"model,omitempty"`
+	Vendor    string                `xml:"vendor,omitempty"`
+	Topology  *CapsHostCPUTopology  `xml:"topology"`
 	Features  []CapsHostCPUFeature  `xml:"feature"`
 	PageSizes []CapsHostCPUPageSize `xml:"pages"`
 }
@@ -66,26 +66,40 @@ type CapsHostNUMAPageInfo struct {
 
 type CapsHostNUMACPU struct {
 	ID       int    `xml:"id,attr"`
-	SocketID int    `xml:"socket_id,attr"`
-	CoreID   int    `xml:"core_id,attr"`
-	Siblings string `xml:"siblings,attr"`
+	SocketID *int   `xml:"socket_id,attr"`
+	CoreID   *int   `xml:"core_id,attr"`
+	Siblings string `xml:"siblings,attr,omitempty"`
 }
 
-type CapsHostNUMADistance struct {
+type CapsHostNUMASibling struct {
 	ID    int `xml:"id,attr"`
 	Value int `xml:"value,attr"`
 }
 
 type CapsHostNUMACell struct {
 	ID        int                    `xml:"id,attr"`
-	Memory    CapsHostNUMAMemory     `xml:"memory"`
+	Memory    *CapsHostNUMAMemory    `xml:"memory"`
 	PageInfo  []CapsHostNUMAPageInfo `xml:"pages"`
-	Distances []CapsHostNUMADistance `xml:"distances>sibling"`
-	CPUS      []CapsHostNUMACPU      `xml:"cpus>cpu"`
+	Distances *CapsHostNUMADistances `xml:"distances"`
+	CPUS      *CapsHostNUMACPUs      `xml:"cpus"`
+}
+
+type CapsHostNUMADistances struct {
+	Siblings []CapsHostNUMASibling `xml:"sibling"`
+}
+
+type CapsHostNUMACPUs struct {
+	Num  uint              `xml:"num,attr,omitempty"`
+	CPUs []CapsHostNUMACPU `xml:"cpu"`
 }
 
 type CapsHostNUMATopology struct {
-	Cells []CapsHostNUMACell `xml:"cells>cell"`
+	Cells *CapsHostNUMACells `xml:"cells"`
+}
+
+type CapsHostNUMACells struct {
+	Num   uint               `xml:"num,attr,omitempty"`
+	Cells []CapsHostNUMACell `xml:"cell"`
 }
 
 type CapsHostSecModelLabel struct {
@@ -99,22 +113,35 @@ type CapsHostSecModel struct {
 	Labels []CapsHostSecModelLabel `xml:"baselabel"`
 }
 
+type CapsHostMigrationFeatures struct {
+	Live          *CapsHostMigrationLive          `xml:"live"`
+	URITransports *CapsHostMigrationURITransports `xml:"uri_transports"`
+}
+
+type CapsHostMigrationLive struct {
+}
+
+type CapsHostMigrationURITransports struct {
+	URI []string `xml:"uri_transport"`
+}
+
 type CapsHost struct {
-	UUID     string                `xml:"uuid"`
-	CPU      *CapsHostCPU          `xml:"cpu"`
-	NUMA     *CapsHostNUMATopology `xml:"topology"`
-	SecModel []CapsHostSecModel    `xml:"secmodel"`
+	UUID              string                     `xml:"uuid,omitempty"`
+	CPU               *CapsHostCPU               `xml:"cpu"`
+	MigrationFeatures *CapsHostMigrationFeatures `xml:"migration_features"`
+	NUMA              *CapsHostNUMATopology      `xml:"topology"`
+	SecModel          []CapsHostSecModel         `xml:"secmodel"`
 }
 
 type CapsGuestMachine struct {
-	Name      string  `xml:",chardata"`
-	MaxCPUs   int     `xml:"maxCpus,attr"`
-	Canonical *string `xml:"canonical,attr"`
+	Name      string `xml:",chardata"`
+	MaxCPUs   int    `xml:"maxCpus,attr,omitempty"`
+	Canonical string `xml:"canonical,attr,omitempty"`
 }
 
 type CapsGuestDomain struct {
 	Type     string             `xml:"type,attr"`
-	Emulator string             `xml:"emulator"`
+	Emulator string             `xml:"emulator,omitempty"`
 	Machines []CapsGuestMachine `xml:"machine"`
 }
 
