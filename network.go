@@ -249,10 +249,11 @@ type Network struct {
 }
 
 type NetworkPortGroup struct {
-	Name        string              `xml:"name,attr,omitempty"`
-	Default     string              `xml:"default,attr,omitempty"`
-	VLAN        *NetworkVLAN        `xml:"vlan"`
-	VirtualPort *NetworkVirtualPort `xml:"virtualport"`
+	Name                string              `xml:"name,attr,omitempty"`
+	Default             string              `xml:"default,attr,omitempty"`
+	TrustGuestRxFilters string              `xml:"trustGuestRxFilters,attr,omitempty"`
+	VLAN                *NetworkVLAN        `xml:"vlan"`
+	VirtualPort         *NetworkVirtualPort `xml:"virtualport"`
 }
 
 type NetworkVLAN struct {
