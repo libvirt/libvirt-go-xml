@@ -186,6 +186,17 @@ var networkTestData = []struct {
 					},
 				},
 			},
+			VLAN: &NetworkVLAN{
+				Tags: []NetworkVLANTag{
+					NetworkVLANTag{
+						ID: 49,
+					},
+					NetworkVLANTag{
+						ID:         52,
+						NativeMode: "tagged",
+					},
+				},
+			},
 		},
 		Expected: []string{
 			`<network>`,
@@ -201,6 +212,10 @@ var networkTestData = []struct {
 			`    </nat>`,
 			`    <interface dev="eth0"></interface>`,
 			`  </forward>`,
+			`  <vlan>`,
+			`    <tag id="49"></tag>`,
+			`    <tag id="52" nativeMode="tagged"></tag>`,
+			`  </vlan>`,
 			`  <ip address="192.168.122.1" netmask="255.255.255.0">`,
 			`    <dhcp>`,
 			`      <range start="192.168.122.2" end="192.168.122.254"></range>`,

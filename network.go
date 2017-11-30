@@ -174,10 +174,20 @@ type Network struct {
 	Bridge              *NetworkBridge  `xml:"bridge"`
 	VirtualPort         *VirtualPort    `xml:"virtualport"`
 	Forward             *NetworkForward `xml:"forward"`
+	VLAN                *NetworkVLAN    `xml:"vlan"`
 	Domain              *NetworkDomain  `xml:"domain"`
 	IPs                 []NetworkIP     `xml:"ip"`
 	Routes              []NetworkRoute  `xml:"route"`
 	DNS                 *NetworkDNS     `xml:"dns"`
+}
+
+type NetworkVLAN struct {
+	Tags []NetworkVLANTag `xml:"tag"`
+}
+
+type NetworkVLANTag struct {
+	ID         uint   `xml:"id,attr"`
+	NativeMode string `xml:"nativeMode,attr,omitempty"`
 }
 
 func (s *Network) Unmarshal(doc string) error {
