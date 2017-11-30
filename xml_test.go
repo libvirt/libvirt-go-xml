@@ -194,7 +194,7 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 
 	extraExpectNodes, _ := extraExpectNodes[filename]
 	extraActualNodes, _ := extraActualNodes[filename]
-	err = testCompareXML(xml, newxml, extraExpectNodes, extraActualNodes)
+	err = testCompareXML(filename, xml, newxml, extraExpectNodes, extraActualNodes)
 	if err != nil {
 		t.Fatal(err)
 	}

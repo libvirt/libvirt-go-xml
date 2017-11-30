@@ -149,7 +149,7 @@ func loadXML(xmlstr string, ignoreNSDecl bool) (*element, error) {
 	return root, nil
 }
 
-func testCompareValue(path, key, expected, actual string) error {
+func testCompareValue(filename, path, key, expected, actual string) error {
 	if expected == actual {
 		return nil
 	}
@@ -160,10 +160,11 @@ func testCompareValue(path, key, expected, actual string) error {
 		return nil
 	}
 	path = path + "/@" + key
-	return fmt.Errorf("%s: attribute actual value '%s' does not match expected value '%s'", path, actual, expected)
+	return fmt.Errorf("%s: %s: attribute actual value '%s' does not match expected value '%s'",
+		filename, path, actual, expected)
 }
 
-func testCompareElement(expectPath, actualPath string, expect, actual *element, extraExpectNodes, extraActualNodes map[string]bool) error {
+func testCompareElement(filename, expectPath, actualPath string, expect, actual *element, extraExpectNodes, extraActualNodes map[string]bool) error {
 	if expect.Name != actual.Name {
 		return fmt.Errorf("%s: name '%s' doesn't match '%s'",
 			expectPath, expect.Name, actual.Name)
@@ -177,9 +178,10 @@ func testCompareElement(expectPath, actualPath string, expect, actual *element, 
 			if _, ok := extraActualNodes[attrPath]; ok {
 				continue
 			}
-			return fmt.Errorf("%s: attribute in actual XML missing in expected XML", attrPath)
+			return fmt.Errorf("%s: %s: attribute in actual XML missing in expected XML",
+				filename, attrPath)
 		}
-		err := testCompareValue(actualPath, key, expectval, val)
+		err := testCompareValue(filename, actualPath, key, expectval, val)
 		if err != nil {
 			return err
 		}
@@ -190,11 +192,13 @@ func testCompareElement(expectPath, actualPath string, expect, actual *element, 
 		if _, ok := extraExpectNodes[attrPath]; ok {
 			continue
 		}
-		return fmt.Errorf("%s: attribute '%s'  in expected XML missing in actual XML", attrPath, expectAttr[key])
+		return fmt.Errorf("%s: %s: attribute '%s'  in expected XML missing in actual XML",
+			filename, attrPath, expectAttr[key])
 	}
 
 	if expect.Content != actual.Content {
-		return fmt.Errorf("%s: actual content '%s' does not match expected '%s'", actualPath, actual.Content, expect.Content)
+		return fmt.Errorf("%s: %s: actual content '%s' does not match expected '%s'",
+			filename, actualPath, actual.Content, expect.Content)
 	}
 
 	used := make([]bool, len(actual.Children))
@@ -217,14 +221,15 @@ func testCompareElement(expectPath, actualPath string, expect, actual *element, 
 			if _, ok := extraExpectNodes[subExpectPath]; ok {
 				continue
 			}
-			return fmt.Errorf("%s: element in expected XML missing in actual XML", subExpectPath)
+			return fmt.Errorf("%s: %s: element in expected XML missing in actual XML",
+				filename, subExpectPath)
 		}
 
 		actualIndex, _ := actualChildIndexes[actualChild.Name]
 		actualChildIndexes[actualChild.Name] = actualIndex + 1
 		subActualPath := fmt.Sprintf("%s/%s[%d]", actualPath, actualChild.Name, actualIndex)
 
-		err := testCompareElement(subExpectPath, subActualPath, expectChild, actualChild, extraExpectNodes, extraActualNodes)
+		err := testCompareElement(filename, subExpectPath, subActualPath, expectChild, actualChild, extraExpectNodes, extraActualNodes)
 		if err != nil {
 			return err
 		}
@@ -242,7 +247,8 @@ func testCompareElement(expectPath, actualPath string, expect, actual *element, 
 		if _, ok := extraActualNodes[subActualPath]; ok {
 			continue
 		}
-		return fmt.Errorf("%s: element in actual XML missing in expected XML", subActualPath)
+		return fmt.Errorf("%s: %s: element in actual XML missing in expected XML",
+			filename, subActualPath)
 	}
 
 	return nil
@@ -256,7 +262,7 @@ func makeExtraNodeMap(nodes []string) map[string]bool {
 	return ret
 }
 
-func testCompareXML(expectStr, actualStr string, extraExpectNodes, extraActualNodes []string) error {
+func testCompareXML(filename, expectStr, actualStr string, extraExpectNodes, extraActualNodes []string) error {
 	extraExpectNodeMap := makeExtraNodeMap(extraExpectNodes)
 	extraActualNodeMap := makeExtraNodeMap(extraActualNodes)
 
@@ -272,10 +278,11 @@ func testCompareXML(expectStr, actualStr string, extraExpectNodes, extraActualNo
 	}
 
 	if expectRoot.Name != actualRoot.Name {
-		return fmt.Errorf("/: expected root element '%s' does not match actual '%s'", expectRoot.Name, actualRoot.Name)
+		return fmt.Errorf("%s: /: expected root element '%s' does not match actual '%s'",
+			filename, expectRoot.Name, actualRoot.Name)
 	}
 
-	err = testCompareElement("/"+expectRoot.Name+"[0]", "/"+actualRoot.Name+"[0]", expectRoot, actualRoot, extraExpectNodeMap, extraActualNodeMap)
+	err = testCompareElement(filename, "/"+expectRoot.Name+"[0]", "/"+actualRoot.Name+"[0]", expectRoot, actualRoot, extraExpectNodeMap, extraActualNodeMap)
 	if err != nil {
 		return err
 	}
