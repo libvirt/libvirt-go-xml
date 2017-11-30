@@ -68,6 +68,9 @@ var networkTestData = []struct {
 	{
 		Object: &Network{
 			Name: "test",
+			MTU: &NetworkMTU{
+				Size: 1400,
+			},
 			Domain: &NetworkDomain{
 				Name: "example.com",
 			},
@@ -129,6 +132,7 @@ var networkTestData = []struct {
 			`    <address type="pci" domain="0x0000" bus="0x03" slot="0x00" function="0x1"></address>`,
 			`    <address type="pci" domain="0x0000" bus="0x03" slot="0x00" function="0x2"></address>`,
 			`  </forward>`,
+			`  <mtu size="1400"></mtu>`,
 			`  <domain name="example.com"></domain>`,
 			`  <portgroup name="main" default="yes">`,
 			`    <vlan trunk="yes">`,

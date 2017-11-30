@@ -223,6 +223,10 @@ type NetworkMetadata struct {
 	XML string `xml:",innerxml"`
 }
 
+type NetworkMTU struct {
+	Size uint `xml:"size,attr"`
+}
+
 type Network struct {
 	XMLName             xml.Name            `xml:"network"`
 	IPv6                string              `xml:"ipv6,attr,omitempty"`
@@ -232,6 +236,7 @@ type Network struct {
 	Metadata            *NetworkMetadata    `xml:"metadata"`
 	Forward             *NetworkForward     `xml:"forward"`
 	Bridge              *NetworkBridge      `xml:"bridge"`
+	MTU                 *NetworkMTU         `xml:"mtu"`
 	MAC                 *NetworkMAC         `xml:"mac"`
 	Domain              *NetworkDomain      `xml:"domain"`
 	DNS                 *NetworkDNS         `xml:"dns"`
