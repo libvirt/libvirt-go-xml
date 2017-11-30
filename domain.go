@@ -2051,9 +2051,6 @@ type DomainMetadata struct {
 	XML string `xml:",innerxml"`
 }
 
-type DomainMetadataEntry struct {
-}
-
 type DomainVMWareDataCenterPath struct {
 	XMLName xml.Name `xml:"http://libvirt.org/schemas/domain/vmware/1.0 datacenterpath"`
 	Value   string   `xml:",chardata"`
