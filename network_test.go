@@ -50,10 +50,18 @@ var networkTestData = []struct {
 		Object: &Network{
 			Name: "test",
 			IPv6: "yes",
+			Metadata: &NetworkMetadata{
+				XML: "<myvalue xmlns='http://myapp.com/schemeas/my/1.0'><widget name='foo'/></myvalue>" +
+					"<myothervalue xmlns='http://myotherapp.com/schemeas/my/1.0'><gizmo name='foo'/></myothervalue>",
+			},
 		},
 		Expected: []string{
 			`<network ipv6="yes">`,
 			`  <name>test</name>`,
+			`  <metadata>` +
+				`<myvalue xmlns='http://myapp.com/schemeas/my/1.0'><widget name='foo'/></myvalue>` +
+				`<myothervalue xmlns='http://myotherapp.com/schemeas/my/1.0'><gizmo name='foo'/></myothervalue>` +
+				`</metadata>`,
 			`</network>`,
 		},
 	},

@@ -188,12 +188,17 @@ type NetworkDNS struct {
 	SRVs              []NetworkDNSSRV       `xml:"srv"`
 }
 
+type NetworkMetadata struct {
+	XML string `xml:",innerxml"`
+}
+
 type Network struct {
 	XMLName             xml.Name          `xml:"network"`
 	IPv6                string            `xml:"ipv6,attr,omitempty"`
 	TrustGuestRxFilters string            `xml:"trustGuestRxFilters,attr,omitempty"`
 	Name                string            `xml:"name,omitempty"`
 	UUID                string            `xml:"uuid,omitempty"`
+	Metadata            *NetworkMetadata  `xml:"metadata"`
 	Forward             *NetworkForward   `xml:"forward"`
 	Bridge              *NetworkBridge    `xml:"bridge"`
 	MAC                 *NetworkMAC       `xml:"mac"`
