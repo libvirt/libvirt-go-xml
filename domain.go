@@ -710,8 +710,8 @@ type DomainChardevSourceReconnect struct {
 
 type DomainChardevSourceTCP struct {
 	Mode      string                        `xml:"mode,attr,omitempty"`
-	Host      string                        `xml:"host,attr"`
-	Service   string                        `xml:"service,attr"`
+	Host      string                        `xml:"host,attr,omitempty"`
+	Service   string                        `xml:"service,attr,omitempty"`
 	TLS       string                        `xml:"tls,attr,omitempty"`
 	Reconnect *DomainChardevSourceReconnect `xml:"reconnect"`
 }
@@ -3304,7 +3304,7 @@ func createChardevSource(typ string) *DomainChardevSource {
 type domainChardevSourceUDPFlat struct {
 	Mode    string `xml:"mode,attr"`
 	Host    string `xml:"host,attr,omitempty"`
-	Service string `xml:"service,attr"`
+	Service string `xml:"service,attr,omitempty"`
 }
 
 func (a *DomainChardevSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
