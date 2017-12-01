@@ -209,6 +209,11 @@ type CapsGuestFeaturePAE struct {
 type CapsGuestFeatureNonPAE struct {
 }
 
+type CapsGuestFeatureDiskSnapshot struct {
+	Default string `xml:"default,attr,omitempty"`
+	Toggle  string `xml:"toggle,attr,omitempty"`
+}
+
 type CapsGuestFeatureAPIC struct {
 	Default string `xml:"default,attr,omitempty"`
 	Toggle  string `xml:"toggle,attr,omitempty"`
@@ -222,6 +227,7 @@ type CapsGuestFeatureACPI struct {
 type CapsGuestFeatures struct {
 	CPUSelection *CapsGuestFeatureCPUSelection `xml:"cpuselection"`
 	DeviceBoot   *CapsGuestFeatureDeviceBoot   `xml:"deviceboot"`
+	DiskSnapshot *CapsGuestFeatureDiskSnapshot `xml:"disksnapshot"`
 	PAE          *CapsGuestFeaturePAE          `xml:"pae"`
 	NonPAE       *CapsGuestFeatureNonPAE       `xml:"nonpae"`
 	APIC         *CapsGuestFeatureAPIC         `xml:"apic"`
