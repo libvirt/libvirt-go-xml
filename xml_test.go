@@ -156,6 +156,22 @@ var extraActualNodes = map[string][]string{
 		"/domain[0]/devices[0]/disk[2]/mirror[0]/format[0]",
 		"/domain[0]/devices[0]/disk[2]/mirror[0]/source[0]",
 	},
+
+	"testdata/libvirt/tests/networkxml2xmlin/openvswitch-net.xml": []string{
+		"/network[0]/virtualport[0]/parameters[0]",
+	},
+	"testdata/libvirt/tests/networkxml2xmlout/openvswitch-net.xml": []string{
+		"/network[0]/virtualport[0]/parameters[0]",
+	},
+	"testdata/libvirt/tests/networkxml2xmlupdateout/openvswitch-net-modified.xml": []string{
+		"/network[0]/virtualport[0]/parameters[0]",
+	},
+	"testdata/libvirt/tests/networkxml2xmlupdateout/openvswitch-net-more-portgroups.xml": []string{
+		"/network[0]/virtualport[0]/parameters[0]",
+	},
+	"testdata/libvirt/tests/networkxml2xmlupdateout/openvswitch-net-without-alice.xml": []string{
+		"/network[0]/virtualport[0]/parameters[0]",
+	},
 }
 
 var extraExpectNodes = map[string][]string{
@@ -174,20 +190,28 @@ var extraExpectNodes = map[string][]string{
 }
 
 func testRoundTrip(t *testing.T, xml string, filename string) {
-	if !strings.HasPrefix(xml, "<domain ") {
-		return
-	}
 	if strings.HasSuffix(filename, "-invalid.xml") {
 		return
 	}
 
-	dom := &Domain{}
-	err := dom.Unmarshal(xml)
+	var doc Document
+	if strings.HasPrefix(xml, "<domain ") {
+		doc = &Domain{}
+	} else if strings.HasPrefix(xml, "<capabilities") {
+		doc = &Caps{}
+	} else if strings.HasPrefix(xml, "<network") {
+		doc = &Network{}
+	} else if strings.HasPrefix(xml, "<secret") {
+		doc = &Secret{}
+	} else {
+		return
+	}
+	err := doc.Unmarshal(xml)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	newxml, err := dom.Marshal()
+	newxml, err := doc.Marshal()
 	if err != nil {
 		t.Fatal(err)
 	}
