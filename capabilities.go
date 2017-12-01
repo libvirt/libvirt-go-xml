@@ -142,6 +142,7 @@ type CapsHost struct {
 	PowerManagement   *CapsHostPowerManagement   `xml:"power_management"`
 	MigrationFeatures *CapsHostMigrationFeatures `xml:"migration_features"`
 	NUMA              *CapsHostNUMATopology      `xml:"topology"`
+	Cache             *CapsHostCache             `xml:"cache"`
 	SecModel          []CapsHostSecModel         `xml:"secmodel"`
 }
 
@@ -152,6 +153,28 @@ type CapsHostPowerManagement struct {
 }
 
 type CapsHostPowerManagementMode struct {
+}
+
+type CapsHostCache struct {
+	Banks []CapsHostCacheBank `xml:"bank"`
+}
+
+type CapsHostCacheBank struct {
+	ID      uint                   `xml:"id,attr"`
+	Level   uint                   `xml:"level,attr"`
+	Type    string                 `xml:"type,attr"`
+	Size    uint                   `xml:"size,attr"`
+	Unit    string                 `xml:"unit,attr"`
+	CPUs    string                 `xml:"cpus,attr"`
+	Control []CapsHostCacheControl `xml:"control"`
+}
+
+type CapsHostCacheControl struct {
+	Granularity uint   `xml:"granularity,attr"`
+	Min         uint   `xml:"min,attr,omitempty"`
+	Unit        string `xml:"unit,attr"`
+	Type        string `xml:"type,attr"`
+	MaxAllows   uint   `xml:"maxAllocs,attr"`
 }
 
 type CapsGuestMachine struct {
