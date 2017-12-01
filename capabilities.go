@@ -193,6 +193,7 @@ type CapsGuestArch struct {
 	Name     string             `xml:"name,attr"`
 	WordSize string             `xml:"wordsize"`
 	Emulator string             `xml:"emulator"`
+	Loader   string             `xml:"loader,omitempty"`
 	Machines []CapsGuestMachine `xml:"machine"`
 	Domains  []CapsGuestDomain  `xml:"domain"`
 }
