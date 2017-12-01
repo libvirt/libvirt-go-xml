@@ -225,6 +225,9 @@ type CapsGuestFeatureACPI struct {
 	Toggle  string `xml:"toggle,attr,omitempty"`
 }
 
+type CapsGuestFeatureIA64BE struct {
+}
+
 type CapsGuestFeatures struct {
 	CPUSelection *CapsGuestFeatureCPUSelection `xml:"cpuselection"`
 	DeviceBoot   *CapsGuestFeatureDeviceBoot   `xml:"deviceboot"`
@@ -233,6 +236,7 @@ type CapsGuestFeatures struct {
 	NonPAE       *CapsGuestFeatureNonPAE       `xml:"nonpae"`
 	APIC         *CapsGuestFeatureAPIC         `xml:"apic"`
 	ACPI         *CapsGuestFeatureACPI         `xml:"acpi"`
+	IA64BE       *CapsGuestFeatureIA64BE       `xml:"ia64_be"`
 }
 
 type CapsGuest struct {
