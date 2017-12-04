@@ -213,8 +213,8 @@ type NodeDeviceSCSIHostSubCapability struct {
 }
 
 type NodeDeviceSCSIHostCapability struct {
-	Host       int                              `xml:"host"`
-	UniqueID   int                              `xml:"unique_id"`
+	Host       uint                             `xml:"host"`
+	UniqueID   *uint                            `xml:"unique_id,omitempty"`
 	Capability *NodeDeviceSCSIHostSubCapability `xml:"capability"`
 }
 
