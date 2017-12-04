@@ -94,6 +94,7 @@ var xmldirs = []string{
 }
 
 var consoletype = "/domain[0]/devices[0]/console[0]/@type"
+var volsrc = "/volume[0]/source[0]"
 
 var blacklist = map[string]bool{
 	// intentionally invalid xml
@@ -188,6 +189,46 @@ var extraExpectNodes = map[string][]string{
 	"testdata/libvirt/tests/domainschemadata/domain-parallels-ct-simple.xml": []string{
 		"/domain[0]/description[0]",
 	},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-file-backing.xml":              []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-file-iso.xml":                  []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-file-naming.xml":               []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-file.xml":                      []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-gluster-dir-neg-uid.xml":       []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-gluster-dir.xml":               []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-logical-backing.xml":           []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-logical.xml":                   []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-luks-cipher.xml":               []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-luks.xml":                      []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-partition.xml":                 []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2-0.10-lazy.xml":           []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2-1.1.xml":                 []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2-lazy.xml":                []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2-nobacking.xml":           []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2-nocapacity-backing.xml":  []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2-nocapacity.xml":          []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2-nocow.xml":               []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-qcow2.xml":                     []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlin/vol-sheepdog.xml":                  []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-file-backing.xml":             []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-file-iso.xml":                 []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-file-naming.xml":              []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-file.xml":                     []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-gluster-dir-neg-uid.xml":      []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-gluster-dir.xml":              []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-logical-backing.xml":          []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-logical.xml":                  []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-luks-cipher.xml":              []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-luks.xml":                     []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-partition.xml":                []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-0.10-lazy.xml":          []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-1.1.xml":                []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-lazy.xml":               []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-nobacking.xml":          []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-nocapacity-backing.xml": []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-nocapacity.xml":         []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-nocow.xml":              []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2.xml":                    []string{volsrc},
+	"testdata/libvirt/tests/storagevolxml2xmlout/vol-sheepdog.xml":                 []string{volsrc},
 }
 
 func testRoundTrip(t *testing.T, xml string, filename string) {
@@ -206,6 +247,8 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		doc = &Secret{}
 	} else if strings.HasPrefix(xml, "<device") {
 		doc = &NodeDevice{}
+	} else if strings.HasPrefix(xml, "<volume") {
+		doc = &StorageVolume{}
 	} else {
 		return
 	}
