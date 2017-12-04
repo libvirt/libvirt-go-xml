@@ -27,6 +27,10 @@ package libvirtxml
 
 import (
 	"encoding/xml"
+	"fmt"
+	"io"
+	"strconv"
+	"strings"
 )
 
 type NodeDevice struct {
@@ -48,6 +52,7 @@ type NodeDeviceCapability struct {
 	SCSI      *NodeDeviceSCSICapability
 	Storage   *NodeDeviceStorageCapability
 	DRM       *NodeDeviceDRMCapability
+	CCW       *NodeDeviceCCWCapability
 }
 
 type NodeDeviceIDName struct {
@@ -207,6 +212,89 @@ type NodeDeviceDRMCapability struct {
 	Type string `xml:"type"`
 }
 
+type NodeDeviceCCWCapability struct {
+	CSSID *uint `xml:"cssid"`
+	SSID  *uint `xml:"ssid"`
+	DevNo *uint `xml:"devno"`
+}
+
+func (c *NodeDeviceCCWCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	if c.CSSID != nil {
+		cssid := xml.StartElement{
+			Name: xml.Name{Local: "cssid"},
+		}
+		e.EncodeToken(cssid)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("0x%x", *c.CSSID)))
+		e.EncodeToken(cssid.End())
+	}
+	if c.SSID != nil {
+		ssid := xml.StartElement{
+			Name: xml.Name{Local: "ssid"},
+		}
+		e.EncodeToken(ssid)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("0x%x", *c.SSID)))
+		e.EncodeToken(ssid.End())
+	}
+	if c.DevNo != nil {
+		devno := xml.StartElement{
+			Name: xml.Name{Local: "devno"},
+		}
+		e.EncodeToken(devno)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("0x%04x", *c.DevNo)))
+		e.EncodeToken(devno.End())
+	}
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (c *NodeDeviceCCWCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		switch tok := tok.(type) {
+		case xml.StartElement:
+			cdata, err := d.Token()
+			if err != nil {
+				return err
+			}
+
+			if tok.Name.Local != "cssid" &&
+				tok.Name.Local != "ssid" &&
+				tok.Name.Local != "devno" {
+				continue
+			}
+
+			chardata, ok := cdata.(xml.CharData)
+			if !ok {
+				return fmt.Errorf("Expected text for CCW '%s'", tok.Name.Local)
+			}
+
+			valstr := strings.TrimPrefix(string(chardata), "0x")
+			val, err := strconv.ParseUint(valstr, 16, 64)
+			if err != nil {
+				return err
+			}
+
+			vali := uint(val)
+			if tok.Name.Local == "cssid" {
+				c.CSSID = &vali
+			} else if tok.Name.Local == "ssid" {
+				c.SSID = &vali
+			} else if tok.Name.Local == "devno" {
+				c.DevNo = &vali
+			}
+		}
+	}
+	return nil
+}
+
 func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "type" {
@@ -265,9 +353,16 @@ func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 					return err
 				}
 				c.DRM = &drmCaps
+			case "ccw":
+				var ccwCaps NodeDeviceCCWCapability
+				if err := d.DecodeElement(&ccwCaps, &start); err != nil {
+					return err
+				}
+				c.CCW = &ccwCaps
 			}
 		}
 	}
+	d.Skip()
 	return nil
 }
 
@@ -317,6 +412,11 @@ func (c *NodeDeviceCapability) MarshalXML(e *xml.Encoder, start xml.StartElement
 			xml.Name{Local: "type"}, "drm",
 		})
 		return e.EncodeElement(c.DRM, start)
+	} else if c.CCW != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "ccw",
+		})
+		return e.EncodeElement(c.CCW, start)
 	}
 	return nil
 }
