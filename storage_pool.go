@@ -138,7 +138,7 @@ type StoragePoolSource struct {
 type StoragePool struct {
 	XMLName    xml.Name           `xml:"pool"`
 	Type       string             `xml:"type,attr"`
-	Name       string             `xml:"name"`
+	Name       string             `xml:"name,omitempty"`
 	UUID       string             `xml:"uuid,omitempty"`
 	Allocation *StoragePoolSize   `xml:"allocation"`
 	Capacity   *StoragePoolSize   `xml:"capacity"`
