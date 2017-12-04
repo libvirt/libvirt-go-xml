@@ -78,8 +78,8 @@ type NodeDevicePCIExpress struct {
 type NodeDevicePCIExpressLink struct {
 	Validity string  `xml:"validity,attr,omitempty"`
 	Speed    float64 `xml:"speed,attr,omitempty"`
-	Port     int     `xml:"port,attr,omitempty"`
-	Width    int     `xml:"width,attr,omitempty"`
+	Port     *uint   `xml:"port,attr"`
+	Width    *uint   `xml:"width,attr"`
 }
 
 type NodeDeviceIOMMUGroup struct {
