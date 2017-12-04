@@ -53,17 +53,18 @@ type NodeDeviceDriver struct {
 }
 
 type NodeDeviceCapability struct {
-	System    *NodeDeviceSystemCapability
-	PCI       *NodeDevicePCICapability
-	USB       *NodeDeviceUSBCapability
-	USBDevice *NodeDeviceUSBDeviceCapability
-	Net       *NodeDeviceNetCapability
-	SCSIHost  *NodeDeviceSCSIHostCapability
-	SCSI      *NodeDeviceSCSICapability
-	Storage   *NodeDeviceStorageCapability
-	DRM       *NodeDeviceDRMCapability
-	CCW       *NodeDeviceCCWCapability
-	MDev      *NodeDeviceMDevCapability
+	System     *NodeDeviceSystemCapability
+	PCI        *NodeDevicePCICapability
+	USB        *NodeDeviceUSBCapability
+	USBDevice  *NodeDeviceUSBDeviceCapability
+	Net        *NodeDeviceNetCapability
+	SCSIHost   *NodeDeviceSCSIHostCapability
+	SCSITarget *NodeDeviceSCSITargetCapability
+	SCSI       *NodeDeviceSCSICapability
+	Storage    *NodeDeviceStorageCapability
+	DRM        *NodeDeviceDRMCapability
+	CCW        *NodeDeviceCCWCapability
+	MDev       *NodeDeviceMDevCapability
 }
 
 type NodeDeviceIDName struct {
@@ -216,6 +217,20 @@ type NodeDeviceSCSIHostCapability struct {
 	Host       uint                             `xml:"host"`
 	UniqueID   *uint                            `xml:"unique_id,omitempty"`
 	Capability *NodeDeviceSCSIHostSubCapability `xml:"capability"`
+}
+
+type NodeDeviceSCSITargetCapability struct {
+	Target     string                              `xml:"target"`
+	Capability []NodeDeviceSCSITargetSubCapability `xml:"capability"`
+}
+
+type NodeDeviceSCSITargetSubCapability struct {
+	FCRemotePort *NodeDeviceSCSIFCRemotePortCapability
+}
+
+type NodeDeviceSCSIFCRemotePortCapability struct {
+	RPort string `xml:"rport"`
+	WWPN  string `xml:"wwpn"`
 }
 
 type NodeDeviceSCSICapability struct {
@@ -401,6 +416,34 @@ func (c *NodeDevicePCISubCapability) MarshalXML(e *xml.Encoder, start xml.StartE
 	return nil
 }
 
+func (c *NodeDeviceSCSITargetSubCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing node device capability type")
+	}
+
+	switch typ {
+	case "fc_remote_port":
+		var fcCaps NodeDeviceSCSIFCRemotePortCapability
+		if err := d.DecodeElement(&fcCaps, &start); err != nil {
+			return err
+		}
+		c.FCRemotePort = &fcCaps
+	}
+	d.Skip()
+	return nil
+}
+
+func (c *NodeDeviceSCSITargetSubCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if c.FCRemotePort != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "fc_remote_port",
+		})
+		return e.EncodeElement(c.FCRemotePort, start)
+	}
+	return nil
+}
+
 func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	typ, ok := getAttr(start.Attr, "type")
 	if !ok {
@@ -444,6 +487,12 @@ func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 			return err
 		}
 		c.SCSIHost = &scsiHostCaps
+	case "scsi_target":
+		var scsiTargetCaps NodeDeviceSCSITargetCapability
+		if err := d.DecodeElement(&scsiTargetCaps, &start); err != nil {
+			return err
+		}
+		c.SCSITarget = &scsiTargetCaps
 	case "scsi":
 		var scsiCaps NodeDeviceSCSICapability
 		if err := d.DecodeElement(&scsiCaps, &start); err != nil {
@@ -515,6 +564,11 @@ func (c *NodeDeviceCapability) MarshalXML(e *xml.Encoder, start xml.StartElement
 			xml.Name{Local: "type"}, "scsi_host",
 		})
 		return e.EncodeElement(c.SCSIHost, start)
+	} else if c.SCSITarget != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "scsi_target",
+		})
+		return e.EncodeElement(c.SCSITarget, start)
 	} else if c.Storage != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "storage",
