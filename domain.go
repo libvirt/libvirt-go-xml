@@ -822,8 +822,8 @@ type DomainAddressVirtioMMIO struct {
 }
 
 type DomainAddressCCW struct {
-	Cssid *uint `xml:"cssid,attr"`
-	Ssid  *uint `xml:"ssid,attr"`
+	CSSID *uint `xml:"cssid,attr"`
+	SSID  *uint `xml:"ssid,attr"`
 	DevNo *uint `xml:"devno,attr"`
 }
 
@@ -4351,8 +4351,8 @@ func (a *DomainAddressVirtioMMIO) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (a *DomainAddressCCW) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "cssid", a.Cssid, "0x%x")
-	marshallUintAttr(&start, "ssid", a.Ssid, "0x%x")
+	marshallUintAttr(&start, "cssid", a.CSSID, "0x%x")
+	marshallUintAttr(&start, "ssid", a.SSID, "0x%x")
 	marshallUintAttr(&start, "devno", a.DevNo, "0x%04x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
@@ -4583,11 +4583,11 @@ func (a *DomainAddressVirtioMMIO) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 func (a *DomainAddressCCW) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "cssid" {
-			if err := unmarshallUintAttr(attr.Value, &a.Cssid, 0); err != nil {
+			if err := unmarshallUintAttr(attr.Value, &a.CSSID, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "ssid" {
-			if err := unmarshallUintAttr(attr.Value, &a.Ssid, 0); err != nil {
+			if err := unmarshallUintAttr(attr.Value, &a.SSID, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "devno" {
