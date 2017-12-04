@@ -186,7 +186,14 @@ type NodeDeviceNetLink struct {
 }
 
 type NodeDeviceNetSubCapability struct {
-	Type string `xml:"type,attr"`
+	Wireless80211 *NodeDeviceNet80211Capability
+	Ethernet80203 *NodeDeviceNet80203Capability
+}
+
+type NodeDeviceNet80211Capability struct {
+}
+
+type NodeDeviceNet80203Capability struct {
 }
 
 type NodeDeviceNetCapability struct {
@@ -194,7 +201,7 @@ type NodeDeviceNetCapability struct {
 	Address    string                         `xml:"address"`
 	Link       *NodeDeviceNetLink             `xml:"link"`
 	Features   []NodeDeviceNetOffloadFeatures `xml:"feature,omitempty"`
-	Capability *NodeDeviceNetSubCapability    `xml:"capability"`
+	Capability []NodeDeviceNetSubCapability   `xml:"capability"`
 }
 
 type NodeDeviceSCSIVportsOPS struct {
@@ -471,6 +478,45 @@ func (c *NodeDeviceStorageSubCapability) MarshalXML(e *xml.Encoder, start xml.St
 			xml.Name{Local: "type"}, "removable",
 		})
 		return e.EncodeElement(c.Removable, start)
+	}
+	return nil
+}
+
+func (c *NodeDeviceNetSubCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing node device capability type")
+	}
+
+	switch typ {
+	case "80211":
+		var wlanCaps NodeDeviceNet80211Capability
+		if err := d.DecodeElement(&wlanCaps, &start); err != nil {
+			return err
+		}
+		c.Wireless80211 = &wlanCaps
+	case "80203":
+		var ethCaps NodeDeviceNet80203Capability
+		if err := d.DecodeElement(&ethCaps, &start); err != nil {
+			return err
+		}
+		c.Ethernet80203 = &ethCaps
+	}
+	d.Skip()
+	return nil
+}
+
+func (c *NodeDeviceNetSubCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if c.Wireless80211 != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "80211",
+		})
+		return e.EncodeElement(c.Wireless80211, start)
+	} else if c.Ethernet80203 != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "80203",
+		})
+		return e.EncodeElement(c.Ethernet80203, start)
 	}
 	return nil
 }
