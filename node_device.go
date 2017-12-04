@@ -63,6 +63,7 @@ type NodeDeviceCapability struct {
 	Storage   *NodeDeviceStorageCapability
 	DRM       *NodeDeviceDRMCapability
 	CCW       *NodeDeviceCCWCapability
+	MDev      *NodeDeviceMDevCapability
 }
 
 type NodeDeviceIDName struct {
@@ -228,6 +229,15 @@ type NodeDeviceCCWCapability struct {
 	DevNo *uint `xml:"devno"`
 }
 
+type NodeDeviceMDevCapability struct {
+	Type       *NodeDeviceMDevCapabilityType `xml:"type"`
+	IOMMUGroup *NodeDeviceIOMMUGroup         `xml:"iommuGroup"`
+}
+
+type NodeDeviceMDevCapabilityType struct {
+	ID string `xml:"id,attr"`
+}
+
 func (c *NodeDeviceCCWCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	e.EncodeToken(start)
 	if c.CSSID != nil {
@@ -369,6 +379,12 @@ func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 					return err
 				}
 				c.CCW = &ccwCaps
+			case "mdev":
+				var mdevCaps NodeDeviceMDevCapability
+				if err := d.DecodeElement(&mdevCaps, &start); err != nil {
+					return err
+				}
+				c.MDev = &mdevCaps
 			}
 		}
 	}
@@ -427,6 +443,11 @@ func (c *NodeDeviceCapability) MarshalXML(e *xml.Encoder, start xml.StartElement
 			xml.Name{Local: "type"}, "ccw",
 		})
 		return e.EncodeElement(c.CCW, start)
+	} else if c.MDev != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "mdev",
+		})
+		return e.EncodeElement(c.MDev, start)
 	}
 	return nil
 }
