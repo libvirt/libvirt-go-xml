@@ -231,9 +231,9 @@ func syncGit(t *testing.T) {
 	_, err := os.Stat("testdata/libvirt/tests")
 	if err != nil {
 		if os.IsNotExist(err) {
-			err := exec.Command("git", "clone", "--depth", "1", "git://libvirt.org/libvirt.git", "testdata/libvirt").Run()
+			msg, err := exec.Command("git", "clone", "--depth", "1", "git://libvirt.org/libvirt.git", "testdata/libvirt").CombinedOutput()
 			if err != nil {
-				t.Fatal(fmt.Errorf("Unable to clone libvirt.git: %s", err))
+				t.Fatal(fmt.Errorf("Unable to clone libvirt.git: %s", err, msg))
 			}
 		} else {
 			t.Fatal(err)
@@ -250,9 +250,9 @@ func syncGit(t *testing.T) {
 		defer func() {
 			os.Chdir(here)
 		}()
-		err = exec.Command("git", "pull").Run()
+		msg, err := exec.Command("git", "pull").CombinedOutput()
 		if err != nil {
-			t.Fatal(fmt.Errorf("Unable to update libvirt.git: %s", err))
+			t.Fatal(fmt.Errorf("Unable to update libvirt.git: %s: %s", err, msg))
 		}
 	}
 }
