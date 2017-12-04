@@ -83,8 +83,8 @@ type NodeDevicePCIExpressLink struct {
 }
 
 type NodeDeviceIOMMUGroup struct {
-	Number  int                   `xml:"number,attr"`
-	Address *NodeDevicePCIAddress `xml:"address"`
+	Number  int                    `xml:"number,attr"`
+	Address []NodeDevicePCIAddress `xml:"address"`
 }
 
 type NodeDeviceNUMA struct {
