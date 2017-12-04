@@ -102,7 +102,7 @@ type NodeDevicePCICapability struct {
 	IOMMUGroup   *NodeDeviceIOMMUGroup        `xml:"iommuGroup"`
 	NUMA         *NodeDeviceNUMA              `xml:"numa"`
 	PCIExpress   *NodeDevicePCIExpress        `xml:"pci-express"`
-	Capabilities []NodeDevicePCISubCapability `xml:"capability,omitempty"`
+	Capabilities []NodeDevicePCISubCapability `xml:"capability"`
 }
 
 type NodeDevicePCIAddress struct {
