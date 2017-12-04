@@ -151,7 +151,7 @@ type NodeDeviceUSBCapability struct {
 }
 
 type NodeDeviceNetOffloadFeatures struct {
-	Name string `xml:"number"`
+	Name string `xml:"name,attr"`
 }
 
 type NodeDeviceNetLink struct {
