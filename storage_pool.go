@@ -71,7 +71,8 @@ type StoragePoolSourceDeviceFreeExtent struct {
 }
 
 type StoragePoolSourceAuthSecret struct {
-	Usage string `xml:"usage,attr"`
+	Usage string `xml:"usage,attr,omitempty"`
+	UUID  string `xml:"uuid,attr,omitempty"`
 }
 
 type StoragePoolSourceAuth struct {
