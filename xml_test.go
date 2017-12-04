@@ -204,6 +204,8 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		doc = &Network{}
 	} else if strings.HasPrefix(xml, "<secret") {
 		doc = &Secret{}
+	} else if strings.HasPrefix(xml, "<device") {
+		doc = &NodeDevice{}
 	} else {
 		return
 	}
