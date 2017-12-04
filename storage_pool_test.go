@@ -58,8 +58,10 @@ var storagePoolTestData = []struct {
 			Type: "iscsi",
 			Name: "pool",
 			Source: &StoragePoolSource{
-				Host: &StoragePoolSourceHost{
-					Name: "host.example.com",
+				Host: []StoragePoolSourceHost{
+					StoragePoolSourceHost{
+						Name: "host.example.com",
+					},
 				},
 				Device: []StoragePoolSourceDevice{
 					StoragePoolSourceDevice{

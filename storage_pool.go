@@ -57,6 +57,7 @@ type StoragePoolSourceFormat struct {
 }
 type StoragePoolSourceHost struct {
 	Name string `xml:"name,attr"`
+	Port string `xml:"port,attr,omitempty"`
 }
 
 type StoragePoolSourceDevice struct {
@@ -125,7 +126,7 @@ type StoragePoolSourceInitiatorIQN struct {
 type StoragePoolSource struct {
 	Name      string                      `xml:"name,omitempty"`
 	Dir       *StoragePoolSourceDir       `xml:"dir"`
-	Host      *StoragePoolSourceHost      `xml:"host"`
+	Host      []StoragePoolSourceHost     `xml:"host"`
 	Device    []StoragePoolSourceDevice   `xml:"device"`
 	Auth      *StoragePoolSourceAuth      `xml:"auth"`
 	Vendor    *StoragePoolSourceVendor    `xml:"vendor"`
