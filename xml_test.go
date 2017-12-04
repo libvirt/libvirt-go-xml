@@ -233,7 +233,7 @@ func syncGit(t *testing.T) {
 		if os.IsNotExist(err) {
 			err := exec.Command("git", "clone", "--depth", "1", "git://libvirt.org/libvirt.git", "testdata/libvirt").Run()
 			if err != nil {
-				t.Fatal(err)
+				t.Fatal(fmt.Errorf("Unable to clone libvirt.git: %s", err))
 			}
 		} else {
 			t.Fatal(err)
@@ -252,7 +252,7 @@ func syncGit(t *testing.T) {
 		}()
 		err = exec.Command("git", "pull").Run()
 		if err != nil {
-			t.Fatal(err)
+			t.Fatal(fmt.Errorf("Unable to update libvirt.git: %s", err))
 		}
 	}
 }
