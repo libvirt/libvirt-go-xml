@@ -126,7 +126,7 @@ type StoragePoolSource struct {
 	Name      string                      `xml:"name,omitempty"`
 	Dir       *StoragePoolSourceDir       `xml:"dir"`
 	Host      *StoragePoolSourceHost      `xml:"host"`
-	Device    *StoragePoolSourceDevice    `xml:"device"`
+	Device    []StoragePoolSourceDevice   `xml:"device"`
 	Auth      *StoragePoolSourceAuth      `xml:"auth"`
 	Vendor    *StoragePoolSourceVendor    `xml:"vendor"`
 	Product   *StoragePoolSourceProduct   `xml:"product"`

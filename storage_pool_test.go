@@ -61,8 +61,10 @@ var storagePoolTestData = []struct {
 				Host: &StoragePoolSourceHost{
 					Name: "host.example.com",
 				},
-				Device: &StoragePoolSourceDevice{
-					Path: "pool.example.com:iscsi-pool",
+				Device: []StoragePoolSourceDevice{
+					StoragePoolSourceDevice{
+						Path: "pool.example.com:iscsi-pool",
+					},
 				},
 				Auth: &StoragePoolSourceAuth{
 					Type:     "chap",
@@ -99,9 +101,11 @@ var storagePoolTestData = []struct {
 			Type: "disk",
 			Name: "pool",
 			Source: &StoragePoolSource{
-				Device: &StoragePoolSourceDevice{
-					Path:          "/dev/mapper/pool",
-					PartSeparator: "no",
+				Device: []StoragePoolSourceDevice{
+					StoragePoolSourceDevice{
+						Path:          "/dev/mapper/pool",
+						PartSeparator: "no",
+					},
 				},
 				Format: &StoragePoolSourceFormat{
 					Type: "gpt",
