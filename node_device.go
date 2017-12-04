@@ -242,21 +242,24 @@ type NodeDeviceSCSICapability struct {
 }
 
 type NodeDeviceStorageSubCapability struct {
-	Type           string `xml:"type,attr"`
-	MediaAvailable *uint  `xml:"media_available,omitempty"`
-	MediaSize      *uint  `xml:"media_size,omitempty"`
+	Removable *NodeDeviceStorageRemovableCapability
+}
+
+type NodeDeviceStorageRemovableCapability struct {
+	MediaAvailable *uint  `xml:"media_available"`
+	MediaSize      *uint  `xml:"media_size"`
 	MediaLabel     string `xml:"media_label,omitempty"`
 }
 
 type NodeDeviceStorageCapability struct {
-	Block        string                          `xml:"block,omitempty"`
-	Bus          string                          `xml:"bus,omitempty"`
-	DriverType   string                          `xml:"drive_type,omitempty"`
-	Model        string                          `xml:"model,omitempty"`
-	Vendor       string                          `xml:"vendor,omitempty"`
-	Serial       string                          `xml:"serial,omitempty"`
-	Size         *uint                           `xml:"size,omitempty"`
-	Capatibility *NodeDeviceStorageSubCapability `xml:"capability,omitempty"`
+	Block        string                           `xml:"block,omitempty"`
+	Bus          string                           `xml:"bus,omitempty"`
+	DriverType   string                           `xml:"drive_type,omitempty"`
+	Model        string                           `xml:"model,omitempty"`
+	Vendor       string                           `xml:"vendor,omitempty"`
+	Serial       string                           `xml:"serial,omitempty"`
+	Size         *uint                            `xml:"size"`
+	Capatibility []NodeDeviceStorageSubCapability `xml:"capability"`
 }
 
 type NodeDeviceDRMCapability struct {
@@ -440,6 +443,34 @@ func (c *NodeDeviceSCSITargetSubCapability) MarshalXML(e *xml.Encoder, start xml
 			xml.Name{Local: "type"}, "fc_remote_port",
 		})
 		return e.EncodeElement(c.FCRemotePort, start)
+	}
+	return nil
+}
+
+func (c *NodeDeviceStorageSubCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing node device capability type")
+	}
+
+	switch typ {
+	case "removable":
+		var removeCaps NodeDeviceStorageRemovableCapability
+		if err := d.DecodeElement(&removeCaps, &start); err != nil {
+			return err
+		}
+		c.Removable = &removeCaps
+	}
+	d.Skip()
+	return nil
+}
+
+func (c *NodeDeviceStorageSubCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if c.Removable != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "removable",
+		})
+		return e.EncodeElement(c.Removable, start)
 	}
 	return nil
 }
