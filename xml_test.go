@@ -28,6 +28,7 @@
 package libvirtxml
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -208,7 +209,7 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 	}
 	err := doc.Unmarshal(xml)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(fmt.Errorf("Cannot parse file %s: %s\n", filename, err))
 	}
 
 	newxml, err := doc.Marshal()
