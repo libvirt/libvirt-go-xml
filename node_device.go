@@ -93,10 +93,10 @@ type NodeDeviceNUMA struct {
 }
 
 type NodeDevicePCICapability struct {
-	Domain       *uint                        `xml:"domain,omitempty"`
-	Bus          *uint                        `xml:"bus,omitempty"`
-	Slot         *uint                        `xml:"slot,omitempty"`
-	Function     *uint                        `xml:"function,omitempty"`
+	Domain       *uint                        `xml:"domain"`
+	Bus          *uint                        `xml:"bus"`
+	Slot         *uint                        `xml:"slot"`
+	Function     *uint                        `xml:"function"`
 	Product      NodeDeviceIDName             `xml:"product,omitempty"`
 	Vendor       NodeDeviceIDName             `xml:"vendor,omitempty"`
 	IOMMUGroup   *NodeDeviceIOMMUGroup        `xml:"iommuGroup"`

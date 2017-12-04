@@ -118,9 +118,9 @@ type StoragePool struct {
 	Type       string             `xml:"type,attr"`
 	Name       string             `xml:"name"`
 	UUID       string             `xml:"uuid,omitempty"`
-	Allocation *StoragePoolSize   `xml:"allocation,omitempty"`
-	Capacity   *StoragePoolSize   `xml:"capacity,omitempty"`
-	Available  *StoragePoolSize   `xml:"available,omitempty"`
+	Allocation *StoragePoolSize   `xml:"allocation"`
+	Capacity   *StoragePoolSize   `xml:"capacity"`
+	Available  *StoragePoolSize   `xml:"available"`
 	Target     *StoragePoolTarget `xml:"target"`
 	Source     *StoragePoolSource `xml:"source"`
 }

@@ -512,8 +512,8 @@ type DomainInterfaceVirtualPortParams struct {
 
 type DomainInterfaceVirtualPortParamsAny struct {
 	ManagerID     *uint  `xml:"managerid,attr"`
-	TypeID        *uint  `xml:"typeid,attr,omitempty"`
-	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	TypeID        *uint  `xml:"typeid,attr"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr"`
 	InstanceID    string `xml:"instanceid,attr,omitempty"`
 	ProfileID     string `xml:"profileid,attr,omitempty"`
 	InterfaceID   string `xml:"interfaceid,attr,omitempty"`
@@ -521,8 +521,8 @@ type DomainInterfaceVirtualPortParamsAny struct {
 
 type DomainInterfaceVirtualPortParamsVEPA8021QBG struct {
 	ManagerID     *uint  `xml:"managerid,attr"`
-	TypeID        *uint  `xml:"typeid,attr,omitempty"`
-	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	TypeID        *uint  `xml:"typeid,attr"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr"`
 	InstanceID    string `xml:"instanceid,attr,omitempty"`
 }
 
@@ -540,10 +540,10 @@ type DomainInterfaceVirtualPortParamsMidoNet struct {
 }
 
 type DomainInterfaceBandwidthParams struct {
-	Average *int `xml:"average,attr,omitempty"`
-	Peak    *int `xml:"peak,attr,omitempty"`
-	Burst   *int `xml:"burst,attr,omitempty"`
-	Floor   *int `xml:"floor,attr,omitempty"`
+	Average *int `xml:"average,attr"`
+	Peak    *int `xml:"peak,attr"`
+	Burst   *int `xml:"burst,attr"`
+	Floor   *int `xml:"floor,attr"`
 }
 
 type DomainInterfaceBandwidth struct {
@@ -598,7 +598,7 @@ type DomainInterfaceCoalesceRX struct {
 }
 
 type DomainInterfaceCoalesceRXFrames struct {
-	Max *uint `xml:"max,attr,omitempty"`
+	Max *uint `xml:"max,attr"`
 }
 
 type DomainROM struct {
@@ -1664,10 +1664,10 @@ type DomainVCPU struct {
 }
 
 type DomainVCPUsVCPU struct {
-	Id           *uint  `xml:"id,attr,omitempty"`
+	Id           *uint  `xml:"id,attr"`
 	Enabled      string `xml:"enabled,attr,omitempty"`
 	Hotpluggable string `xml:"hotpluggable,attr,omitempty"`
-	Order        *uint  `xml:"order,attr,omitempty"`
+	Order        *uint  `xml:"order,attr"`
 }
 
 type DomainVCPUs struct {
@@ -1705,7 +1705,7 @@ type DomainCPU struct {
 	Topology *DomainCPUTopology `xml:"topology"`
 	Cache    *DomainCPUCache    `xml:"cache"`
 	Features []DomainCPUFeature `xml:"feature"`
-	Numa     *DomainNuma        `xml:"numa,omitempty"`
+	Numa     *DomainNuma        `xml:"numa"`
 }
 
 type DomainNuma struct {
@@ -1742,7 +1742,7 @@ type DomainTimer struct {
 	Name       string              `xml:"name,attr"`
 	Track      string              `xml:"track,attr,omitempty"`
 	TickPolicy string              `xml:"tickpolicy,attr,omitempty"`
-	CatchUp    *DomainTimerCatchUp `xml:"catchup,omitempty"`
+	CatchUp    *DomainTimerCatchUp `xml:"catchup"`
 	Frequency  uint32              `xml:"frequency,attr,omitempty"`
 	Mode       string              `xml:"mode,attr,omitempty"`
 	Present    string              `xml:"present,attr,omitempty"`
@@ -2097,7 +2097,7 @@ type Domain struct {
 	IDMap                *DomainIDMap         `xml:"idmap"`
 	Features             *DomainFeatureList   `xml:"features"`
 	CPU                  *DomainCPU           `xml:"cpu"`
-	Clock                *DomainClock         `xml:"clock,omitempty"`
+	Clock                *DomainClock         `xml:"clock"`
 	OnPoweroff           string               `xml:"on_poweroff,omitempty"`
 	OnReboot             string               `xml:"on_reboot,omitempty"`
 	OnCrash              string               `xml:"on_crash,omitempty"`

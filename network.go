@@ -50,8 +50,8 @@ type NetworkVirtualPortParams struct {
 
 type NetworkVirtualPortParamsAny struct {
 	ManagerID     *uint  `xml:"managerid,attr"`
-	TypeID        *uint  `xml:"typeid,attr,omitempty"`
-	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	TypeID        *uint  `xml:"typeid,attr"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr"`
 	InstanceID    string `xml:"instanceid,attr,omitempty"`
 	ProfileID     string `xml:"profileid,attr,omitempty"`
 	InterfaceID   string `xml:"interfaceid,attr,omitempty"`
@@ -59,8 +59,8 @@ type NetworkVirtualPortParamsAny struct {
 
 type NetworkVirtualPortParamsVEPA8021QBG struct {
 	ManagerID     *uint  `xml:"managerid,attr"`
-	TypeID        *uint  `xml:"typeid,attr,omitempty"`
-	TypeIDVersion *uint  `xml:"typeidversion,attr,omitempty"`
+	TypeID        *uint  `xml:"typeid,attr"`
+	TypeIDVersion *uint  `xml:"typeidversion,attr"`
 	InstanceID    string `xml:"instanceid,attr,omitempty"`
 }
 
@@ -267,10 +267,10 @@ type NetworkVLANTag struct {
 }
 
 type NetworkBandwidthParams struct {
-	Average *uint `xml:"average,attr,omitempty"`
-	Peak    *uint `xml:"peak,attr,omitempty"`
-	Burst   *uint `xml:"burst,attr,omitempty"`
-	Floor   *uint `xml:"floor,attr,omitempty"`
+	Average *uint `xml:"average,attr"`
+	Peak    *uint `xml:"peak,attr"`
+	Burst   *uint `xml:"burst,attr"`
+	Floor   *uint `xml:"floor,attr"`
 }
 
 type NetworkBandwidth struct {
