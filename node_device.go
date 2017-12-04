@@ -83,7 +83,8 @@ type NodeDevicePCIExpressLink struct {
 }
 
 type NodeDeviceIOMMUGroup struct {
-	Number int `xml:"number,attr"`
+	Number  int                   `xml:"number,attr"`
+	Address *NodeDevicePCIAddress `xml:"address"`
 }
 
 type NodeDeviceNUMA struct {
@@ -111,9 +112,33 @@ type NodeDevicePCIAddress struct {
 }
 
 type NodeDevicePCISubCapability struct {
-	Type     string                 `xml:"type,attr"`
+	VirtFunctions *NodeDevicePCIVirtFunctionsCapability
+	PhysFunction  *NodeDevicePCIPhysFunctionCapability
+	MDevTypes     *NodeDevicePCIMDevTypesCapability
+	Bridge        *NodeDevicePCIBridgeCapability
+}
+
+type NodeDevicePCIVirtFunctionsCapability struct {
 	Address  []NodeDevicePCIAddress `xml:"address,omitempty"`
 	MaxCount int                    `xml:"maxCount,attr,omitempty"`
+}
+
+type NodeDevicePCIPhysFunctionCapability struct {
+	Address NodeDevicePCIAddress `xml:"address,omitempty"`
+}
+
+type NodeDevicePCIMDevTypesCapability struct {
+	Types []NodeDevicePCIMDevType `xml:"type"`
+}
+
+type NodeDevicePCIMDevType struct {
+	ID                 string `xml:"id,attr"`
+	Name               string `xml:"name"`
+	DeviceAPI          string `xml:"deviceAPI"`
+	AvailableInstances uint   `xml:"availableInstances"`
+}
+
+type NodeDevicePCIBridgeCapability struct {
 }
 
 type NodeDeviceSystemHardware struct {
@@ -315,78 +340,140 @@ func (c *NodeDeviceCCWCapability) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	return nil
 }
 
-func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	for _, attr := range start.Attr {
-		if attr.Name.Local == "type" {
-			switch attr.Value {
-			case "pci":
-				var pciCaps NodeDevicePCICapability
-				if err := d.DecodeElement(&pciCaps, &start); err != nil {
-					return err
-				}
-				c.PCI = &pciCaps
-			case "system":
-				var systemCaps NodeDeviceSystemCapability
-				if err := d.DecodeElement(&systemCaps, &start); err != nil {
-					return err
-				}
-				c.System = &systemCaps
-			case "usb_device":
-				var usbdevCaps NodeDeviceUSBDeviceCapability
-				if err := d.DecodeElement(&usbdevCaps, &start); err != nil {
-					return err
-				}
-				c.USBDevice = &usbdevCaps
-			case "usb":
-				var usbCaps NodeDeviceUSBCapability
-				if err := d.DecodeElement(&usbCaps, &start); err != nil {
-					return err
-				}
-				c.USB = &usbCaps
-			case "net":
-				var netCaps NodeDeviceNetCapability
-				if err := d.DecodeElement(&netCaps, &start); err != nil {
-					return err
-				}
-				c.Net = &netCaps
-			case "scsi_host":
-				var scsiHostCaps NodeDeviceSCSIHostCapability
-				if err := d.DecodeElement(&scsiHostCaps, &start); err != nil {
-					return err
-				}
-				c.SCSIHost = &scsiHostCaps
-			case "scsi":
-				var scsiCaps NodeDeviceSCSICapability
-				if err := d.DecodeElement(&scsiCaps, &start); err != nil {
-					return err
-				}
-				c.SCSI = &scsiCaps
-			case "storage":
-				var storageCaps NodeDeviceStorageCapability
-				if err := d.DecodeElement(&storageCaps, &start); err != nil {
-					return err
-				}
-				c.Storage = &storageCaps
-			case "drm":
-				var drmCaps NodeDeviceDRMCapability
-				if err := d.DecodeElement(&drmCaps, &start); err != nil {
-					return err
-				}
-				c.DRM = &drmCaps
-			case "ccw":
-				var ccwCaps NodeDeviceCCWCapability
-				if err := d.DecodeElement(&ccwCaps, &start); err != nil {
-					return err
-				}
-				c.CCW = &ccwCaps
-			case "mdev":
-				var mdevCaps NodeDeviceMDevCapability
-				if err := d.DecodeElement(&mdevCaps, &start); err != nil {
-					return err
-				}
-				c.MDev = &mdevCaps
-			}
+func (c *NodeDevicePCISubCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing node device capability type")
+	}
+
+	switch typ {
+	case "virt_functions":
+		var virtFuncCaps NodeDevicePCIVirtFunctionsCapability
+		if err := d.DecodeElement(&virtFuncCaps, &start); err != nil {
+			return err
 		}
+		c.VirtFunctions = &virtFuncCaps
+	case "phys_function":
+		var physFuncCaps NodeDevicePCIPhysFunctionCapability
+		if err := d.DecodeElement(&physFuncCaps, &start); err != nil {
+			return err
+		}
+		c.PhysFunction = &physFuncCaps
+	case "mdev_types":
+		var mdevTypeCaps NodeDevicePCIMDevTypesCapability
+		if err := d.DecodeElement(&mdevTypeCaps, &start); err != nil {
+			return err
+		}
+		c.MDevTypes = &mdevTypeCaps
+	case "pci-bridge":
+		var bridgeCaps NodeDevicePCIBridgeCapability
+		if err := d.DecodeElement(&bridgeCaps, &start); err != nil {
+			return err
+		}
+		c.Bridge = &bridgeCaps
+	}
+	d.Skip()
+	return nil
+}
+
+func (c *NodeDevicePCISubCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if c.VirtFunctions != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "virt_functions",
+		})
+		return e.EncodeElement(c.VirtFunctions, start)
+	} else if c.PhysFunction != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "phys_function",
+		})
+		return e.EncodeElement(c.PhysFunction, start)
+	} else if c.MDevTypes != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "mdev_types",
+		})
+		return e.EncodeElement(c.MDevTypes, start)
+	} else if c.Bridge != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "pci-bridge",
+		})
+		return e.EncodeElement(c.Bridge, start)
+	}
+	return nil
+}
+
+func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing node device capability type")
+	}
+
+	switch typ {
+	case "pci":
+		var pciCaps NodeDevicePCICapability
+		if err := d.DecodeElement(&pciCaps, &start); err != nil {
+			return err
+		}
+		c.PCI = &pciCaps
+	case "system":
+		var systemCaps NodeDeviceSystemCapability
+		if err := d.DecodeElement(&systemCaps, &start); err != nil {
+			return err
+		}
+		c.System = &systemCaps
+	case "usb_device":
+		var usbdevCaps NodeDeviceUSBDeviceCapability
+		if err := d.DecodeElement(&usbdevCaps, &start); err != nil {
+			return err
+		}
+		c.USBDevice = &usbdevCaps
+	case "usb":
+		var usbCaps NodeDeviceUSBCapability
+		if err := d.DecodeElement(&usbCaps, &start); err != nil {
+			return err
+		}
+		c.USB = &usbCaps
+	case "net":
+		var netCaps NodeDeviceNetCapability
+		if err := d.DecodeElement(&netCaps, &start); err != nil {
+			return err
+		}
+		c.Net = &netCaps
+	case "scsi_host":
+		var scsiHostCaps NodeDeviceSCSIHostCapability
+		if err := d.DecodeElement(&scsiHostCaps, &start); err != nil {
+			return err
+		}
+		c.SCSIHost = &scsiHostCaps
+	case "scsi":
+		var scsiCaps NodeDeviceSCSICapability
+		if err := d.DecodeElement(&scsiCaps, &start); err != nil {
+			return err
+		}
+		c.SCSI = &scsiCaps
+	case "storage":
+		var storageCaps NodeDeviceStorageCapability
+		if err := d.DecodeElement(&storageCaps, &start); err != nil {
+			return err
+		}
+		c.Storage = &storageCaps
+	case "drm":
+		var drmCaps NodeDeviceDRMCapability
+		if err := d.DecodeElement(&drmCaps, &start); err != nil {
+			return err
+		}
+		c.DRM = &drmCaps
+	case "ccw":
+		var ccwCaps NodeDeviceCCWCapability
+		if err := d.DecodeElement(&ccwCaps, &start); err != nil {
+			return err
+		}
+		c.CCW = &ccwCaps
+	case "mdev":
+		var mdevCaps NodeDeviceMDevCapability
+		if err := d.DecodeElement(&mdevCaps, &start); err != nil {
+			return err
+		}
+		c.MDev = &mdevCaps
 	}
 	d.Skip()
 	return nil

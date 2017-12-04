@@ -68,8 +68,9 @@ var NodeDeviceTestData = []struct {
 					},
 					Capabilities: []NodeDevicePCISubCapability{
 						NodeDevicePCISubCapability{
-							Type:     "virt_functions",
-							MaxCount: 63,
+							VirtFunctions: &NodeDevicePCIVirtFunctionsCapability{
+								MaxCount: 63,
+							},
 						},
 					},
 				},
