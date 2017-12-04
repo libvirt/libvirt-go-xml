@@ -201,20 +201,20 @@ type NodeDeviceSCSICapability struct {
 }
 
 type NodeDeviceStorageSubCapability struct {
-	Type           string `xml:"match,attr"`
-	MediaAvailable int    `xml:"media_available,omitempty"`
-	MediaSize      int    `xml:"media_size,omitempty"`
-	MediaLable     int    `xml:"media_label,omitempty"`
+	Type           string `xml:"type,attr"`
+	MediaAvailable *uint  `xml:"media_available,omitempty"`
+	MediaSize      *uint  `xml:"media_size,omitempty"`
+	MediaLabel     string `xml:"media_label,omitempty"`
 }
 
 type NodeDeviceStorageCapability struct {
-	Block        string                          `xml:"block"`
-	Bus          string                          `xml:"bus"`
-	DriverType   string                          `xml:"drive_type"`
-	Model        string                          `xml:"model"`
-	Vendor       string                          `xml:"vendor"`
-	Serial       string                          `xml:"serial"`
-	Size         int                             `xml:"size"`
+	Block        string                          `xml:"block,omitempty"`
+	Bus          string                          `xml:"bus,omitempty"`
+	DriverType   string                          `xml:"drive_type,omitempty"`
+	Model        string                          `xml:"model,omitempty"`
+	Vendor       string                          `xml:"vendor,omitempty"`
+	Serial       string                          `xml:"serial,omitempty"`
+	Size         *uint                           `xml:"size,omitempty"`
 	Capatibility *NodeDeviceStorageSubCapability `xml:"capability,omitempty"`
 }
 
