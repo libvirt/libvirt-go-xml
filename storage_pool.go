@@ -60,8 +60,14 @@ type StoragePoolSourceHost struct {
 }
 
 type StoragePoolSourceDevice struct {
-	Path          string `xml:"path,attr"`
-	PartSeparator string `xml:"part_separator,attr,omitempty"`
+	Path          string                              `xml:"path,attr"`
+	PartSeparator string                              `xml:"part_separator,attr,omitempty"`
+	FreeExtents   []StoragePoolSourceDeviceFreeExtent `xml:"freeExtent"`
+}
+
+type StoragePoolSourceDeviceFreeExtent struct {
+	Start uint64 `xml:"start,attr"`
+	End   uint64 `xml:"end,attr"`
 }
 
 type StoragePoolSourceAuthSecret struct {
