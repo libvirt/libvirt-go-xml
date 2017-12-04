@@ -114,7 +114,7 @@ type NodeDeviceSystemFirmware struct {
 }
 
 type NodeDeviceSystemCapability struct {
-	Product  string                    `xml:"product"`
+	Product  string                    `xml:"product,omitempty"`
 	Hardware *NodeDeviceSystemHardware `xml:"hardware"`
 	Firmware *NodeDeviceSystemFirmware `xml:"firmware"`
 }
