@@ -204,26 +204,26 @@ type NodeDeviceNetCapability struct {
 	Capability []NodeDeviceNetSubCapability   `xml:"capability"`
 }
 
-type NodeDeviceSCSIVportsOPS struct {
-	Vports    int `xml:"vports,omitempty"`
-	MaxVports int `xml:"maxvports,,omitempty"`
+type NodeDeviceSCSIVPortOpsCapability struct {
+	VPorts    int `xml:"vports,omitempty"`
+	MaxVPorts int `xml:"maxvports,omitempty"`
 }
 
-type NodeDeviceSCSIFCHost struct {
+type NodeDeviceSCSIFCHostCapability struct {
 	WWNN      string `xml:"wwnn,omitempty"`
 	WWPN      string `xml:"wwpn,omitempty"`
 	FabricWWN string `xml:"fabric_wwn,omitempty"`
 }
 
 type NodeDeviceSCSIHostSubCapability struct {
-	VportsOPS *NodeDeviceSCSIVportsOPS `xml:"vports_ops"`
-	FCHost    *NodeDeviceSCSIFCHost    `xml:"fc_host"`
+	VPortOps *NodeDeviceSCSIVPortOpsCapability
+	FCHost   *NodeDeviceSCSIFCHostCapability
 }
 
 type NodeDeviceSCSIHostCapability struct {
-	Host       uint                             `xml:"host"`
-	UniqueID   *uint                            `xml:"unique_id,omitempty"`
-	Capability *NodeDeviceSCSIHostSubCapability `xml:"capability"`
+	Host       uint                              `xml:"host"`
+	UniqueID   *uint                             `xml:"unique_id"`
+	Capability []NodeDeviceSCSIHostSubCapability `xml:"capability"`
 }
 
 type NodeDeviceSCSITargetCapability struct {
@@ -450,6 +450,45 @@ func (c *NodeDeviceSCSITargetSubCapability) MarshalXML(e *xml.Encoder, start xml
 			xml.Name{Local: "type"}, "fc_remote_port",
 		})
 		return e.EncodeElement(c.FCRemotePort, start)
+	}
+	return nil
+}
+
+func (c *NodeDeviceSCSIHostSubCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing node device capability type")
+	}
+
+	switch typ {
+	case "fc_host":
+		var fcCaps NodeDeviceSCSIFCHostCapability
+		if err := d.DecodeElement(&fcCaps, &start); err != nil {
+			return err
+		}
+		c.FCHost = &fcCaps
+	case "vport_ops":
+		var vportCaps NodeDeviceSCSIVPortOpsCapability
+		if err := d.DecodeElement(&vportCaps, &start); err != nil {
+			return err
+		}
+		c.VPortOps = &vportCaps
+	}
+	d.Skip()
+	return nil
+}
+
+func (c *NodeDeviceSCSIHostSubCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if c.FCHost != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "fc_host",
+		})
+		return e.EncodeElement(c.FCHost, start)
+	} else if c.VPortOps != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "vport_ops",
+		})
+		return e.EncodeElement(c.VPortOps, start)
 	}
 	return nil
 }
