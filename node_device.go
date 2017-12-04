@@ -37,9 +37,19 @@ type NodeDevice struct {
 	XMLName    xml.Name             `xml:"device"`
 	Name       string               `xml:"name"`
 	Path       string               `xml:"path,omitempty"`
+	DevNodes   []NodeDeviceDevNode  `xml:"devnode"`
 	Parent     string               `xml:"parent,omitempty"`
-	Driver     string               `xml:"driver>name,omitempty"`
+	Driver     *NodeDeviceDriver    `xml:"driver"`
 	Capability NodeDeviceCapability `xml:"capability"`
+}
+
+type NodeDeviceDevNode struct {
+	Type string `xml:"type,attr,omitempty"`
+	Path string `xml:",chardata"`
+}
+
+type NodeDeviceDriver struct {
+	Name string `xml:"name"`
 }
 
 type NodeDeviceCapability struct {

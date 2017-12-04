@@ -38,7 +38,9 @@ var NodeDeviceTestData = []struct {
 		Object: &NodeDevice{
 			Name:   "pci_0000_81_00_0",
 			Parent: "pci_0000_80_01_0",
-			Driver: "ixgbe",
+			Driver: &NodeDeviceDriver{
+				Name: "ixgbe",
+			},
 			Capability: NodeDeviceCapability{
 				PCI: &NodeDevicePCICapability{
 					Domain:   1,
