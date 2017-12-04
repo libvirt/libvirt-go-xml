@@ -114,16 +114,25 @@ type StoragePoolSourceDir struct {
 	Path string `xml:"path,attr"`
 }
 
+type StoragePoolSourceInitiator struct {
+	IQN StoragePoolSourceInitiatorIQN `xml:"iqn"`
+}
+
+type StoragePoolSourceInitiatorIQN struct {
+	Name string `xml:"name,attr,omitempty"`
+}
+
 type StoragePoolSource struct {
-	Name    string                    `xml:"name,omitempty"`
-	Dir     *StoragePoolSourceDir     `xml:"dir"`
-	Host    *StoragePoolSourceHost    `xml:"host"`
-	Device  *StoragePoolSourceDevice  `xml:"device"`
-	Auth    *StoragePoolSourceAuth    `xml:"auth"`
-	Vendor  *StoragePoolSourceVendor  `xml:"vendor"`
-	Product *StoragePoolSourceProduct `xml:"product"`
-	Format  *StoragePoolSourceFormat  `xml:"format"`
-	Adapter *StoragePoolSourceAdapter `xml:"adapter"`
+	Name      string                      `xml:"name,omitempty"`
+	Dir       *StoragePoolSourceDir       `xml:"dir"`
+	Host      *StoragePoolSourceHost      `xml:"host"`
+	Device    *StoragePoolSourceDevice    `xml:"device"`
+	Auth      *StoragePoolSourceAuth      `xml:"auth"`
+	Vendor    *StoragePoolSourceVendor    `xml:"vendor"`
+	Product   *StoragePoolSourceProduct   `xml:"product"`
+	Format    *StoragePoolSourceFormat    `xml:"format"`
+	Adapter   *StoragePoolSourceAdapter   `xml:"adapter"`
+	Initiator *StoragePoolSourceInitiator `xml:"initiator"`
 }
 
 type StoragePool struct {
