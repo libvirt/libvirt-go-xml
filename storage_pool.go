@@ -103,7 +103,7 @@ type StoragePoolSourceAdapterParentAddr struct {
 }
 
 type StoragePoolSourceAdapter struct {
-	Type       string                              `xml:"type,attr"`
+	Type       string                              `xml:"type,attr,omitempty"`
 	Name       string                              `xml:"name,attr,omitempty"`
 	Parent     string                              `xml:"parent,attr,omitempty"`
 	Managed    string                              `xml:"managed,attr,omitempty"`
