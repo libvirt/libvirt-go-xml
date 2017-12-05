@@ -249,6 +249,8 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		doc = &NodeDevice{}
 	} else if strings.HasPrefix(xml, "<volume") {
 		doc = &StorageVolume{}
+	} else if strings.HasPrefix(xml, "<pool") {
+		doc = &StoragePool{}
 	} else {
 		return
 	}
