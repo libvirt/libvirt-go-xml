@@ -103,6 +103,9 @@ var blacklist = map[string]bool{
 	"testdata/libvirt/tests/qemuxml2argvdata/virtio-rng-egd-crash.xml":                            true,
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix-smartcard-missing-path.xml": true,
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-tcp-multiple-source.xml":         true,
+	"testdata/libvirt/tests/networkxml2xmlupdatein/dns-host-gateway-incomplete.xml":               true,
+	"testdata/libvirt/tests/networkxml2xmlupdatein/host-new-incomplete.xml":                       true,
+	"testdata/libvirt/tests/networkxml2xmlupdatein/unparsable-dns-host.xml":                       true,
 	// udp source in different order
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-udp.xml":                 true,
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-udp-multiple-source.xml": true,
@@ -229,12 +232,36 @@ var extraExpectNodes = map[string][]string{
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-nocow.xml":              []string{volsrc},
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2.xml":                    []string{volsrc},
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-sheepdog.xml":                 []string{volsrc},
+	"testdata/libvirt/tests/qemuhotplugtestdevices/qemuhotplug-qemu-agent.xml": []string{
+		"/channel[0]/source[0]",
+	},
+}
+
+func trimXML(xml string) string {
+	xml = strings.TrimSpace(xml)
+	if strings.HasPrefix(xml, "<?xml") {
+		end := strings.Index(xml, "?>")
+		if end != -1 {
+			xml = xml[end+2:]
+			xml = strings.TrimSpace(xml)
+		}
+	}
+	if strings.HasPrefix(xml, "<!--") {
+		end := strings.Index(xml, "-->")
+		if end != -1 {
+			xml = xml[end+3:]
+			xml = strings.TrimSpace(xml)
+		}
+	}
+	return xml
 }
 
 func testRoundTrip(t *testing.T, xml string, filename string) {
 	if strings.HasSuffix(filename, "-invalid.xml") {
 		return
 	}
+
+	xml = trimXML(xml)
 
 	var doc Document
 	if strings.HasPrefix(xml, "<domain ") {
@@ -251,8 +278,56 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		doc = &StorageVolume{}
 	} else if strings.HasPrefix(xml, "<pool") {
 		doc = &StoragePool{}
-	} else {
+	} else if strings.HasPrefix(xml, "<cpu") {
+		//doc = &CPU{}
 		return
+	} else if strings.HasPrefix(xml, "<filter") {
+		//doc = &NWFilter{}
+		return
+	} else if strings.HasPrefix(xml, "<interface") {
+		//doc = &NWFilter{}
+		return
+	} else if strings.HasPrefix(xml, "<domainsnapshot") {
+		//doc = &DomainSnapshot{}
+		return
+	} else if strings.HasPrefix(xml, "<domainCapabilities") {
+		//doc = &DomainCaps{}
+		return
+	} else if strings.HasPrefix(xml, "<disk") {
+		doc = &DomainDisk{}
+	} else if strings.HasPrefix(xml, "<console") {
+		doc = &DomainConsole{}
+	} else if strings.HasPrefix(xml, "<channel") {
+		doc = &DomainChannel{}
+	} else if strings.HasPrefix(xml, "<watchdog") {
+		doc = &DomainWatchdog{}
+	} else if strings.HasPrefix(xml, "<shmem") {
+		doc = &DomainShmem{}
+	} else if strings.HasPrefix(xml, "<graphics") {
+		doc = &DomainGraphic{}
+	} else if strings.HasPrefix(xml, "<host") {
+		if strings.Contains(xml, "mac=") {
+			doc = &NetworkDHCPHost{}
+		} else {
+			doc = &NetworkDNSHost{}
+		}
+	} else if strings.HasPrefix(xml, "<portgroup") {
+		doc = &NetworkPortGroup{}
+	} else if strings.HasPrefix(xml, "<txt") {
+		doc = &NetworkDNSTXT{}
+	} else if strings.HasPrefix(xml, "<srv") {
+		doc = &NetworkDNSSRV{}
+	} else if strings.HasPrefix(xml, "<range") {
+		doc = &NetworkDHCPRange{}
+	} else if strings.HasPrefix(xml, "<qemuCaps") ||
+		strings.HasPrefix(xml, "<sources") ||
+		strings.HasPrefix(xml, "<cpudata") ||
+		strings.HasPrefix(xml, "<cliOutput") {
+		// Private libvirt internal XML schemas we don't
+		// need public API coverage for
+		return
+	} else {
+		t.Fatal(fmt.Errorf("Unexpected XML document schema in %s\n", filename))
 	}
 	err := doc.Unmarshal(xml)
 	if err != nil {
