@@ -100,7 +100,7 @@ var blacklist = map[string]bool{
 	// intentionally invalid xml
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix-redirdev-missing-path.xml":  true,
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix-rng-missing-path.xml":       true,
-	"testdata/libvirt/tests/qemuxml2argvdata/qemuxml2argv-virtio-rng-egd-crash.xml":               true,
+	"testdata/libvirt/tests/qemuxml2argvdata/virtio-rng-egd-crash.xml":                            true,
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix-smartcard-missing-path.xml": true,
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-tcp-multiple-source.xml":         true,
 	// udp source in different order
@@ -137,21 +137,21 @@ var extraActualNodes = map[string][]string{
 		"/domain[0]/devices[0]/disk[1]/@type",
 	},
 
-	"testdata/libvirt/tests/qemuxml2argvdata/qemuxml2argv-fs9p-ccw.xml": []string{
+	"testdata/libvirt/tests/qemuxml2argvdata/fs9p-ccw.xml": []string{
 		"/domain[0]/devices[0]/filesystem[1]/@type",
 		"/domain[0]/devices[0]/filesystem[2]/@type",
 	},
-	"testdata/libvirt/tests/qemuxml2argvdata/qemuxml2argv-fs9p.xml": []string{
+	"testdata/libvirt/tests/qemuxml2argvdata/fs9p.xml": []string{
 		"/domain[0]/devices[0]/filesystem[1]/@type",
 		"/domain[0]/devices[0]/filesystem[2]/@type",
 	},
-	"testdata/libvirt/tests/qemuxml2argvdata/qemuxml2argv-disk-drive-discard.xml": []string{
+	"testdata/libvirt/tests/qemuxml2argvdata/disk-drive-discard.xml": []string{
 		"/domain[0]/devices[0]/disk[0]/@type",
 	},
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-udp.xml": []string{
 		"/domain[0]/devices[0]/channel[0]/source[0]/@mode",
 	},
-	"testdata/libvirt/tests/qemuxml2argvdata/qemuxml2argv-disk-mirror-old.xml": []string{
+	"testdata/libvirt/tests/qemuxml2argvdata/disk-mirror-old.xml": []string{
 		"/domain[0]/devices[0]/disk[0]/mirror[0]/@type",
 		"/domain[0]/devices[0]/disk[0]/mirror[0]/source[0]",
 		"/domain[0]/devices[0]/disk[2]/mirror[0]/@type",
@@ -180,7 +180,7 @@ var extraExpectNodes = map[string][]string{
 	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix.xml": []string{
 		"/domain[0]/devices[0]/channel[1]/source[0]",
 	},
-	"testdata/libvirt/tests/qemuxml2argvdata/qemuxml2argv-usb-redir-filter.xml": []string{
+	"testdata/libvirt/tests/qemuxml2argvdata/usb-redir-filter.xml": []string{
 		"/domain[0]/devices[0]/redirfilter[0]/usbdev[1]/@vendor",
 		"/domain[0]/devices[0]/redirfilter[0]/usbdev[1]/@product",
 		"/domain[0]/devices[0]/redirfilter[0]/usbdev[1]/@class",
