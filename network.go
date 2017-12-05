@@ -136,15 +136,17 @@ type NetworkMAC struct {
 }
 
 type NetworkDHCPRange struct {
-	Start string `xml:"start,attr,omitempty"`
-	End   string `xml:"end,attr,omitempty"`
+	XMLName xml.Name `xml:"range"`
+	Start   string   `xml:"start,attr,omitempty"`
+	End     string   `xml:"end,attr,omitempty"`
 }
 
 type NetworkDHCPHost struct {
-	ID   string `xml:"id,attr,omitempty"`
-	MAC  string `xml:"mac,attr,omitempty"`
-	Name string `xml:"name,attr,omitempty"`
-	IP   string `xml:"ip,attr,omitempty"`
+	XMLName xml.Name `xml:"host"`
+	ID      string   `xml:"id,attr,omitempty"`
+	MAC     string   `xml:"mac,attr,omitempty"`
+	Name    string   `xml:"name,attr,omitempty"`
+	IP      string   `xml:"ip,attr,omitempty"`
 }
 
 type NetworkBootp struct {
@@ -187,8 +189,9 @@ type NetworkDNSForwarder struct {
 }
 
 type NetworkDNSTXT struct {
-	Name  string `xml:"name,attr"`
-	Value string `xml:"value,attr"`
+	XMLName xml.Name `xml:"txt"`
+	Name    string   `xml:"name,attr"`
+	Value   string   `xml:"value,attr"`
 }
 
 type NetworkDNSHostHostname struct {
@@ -196,18 +199,20 @@ type NetworkDNSHostHostname struct {
 }
 
 type NetworkDNSHost struct {
+	XMLName   xml.Name                 `xml:"host"`
 	IP        string                   `xml:"ip,attr"`
 	Hostnames []NetworkDNSHostHostname `xml:"hostname"`
 }
 
 type NetworkDNSSRV struct {
-	Service  string `xml:"service,attr"`
-	Protocol string `xml:"protocol,attr"`
-	Target   string `xml:"target,attr,omitempty"`
-	Port     uint   `xml:"port,attr,omitempty"`
-	Priority uint   `xml:"priority,attr,omitempty"`
-	Weight   uint   `xml:"weight,attr,omitempty"`
-	Domain   string `xml:"domain,attr,omitempty"`
+	XMLName  xml.Name `xml:"srv"`
+	Service  string   `xml:"service,attr,omitempty"`
+	Protocol string   `xml:"protocol,attr,omitempty"`
+	Target   string   `xml:"target,attr,omitempty"`
+	Port     uint     `xml:"port,attr,omitempty"`
+	Priority uint     `xml:"priority,attr,omitempty"`
+	Weight   uint     `xml:"weight,attr,omitempty"`
+	Domain   string   `xml:"domain,attr,omitempty"`
 }
 
 type NetworkDNS struct {
@@ -249,6 +254,7 @@ type Network struct {
 }
 
 type NetworkPortGroup struct {
+	XMLName             xml.Name            `xml:"portgroup"`
 	Name                string              `xml:"name,attr,omitempty"`
 	Default             string              `xml:"default,attr,omitempty"`
 	TrustGuestRxFilters string              `xml:"trustGuestRxFilters,attr,omitempty"`
@@ -431,6 +437,78 @@ func (a *NetworkForwardAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 
 	return nil
+}
+
+func (s *NetworkDHCPHost) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *NetworkDHCPHost) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (s *NetworkDNSHost) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *NetworkDNSHost) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (s *NetworkPortGroup) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *NetworkPortGroup) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (s *NetworkDNSTXT) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *NetworkDNSTXT) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (s *NetworkDNSSRV) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *NetworkDNSSRV) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (s *NetworkDHCPRange) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *NetworkDHCPRange) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
 }
 
 func (s *Network) Unmarshal(doc string) error {
