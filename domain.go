@@ -2295,6 +2295,18 @@ func (a *DomainController) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
+func (d *DomainGraphic) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainGraphic) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
 func (d *DomainController) Unmarshal(doc string) error {
 	return xml.Unmarshal([]byte(doc), d)
 }
