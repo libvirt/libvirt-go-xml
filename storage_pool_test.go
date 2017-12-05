@@ -30,6 +30,11 @@ import (
 	"testing"
 )
 
+var adapterDomain uint = 0
+var adapterBus uint = 0
+var adapterSlot uint = 31
+var adapterFunction uint = 2
+
 var storagePoolTestData = []struct {
 	Object   *StoragePool
 	Expected []string
@@ -153,11 +158,11 @@ var storagePoolTestData = []struct {
 					Type: "scsi_host",
 					ParentAddr: &StoragePoolSourceAdapterParentAddr{
 						UniqueID: 1,
-						Address: &StoragePoolSourceAdapterParentAddrAddress{
-							Domain: "0x0000",
-							Bus:    "0x00",
-							Slot:   "0x1f",
-							Addr:   "0x2",
+						Address: &StoragePoolPCIAddress{
+							Domain:   &adapterDomain,
+							Bus:      &adapterBus,
+							Slot:     &adapterSlot,
+							Function: &adapterFunction,
 						},
 					},
 				},
@@ -169,7 +174,7 @@ var storagePoolTestData = []struct {
 			`  <source>`,
 			`    <adapter type="scsi_host">`,
 			`      <parentaddr unique_id="1">`,
-			`        <address domain="0x0000" bus="0x00" slot="0x1f" addr="0x2"></address>`,
+			`        <address domain="0x0000" bus="0x00" slot="0x1f" function="0x2"></address>`,
 			`      </parentaddr>`,
 			`    </adapter>`,
 			`  </source>`,
