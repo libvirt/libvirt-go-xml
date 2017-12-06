@@ -98,18 +98,18 @@ var volsrc = "/volume[0]/source[0]"
 
 var blacklist = map[string]bool{
 	// intentionally invalid xml
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix-redirdev-missing-path.xml":  true,
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix-rng-missing-path.xml":       true,
-	"testdata/libvirt/tests/qemuxml2argvdata/virtio-rng-egd-crash.xml":                            true,
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix-smartcard-missing-path.xml": true,
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-tcp-multiple-source.xml":         true,
-	"testdata/libvirt/tests/networkxml2xmlupdatein/dns-host-gateway-incomplete.xml":               true,
-	"testdata/libvirt/tests/networkxml2xmlupdatein/host-new-incomplete.xml":                       true,
-	"testdata/libvirt/tests/networkxml2xmlupdatein/unparsable-dns-host.xml":                       true,
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-unix-redirdev-missing-path.xml":  true,
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-unix-rng-missing-path.xml":       true,
+	"testdata/libvirt/tests/qemuxml2argvdata/virtio-rng-egd-crash.xml":                    true,
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-unix-smartcard-missing-path.xml": true,
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-tcp-multiple-source.xml":         true,
+	"testdata/libvirt/tests/networkxml2xmlupdatein/dns-host-gateway-incomplete.xml":       true,
+	"testdata/libvirt/tests/networkxml2xmlupdatein/host-new-incomplete.xml":               true,
+	"testdata/libvirt/tests/networkxml2xmlupdatein/unparsable-dns-host.xml":               true,
 	// udp source in different order
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-udp.xml":                 true,
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-udp-multiple-source.xml": true,
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-fv-serial-udp.xml":                    true,
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-udp.xml":                 true,
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-udp-multiple-source.xml": true,
+	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-fv-serial-udp.xml":            true,
 }
 
 var extraActualNodes = map[string][]string{
@@ -151,7 +151,7 @@ var extraActualNodes = map[string][]string{
 	"testdata/libvirt/tests/qemuxml2argvdata/disk-drive-discard.xml": []string{
 		"/domain[0]/devices[0]/disk[0]/@type",
 	},
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-udp.xml": []string{
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-udp.xml": []string{
 		"/domain[0]/devices[0]/channel[0]/source[0]/@mode",
 	},
 	"testdata/libvirt/tests/qemuxml2argvdata/disk-mirror-old.xml": []string{
@@ -180,7 +180,7 @@ var extraActualNodes = map[string][]string{
 }
 
 var extraExpectNodes = map[string][]string{
-	"testdata/libvirt/tests/genericxml2xmlindata/generic-chardev-unix.xml": []string{
+	"testdata/libvirt/tests/genericxml2xmlindata/chardev-unix.xml": []string{
 		"/domain[0]/devices[0]/channel[1]/source[0]",
 	},
 	"testdata/libvirt/tests/qemuxml2argvdata/usb-redir-filter.xml": []string{
