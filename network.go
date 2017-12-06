@@ -412,7 +412,7 @@ func (a *NetworkForwardAddress) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "pci",
 		})
-		return a.PCI.MarshalXML(e, start)
+		return e.EncodeElement(a.PCI, start)
 	} else {
 		return nil
 	}
@@ -433,7 +433,7 @@ func (a *NetworkForwardAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 
 	if typ == "pci" {
 		a.PCI = &NetworkForwardAddressPCI{}
-		return a.PCI.UnmarshalXML(d, start)
+		return d.DecodeElement(a.PCI, &start)
 	}
 
 	return nil

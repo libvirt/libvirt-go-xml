@@ -4406,57 +4406,57 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "usb",
 		})
-		return a.USB.MarshalXML(e, start)
+		return e.EncodeElement(a.USB, start)
 	} else if a.PCI != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "pci",
 		})
-		return a.PCI.MarshalXML(e, start)
+		return e.EncodeElement(a.PCI, start)
 	} else if a.Drive != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "drive",
 		})
-		return a.Drive.MarshalXML(e, start)
+		return e.EncodeElement(a.Drive, start)
 	} else if a.DIMM != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "dimm",
 		})
-		return a.DIMM.MarshalXML(e, start)
+		return e.EncodeElement(a.DIMM, start)
 	} else if a.ISA != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "isa",
 		})
-		return a.ISA.MarshalXML(e, start)
+		return e.EncodeElement(a.ISA, start)
 	} else if a.VirtioMMIO != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "virtio-mmio",
 		})
-		return a.VirtioMMIO.MarshalXML(e, start)
+		return e.EncodeElement(a.VirtioMMIO, start)
 	} else if a.CCW != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "ccw",
 		})
-		return a.CCW.MarshalXML(e, start)
+		return e.EncodeElement(a.CCW, start)
 	} else if a.VirtioSerial != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "virtio-serial",
 		})
-		return a.VirtioSerial.MarshalXML(e, start)
+		return e.EncodeElement(a.VirtioSerial, start)
 	} else if a.SpaprVIO != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "spapr-vio",
 		})
-		return a.SpaprVIO.MarshalXML(e, start)
+		return e.EncodeElement(a.SpaprVIO, start)
 	} else if a.CCID != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "ccid",
 		})
-		return a.CCID.MarshalXML(e, start)
+		return e.EncodeElement(a.CCID, start)
 	} else if a.VirtioS390 != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "virtio-s390",
 		})
-		return a.VirtioS390.MarshalXML(e, start)
+		return e.EncodeElement(a.VirtioS390, start)
 	} else {
 		return nil
 	}
@@ -4680,37 +4680,37 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 
 	if typ == "usb" {
 		a.USB = &DomainAddressUSB{}
-		return a.USB.UnmarshalXML(d, start)
+		return d.DecodeElement(a.USB, &start)
 	} else if typ == "pci" {
 		a.PCI = &DomainAddressPCI{}
-		return a.PCI.UnmarshalXML(d, start)
+		return d.DecodeElement(a.PCI, &start)
 	} else if typ == "drive" {
 		a.Drive = &DomainAddressDrive{}
-		return a.Drive.UnmarshalXML(d, start)
+		return d.DecodeElement(a.Drive, &start)
 	} else if typ == "dimm" {
 		a.DIMM = &DomainAddressDIMM{}
-		return a.DIMM.UnmarshalXML(d, start)
+		return d.DecodeElement(a.DIMM, &start)
 	} else if typ == "isa" {
 		a.ISA = &DomainAddressISA{}
-		return a.ISA.UnmarshalXML(d, start)
+		return d.DecodeElement(a.ISA, &start)
 	} else if typ == "virtio-mmio" {
 		a.VirtioMMIO = &DomainAddressVirtioMMIO{}
-		return a.VirtioMMIO.UnmarshalXML(d, start)
+		return d.DecodeElement(a.VirtioMMIO, &start)
 	} else if typ == "ccw" {
 		a.CCW = &DomainAddressCCW{}
-		return a.CCW.UnmarshalXML(d, start)
+		return d.DecodeElement(a.CCW, &start)
 	} else if typ == "virtio-serial" {
 		a.VirtioSerial = &DomainAddressVirtioSerial{}
-		return a.VirtioSerial.UnmarshalXML(d, start)
+		return d.DecodeElement(a.VirtioSerial, &start)
 	} else if typ == "spapr-vio" {
 		a.SpaprVIO = &DomainAddressSpaprVIO{}
-		return a.SpaprVIO.UnmarshalXML(d, start)
+		return d.DecodeElement(a.SpaprVIO, &start)
 	} else if typ == "ccid" {
 		a.CCID = &DomainAddressCCID{}
-		return a.CCID.UnmarshalXML(d, start)
+		return d.DecodeElement(a.CCID, &start)
 	} else if typ == "spapr-vio" {
 		a.VirtioS390 = &DomainAddressVirtioS390{}
-		return a.VirtioS390.UnmarshalXML(d, start)
+		return d.DecodeElement(a.VirtioS390, &start)
 	}
 
 	return nil
