@@ -2141,11 +2141,11 @@ type domainControllerVirtIOSerial struct {
 }
 
 func (a *DomainControllerPCITarget) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "chassisNr", a.ChassisNr, "%d")
-	marshallUintAttr(&start, "chassis", a.Chassis, "%d")
-	marshallUintAttr(&start, "port", a.Port, "%d")
-	marshallUintAttr(&start, "busNr", a.BusNr, "%d")
-	marshallUintAttr(&start, "index", a.Index, "%d")
+	marshalUintAttr(&start, "chassisNr", a.ChassisNr, "%d")
+	marshalUintAttr(&start, "chassis", a.Chassis, "%d")
+	marshalUintAttr(&start, "port", a.Port, "%d")
+	marshalUintAttr(&start, "busNr", a.BusNr, "%d")
+	marshalUintAttr(&start, "index", a.Index, "%d")
 	e.EncodeToken(start)
 	if a.NUMANode != nil {
 		node := xml.StartElement{
@@ -2162,23 +2162,23 @@ func (a *DomainControllerPCITarget) MarshalXML(e *xml.Encoder, start xml.StartEl
 func (a *DomainControllerPCITarget) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "chassisNr" {
-			if err := unmarshallUintAttr(attr.Value, &a.ChassisNr, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.ChassisNr, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "chassis" {
-			if err := unmarshallUintAttr(attr.Value, &a.Chassis, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Chassis, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "port" {
-			if err := unmarshallUintAttr(attr.Value, &a.Port, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Port, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "busNr" {
-			if err := unmarshallUintAttr(attr.Value, &a.BusNr, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.BusNr, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "index" {
-			if err := unmarshallUintAttr(attr.Value, &a.Index, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Index, 10); err != nil {
 				return err
 			}
 		}
@@ -3656,9 +3656,9 @@ func (d *DomainChannel) Marshal() (string, error) {
 }
 
 func (a *DomainRedirFilterUSB) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "class", a.Class, "0x%02x")
-	marshallUintAttr(&start, "vendor", a.Vendor, "0x%04x")
-	marshallUintAttr(&start, "product", a.Product, "0x%04x")
+	marshalUintAttr(&start, "class", a.Class, "0x%02x")
+	marshalUintAttr(&start, "vendor", a.Vendor, "0x%04x")
+	marshalUintAttr(&start, "product", a.Product, "0x%04x")
 	if a.Version != "" {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "version"}, a.Version,
@@ -3675,15 +3675,15 @@ func (a *DomainRedirFilterUSB) MarshalXML(e *xml.Encoder, start xml.StartElement
 func (a *DomainRedirFilterUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "class" && attr.Value != "-1" {
-			if err := unmarshallUintAttr(attr.Value, &a.Class, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Class, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "product" && attr.Value != "-1" {
-			if err := unmarshallUintAttr(attr.Value, &a.Product, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Product, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "vendor" && attr.Value != "-1" {
-			if err := unmarshallUintAttr(attr.Value, &a.Vendor, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Vendor, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "version" && attr.Value != "-1" {
@@ -4286,7 +4286,7 @@ func (d *DomainWatchdog) Marshal() (string, error) {
 	return string(doc), nil
 }
 
-func marshallUintAttr(start *xml.StartElement, name string, val *uint, format string) {
+func marshalUintAttr(start *xml.StartElement, name string, val *uint, format string) {
 	if val != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: name}, fmt.Sprintf(format, *val),
@@ -4294,7 +4294,7 @@ func marshallUintAttr(start *xml.StartElement, name string, val *uint, format st
 	}
 }
 
-func marshallUint64Attr(start *xml.StartElement, name string, val *uint64, format string) {
+func marshalUint64Attr(start *xml.StartElement, name string, val *uint64, format string) {
 	if val != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: name}, fmt.Sprintf(format, *val),
@@ -4303,10 +4303,10 @@ func marshallUint64Attr(start *xml.StartElement, name string, val *uint64, forma
 }
 
 func (a *DomainAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "domain", a.Domain, "0x%04x")
-	marshallUintAttr(&start, "bus", a.Bus, "0x%02x")
-	marshallUintAttr(&start, "slot", a.Slot, "0x%02x")
-	marshallUintAttr(&start, "function", a.Function, "0x%x")
+	marshalUintAttr(&start, "domain", a.Domain, "0x%04x")
+	marshalUintAttr(&start, "bus", a.Bus, "0x%02x")
+	marshalUintAttr(&start, "slot", a.Slot, "0x%02x")
+	marshalUintAttr(&start, "function", a.Function, "0x%x")
 	if a.MultiFunction != "" {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "multifunction"}, a.MultiFunction,
@@ -4318,39 +4318,39 @@ func (a *DomainAddressPCI) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (a *DomainAddressUSB) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "bus", a.Bus, "%d")
+	marshalUintAttr(&start, "bus", a.Bus, "%d")
 	if a.Port != "" {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "port"}, a.Port,
 		})
 	}
-	marshallUintAttr(&start, "device", a.Device, "%d")
+	marshalUintAttr(&start, "device", a.Device, "%d")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressDrive) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "controller", a.Controller, "%d")
-	marshallUintAttr(&start, "bus", a.Bus, "%d")
-	marshallUintAttr(&start, "target", a.Target, "%d")
-	marshallUintAttr(&start, "unit", a.Unit, "%d")
+	marshalUintAttr(&start, "controller", a.Controller, "%d")
+	marshalUintAttr(&start, "bus", a.Bus, "%d")
+	marshalUintAttr(&start, "target", a.Target, "%d")
+	marshalUintAttr(&start, "unit", a.Unit, "%d")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressDIMM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "slot", a.Slot, "%d")
-	marshallUint64Attr(&start, "base", a.Base, "0x%x")
+	marshalUintAttr(&start, "slot", a.Slot, "%d")
+	marshalUint64Attr(&start, "base", a.Base, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressISA) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "iobase", a.IOBase, "0x%x")
-	marshallUintAttr(&start, "irq", a.IRQ, "0x%x")
+	marshalUintAttr(&start, "iobase", a.IOBase, "0x%x")
+	marshalUintAttr(&start, "irq", a.IRQ, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -4363,33 +4363,33 @@ func (a *DomainAddressVirtioMMIO) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (a *DomainAddressCCW) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "cssid", a.CSSID, "0x%x")
-	marshallUintAttr(&start, "ssid", a.SSID, "0x%x")
-	marshallUintAttr(&start, "devno", a.DevNo, "0x%04x")
+	marshalUintAttr(&start, "cssid", a.CSSID, "0x%x")
+	marshalUintAttr(&start, "ssid", a.SSID, "0x%x")
+	marshalUintAttr(&start, "devno", a.DevNo, "0x%04x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressVirtioSerial) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "controller", a.Controller, "%d")
-	marshallUintAttr(&start, "bus", a.Bus, "%d")
-	marshallUintAttr(&start, "port", a.Port, "%d")
+	marshalUintAttr(&start, "controller", a.Controller, "%d")
+	marshalUintAttr(&start, "bus", a.Bus, "%d")
+	marshalUintAttr(&start, "port", a.Port, "%d")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressSpaprVIO) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUint64Attr(&start, "reg", a.Reg, "0x%x")
+	marshalUint64Attr(&start, "reg", a.Reg, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
 }
 
 func (a *DomainAddressCCID) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "controller", a.Controller, "%d")
-	marshallUintAttr(&start, "slot", a.Slot, "%d")
+	marshalUintAttr(&start, "controller", a.Controller, "%d")
+	marshalUintAttr(&start, "slot", a.Slot, "%d")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -4462,7 +4462,7 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}
 }
 
-func unmarshallUint64Attr(valstr string, valptr **uint64, base int) error {
+func unmarshalUint64Attr(valstr string, valptr **uint64, base int) error {
 	if base == 16 {
 		valstr = strings.TrimPrefix(valstr, "0x")
 	}
@@ -4474,7 +4474,7 @@ func unmarshallUint64Attr(valstr string, valptr **uint64, base int) error {
 	return nil
 }
 
-func unmarshallUintAttr(valstr string, valptr **uint, base int) error {
+func unmarshalUintAttr(valstr string, valptr **uint, base int) error {
 	if base == 16 {
 		valstr = strings.TrimPrefix(valstr, "0x")
 	}
@@ -4490,13 +4490,13 @@ func unmarshallUintAttr(valstr string, valptr **uint, base int) error {
 func (a *DomainAddressUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "bus" {
-			if err := unmarshallUintAttr(attr.Value, &a.Bus, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Bus, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "port" {
 			a.Port = attr.Value
 		} else if attr.Name.Local == "device" {
-			if err := unmarshallUintAttr(attr.Value, &a.Device, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Device, 10); err != nil {
 				return err
 			}
 		}
@@ -4508,19 +4508,19 @@ func (a *DomainAddressUSB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 func (a *DomainAddressPCI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "domain" {
-			if err := unmarshallUintAttr(attr.Value, &a.Domain, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Domain, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "bus" {
-			if err := unmarshallUintAttr(attr.Value, &a.Bus, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Bus, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "slot" {
-			if err := unmarshallUintAttr(attr.Value, &a.Slot, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Slot, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "function" {
-			if err := unmarshallUintAttr(attr.Value, &a.Function, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Function, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "multifunction" {
@@ -4534,19 +4534,19 @@ func (a *DomainAddressPCI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 func (a *DomainAddressDrive) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "controller" {
-			if err := unmarshallUintAttr(attr.Value, &a.Controller, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Controller, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "bus" {
-			if err := unmarshallUintAttr(attr.Value, &a.Bus, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Bus, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "target" {
-			if err := unmarshallUintAttr(attr.Value, &a.Target, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Target, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "unit" {
-			if err := unmarshallUintAttr(attr.Value, &a.Unit, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Unit, 10); err != nil {
 				return err
 			}
 		}
@@ -4558,11 +4558,11 @@ func (a *DomainAddressDrive) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 func (a *DomainAddressDIMM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "slot" {
-			if err := unmarshallUintAttr(attr.Value, &a.Slot, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Slot, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "base" {
-			if err := unmarshallUint64Attr(attr.Value, &a.Base, 16); err != nil {
+			if err := unmarshalUint64Attr(attr.Value, &a.Base, 16); err != nil {
 				return err
 			}
 		}
@@ -4574,11 +4574,11 @@ func (a *DomainAddressDIMM) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 func (a *DomainAddressISA) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "iobase" {
-			if err := unmarshallUintAttr(attr.Value, &a.IOBase, 16); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.IOBase, 16); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "irq" {
-			if err := unmarshallUintAttr(attr.Value, &a.IRQ, 16); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.IRQ, 16); err != nil {
 				return err
 			}
 		}
@@ -4595,15 +4595,15 @@ func (a *DomainAddressVirtioMMIO) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 func (a *DomainAddressCCW) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "cssid" {
-			if err := unmarshallUintAttr(attr.Value, &a.CSSID, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.CSSID, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "ssid" {
-			if err := unmarshallUintAttr(attr.Value, &a.SSID, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.SSID, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "devno" {
-			if err := unmarshallUintAttr(attr.Value, &a.DevNo, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.DevNo, 0); err != nil {
 				return err
 			}
 		}
@@ -4615,15 +4615,15 @@ func (a *DomainAddressCCW) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 func (a *DomainAddressVirtioSerial) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "controller" {
-			if err := unmarshallUintAttr(attr.Value, &a.Controller, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Controller, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "bus" {
-			if err := unmarshallUintAttr(attr.Value, &a.Bus, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Bus, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "port" {
-			if err := unmarshallUintAttr(attr.Value, &a.Port, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Port, 10); err != nil {
 				return err
 			}
 		}
@@ -4635,7 +4635,7 @@ func (a *DomainAddressVirtioSerial) UnmarshalXML(d *xml.Decoder, start xml.Start
 func (a *DomainAddressSpaprVIO) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "reg" {
-			if err := unmarshallUint64Attr(attr.Value, &a.Reg, 16); err != nil {
+			if err := unmarshalUint64Attr(attr.Value, &a.Reg, 16); err != nil {
 				return err
 			}
 		}
@@ -4647,11 +4647,11 @@ func (a *DomainAddressSpaprVIO) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 func (a *DomainAddressCCID) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "controller" {
-			if err := unmarshallUintAttr(attr.Value, &a.Controller, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Controller, 10); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "slot" {
-			if err := unmarshallUintAttr(attr.Value, &a.Slot, 10); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Slot, 10); err != nil {
 				return err
 			}
 		}

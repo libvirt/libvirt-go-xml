@@ -150,10 +150,10 @@ type StoragePool struct {
 }
 
 func (a *StoragePoolPCIAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	marshallUintAttr(&start, "domain", a.Domain, "0x%04x")
-	marshallUintAttr(&start, "bus", a.Bus, "0x%02x")
-	marshallUintAttr(&start, "slot", a.Slot, "0x%02x")
-	marshallUintAttr(&start, "function", a.Function, "0x%x")
+	marshalUintAttr(&start, "domain", a.Domain, "0x%04x")
+	marshalUintAttr(&start, "bus", a.Bus, "0x%02x")
+	marshalUintAttr(&start, "slot", a.Slot, "0x%02x")
+	marshalUintAttr(&start, "function", a.Function, "0x%x")
 	e.EncodeToken(start)
 	e.EncodeToken(start.End())
 	return nil
@@ -162,19 +162,19 @@ func (a *StoragePoolPCIAddress) MarshalXML(e *xml.Encoder, start xml.StartElemen
 func (a *StoragePoolPCIAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for _, attr := range start.Attr {
 		if attr.Name.Local == "domain" {
-			if err := unmarshallUintAttr(attr.Value, &a.Domain, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Domain, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "bus" {
-			if err := unmarshallUintAttr(attr.Value, &a.Bus, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Bus, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "slot" {
-			if err := unmarshallUintAttr(attr.Value, &a.Slot, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Slot, 0); err != nil {
 				return err
 			}
 		} else if attr.Name.Local == "function" {
-			if err := unmarshallUintAttr(attr.Value, &a.Function, 0); err != nil {
+			if err := unmarshalUintAttr(attr.Value, &a.Function, 0); err != nil {
 				return err
 			}
 		}
