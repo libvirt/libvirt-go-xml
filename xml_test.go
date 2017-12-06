@@ -282,8 +282,7 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		//doc = &CPU{}
 		return
 	} else if strings.HasPrefix(xml, "<filter") {
-		//doc = &NWFilter{}
-		return
+		doc = &NWFilter{}
 	} else if strings.HasPrefix(xml, "<interface") {
 		//doc = &NWFilter{}
 		return
