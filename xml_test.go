@@ -177,6 +177,12 @@ var extraActualNodes = map[string][]string{
 	"testdata/libvirt/tests/networkxml2xmlupdateout/openvswitch-net-without-alice.xml": []string{
 		"/network[0]/virtualport[0]/parameters[0]",
 	},
+	"testdata/libvirt/tests/interfaceschemadata/bridge-vlan.xml": []string{
+		"/interface[0]/bridge[0]/interface[0]/vlan[0]/interface[0]/@type",
+	},
+	"testdata/libvirt/tests/interfaceschemadata/vlan.xml": []string{
+		"/interface[0]/vlan[0]/interface[0]/@type",
+	},
 }
 
 var extraExpectNodes = map[string][]string{
@@ -284,8 +290,11 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 	} else if strings.HasPrefix(xml, "<filter") {
 		doc = &NWFilter{}
 	} else if strings.HasPrefix(xml, "<interface") {
-		//doc = &NWFilter{}
-		return
+		if strings.Contains(filename, "networkxml") {
+			doc = &NetworkForwardInterface{}
+		} else {
+			doc = &Interface{}
+		}
 	} else if strings.HasPrefix(xml, "<domainsnapshot") {
 		//doc = &DomainSnapshot{}
 		return

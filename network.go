@@ -128,7 +128,8 @@ type NetworkForwardAddressPCI struct {
 }
 
 type NetworkForwardInterface struct {
-	Dev string `xml:"dev,attr,omitempty"`
+	XMLName xml.Name `xml:"interface"`
+	Dev     string   `xml:"dev,attr,omitempty"`
 }
 
 type NetworkMAC struct {
@@ -504,6 +505,18 @@ func (s *NetworkDHCPRange) Unmarshal(doc string) error {
 }
 
 func (s *NetworkDHCPRange) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (s *NetworkForwardInterface) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), s)
+}
+
+func (s *NetworkForwardInterface) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return "", err
