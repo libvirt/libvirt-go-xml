@@ -299,8 +299,7 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		//doc = &DomainSnapshot{}
 		return
 	} else if strings.HasPrefix(xml, "<domainCapabilities") {
-		//doc = &DomainCaps{}
-		return
+		doc = &DomainCaps{}
 	} else if strings.HasPrefix(xml, "<disk") {
 		doc = &DomainDisk{}
 	} else if strings.HasPrefix(xml, "<console") {
