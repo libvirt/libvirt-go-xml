@@ -1697,6 +1697,7 @@ type DomainCPUCache struct {
 }
 
 type DomainCPU struct {
+	XMLName  xml.Name           `xml:"cpu"`
 	Match    string             `xml:"match,attr,omitempty"`
 	Mode     string             `xml:"mode,attr,omitempty"`
 	Check    string             `xml:"check,attr,omitempty"`
@@ -4714,4 +4715,16 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 
 	return nil
+}
+
+func (d *DomainCPU) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainCPU) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
 }

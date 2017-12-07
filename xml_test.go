@@ -284,9 +284,15 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		doc = &StorageVolume{}
 	} else if strings.HasPrefix(xml, "<pool") {
 		doc = &StoragePool{}
-	} else if strings.HasPrefix(xml, "<cpu") {
-		//doc = &CPU{}
+	} else if strings.HasPrefix(xml, "<cpuTest") || strings.HasPrefix(xml, "<cpudata") {
+		// Not a public schema
 		return
+	} else if strings.HasPrefix(xml, "<cpu") {
+		if strings.Contains(xml, "mode=") || strings.Contains(xml, "match=") {
+			doc = &DomainCPU{}
+		} else {
+			doc = &CapsHostCPU{}
+		}
 	} else if strings.HasPrefix(xml, "<filter") {
 		doc = &NWFilter{}
 	} else if strings.HasPrefix(xml, "<interface") {

@@ -45,6 +45,7 @@ type CapsHostCPUPageSize struct {
 }
 
 type CapsHostCPU struct {
+	XMLName      xml.Name                 `xml:"cpu"`
 	Arch         string                   `xml:"arch,omitempty"`
 	Model        string                   `xml:"model,omitempty"`
 	Vendor       string                   `xml:"vendor,omitempty"`
@@ -249,6 +250,18 @@ type Caps struct {
 	XMLName xml.Name    `xml:"capabilities"`
 	Host    CapsHost    `xml:"host"`
 	Guests  []CapsGuest `xml:"guest"`
+}
+
+func (c *CapsHostCPU) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), c)
+}
+
+func (c *CapsHostCPU) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
 }
 
 func (c *Caps) Unmarshal(doc string) error {
