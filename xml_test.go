@@ -183,6 +183,29 @@ var extraActualNodes = map[string][]string{
 	"testdata/libvirt/tests/interfaceschemadata/vlan.xml": []string{
 		"/interface[0]/vlan[0]/interface[0]/@type",
 	},
+	"testdata/libvirt/tests/domainsnapshotxml2xmlin/disk_driver_name_null.xml": []string{
+		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
+	},
+	"testdata/libvirt/tests/domainsnapshotxml2xmlin/disk_snapshot.xml": []string{
+		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[1]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[2]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[3]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[4]/@type",
+	},
+	"testdata/libvirt/tests/domainsnapshotxml2xmlout/disk_snapshot.xml": []string{
+		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[1]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[2]/@type",
+	},
+	"testdata/libvirt/tests/domainsnapshotxml2xmlout/disk_snapshot_redefine.xml": []string{
+		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[1]/@type",
+		"/domainsnapshot[0]/disks[0]/disk[2]/@type",
+	},
+	"testdata/libvirt/tests/domainsnapshotxml2xmlout/external_vm_redefine.xml": []string{
+		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
+	},
 }
 
 var extraExpectNodes = map[string][]string{
@@ -240,6 +263,9 @@ var extraExpectNodes = map[string][]string{
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-sheepdog.xml":                 []string{volsrc},
 	"testdata/libvirt/tests/qemuhotplugtestdevices/qemuhotplug-qemu-agent.xml": []string{
 		"/channel[0]/source[0]",
+	},
+	"testdata/libvirt/tests/domainsnapshotxml2xmlin/disk_snapshot.xml": []string{
+		"/domainsnapshot[0]/disks[0]/disk[3]/source[0]",
 	},
 }
 
@@ -302,8 +328,7 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 			doc = &Interface{}
 		}
 	} else if strings.HasPrefix(xml, "<domainsnapshot") {
-		//doc = &DomainSnapshot{}
-		return
+		doc = &DomainSnapshot{}
 	} else if strings.HasPrefix(xml, "<domainCapabilities") {
 		doc = &DomainCaps{}
 	} else if strings.HasPrefix(xml, "<disk") {

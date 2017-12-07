@@ -41,8 +41,10 @@ var domainSnapshotTestData = []struct {
 				[]DomainSnapshotDisk{
 					DomainSnapshotDisk{
 						Name: "/old",
-						Source: &DomainSnapshotDiskSource{
-							File: "/new",
+						Source: &DomainDiskSource{
+							File: &DomainDiskSourceFile{
+								File: "/new",
+							},
 						},
 					},
 					DomainSnapshotDisk{
@@ -56,7 +58,7 @@ var domainSnapshotTestData = []struct {
 			`<domainsnapshot>`,
 			`  <description>Snapshot</description>`,
 			`  <disks>`,
-			`    <disk name="/old">`,
+			`    <disk type="file" name="/old">`,
 			`      <source file="/new"></source>`,
 			`    </disk>`,
 			`    <disk name="vdb" snapshot="no"></disk>`,
@@ -84,8 +86,10 @@ var domainSnapshotTestData = []struct {
 						Driver: &DomainSnapshotDiskDriver{
 							Type: "qcow2",
 						},
-						Source: &DomainSnapshotDiskSource{
-							File: "/path/to/new",
+						Source: &DomainDiskSource{
+							File: &DomainDiskSourceFile{
+								File: "/path/to/new",
+							},
 						},
 					},
 					DomainSnapshotDisk{
@@ -149,7 +153,7 @@ var domainSnapshotTestData = []struct {
 			`  </parent>`,
 			`  <memory snapshot="no"></memory>`,
 			`  <disks>`,
-			`    <disk name="vda" snapshot="external">`,
+			`    <disk type="file" name="vda" snapshot="external">`,
 			`      <driver type="qcow2"></driver>`,
 			`      <source file="/path/to/new"></source>`,
 			`    </disk>`,
