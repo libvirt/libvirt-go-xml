@@ -391,7 +391,7 @@ func syncGit(t *testing.T) {
 		if os.IsNotExist(err) {
 			msg, err := exec.Command("git", "clone", "--depth", "1", "git://libvirt.org/libvirt.git", "testdata/libvirt").CombinedOutput()
 			if err != nil {
-				t.Fatal(fmt.Errorf("Unable to clone libvirt.git: %s", err, msg))
+				t.Fatal(fmt.Errorf("Unable to clone libvirt.git: %s: %s", err, msg))
 			}
 		} else {
 			t.Fatal(err)

@@ -3801,7 +3801,7 @@ func TestDomain(t *testing.T) {
 
 		newdocobj, ok := newobj.Interface().(Document)
 		if !ok {
-			t.Fatal("Could not clone %s", newobj.Interface())
+			t.Fatalf("Could not clone %s", newobj.Interface())
 		}
 
 		err = newdocobj.Unmarshal(expect)
