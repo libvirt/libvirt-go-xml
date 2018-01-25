@@ -1591,13 +1591,18 @@ type DomainSysInfoMemory struct {
 	Entry []DomainSysInfoEntry `xml:"entry"`
 }
 
+type DomainSysInfoOEMStrings struct {
+	Entry []string `xml:"entry"`
+}
+
 type DomainSysInfo struct {
-	Type      string                   `xml:"type,attr"`
-	BIOS      *DomainSysInfoBIOS       `xml:"bios"`
-	System    *DomainSysInfoSystem     `xml:"system"`
-	BaseBoard []DomainSysInfoBaseBoard `xml:"baseBoard"`
-	Processor *DomainSysInfoProcessor  `xml:"processor"`
-	Memory    *DomainSysInfoMemory     `xml:"memory"`
+	Type       string                   `xml:"type,attr"`
+	BIOS       *DomainSysInfoBIOS       `xml:"bios"`
+	System     *DomainSysInfoSystem     `xml:"system"`
+	BaseBoard  []DomainSysInfoBaseBoard `xml:"baseBoard"`
+	Processor  *DomainSysInfoProcessor  `xml:"processor"`
+	Memory     *DomainSysInfoMemory     `xml:"memory"`
+	OEMStrings *DomainSysInfoOEMStrings `xml:"oemStrings"`
 }
 
 type DomainSysInfoEntry struct {
