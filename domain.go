@@ -1913,6 +1913,19 @@ type DomainCPUTuneIOThreadSched struct {
 	Priority  *int   `xml:"priority,attr"`
 }
 
+type DomainCPUCacheTune struct {
+	VCPUs string                    `xml:"vcpus,attr,omitempty"`
+	Cache []DomainCPUCacheTuneCache `xml:"cache"`
+}
+
+type DomainCPUCacheTuneCache struct {
+	ID    uint   `xml:"id,attr"`
+	Level uint   `xml:"level,attr"`
+	Type  string `xml:"type,attr"`
+	Size  uint   `xml:"size,attr"`
+	Unit  string `xml:"unit,attr"`
+}
+
 type DomainCPUTune struct {
 	Shares         *DomainCPUTuneShares         `xml:"shares"`
 	Period         *DomainCPUTunePeriod         `xml:"period"`
@@ -1928,6 +1941,7 @@ type DomainCPUTune struct {
 	IOThreadPin    []DomainCPUTuneIOThreadPin   `xml:"iothreadpin"`
 	VCPUSched      []DomainCPUTuneVCPUSched     `xml:"vcpusched"`
 	IOThreadSched  []DomainCPUTuneIOThreadSched `xml:"iothreadsched"`
+	CacheTune      []DomainCPUCacheTune         `xml:"cachetune"`
 }
 
 type DomainQEMUCommandlineArg struct {
