@@ -1689,10 +1689,11 @@ var domainTestData = []struct {
 							Type: "virtio",
 						},
 						Source: &DomainInterfaceSource{
-							VHostUser: &DomainInterfaceSourceVHostUser{
-								Type: "unix",
-								Path: "/tmp/vhost0.sock",
-								Mode: "server",
+							VHostUser: &DomainChardevSource{
+								UNIX: &DomainChardevSourceUNIX{
+									Path: "/tmp/vhost0.sock",
+									Mode: "server",
+								},
 							},
 						},
 					},
@@ -1705,7 +1706,7 @@ var domainTestData = []struct {
 			`  <devices>`,
 			`    <interface type="vhostuser">`,
 			`      <mac address="52:54:00:39:97:ac"></mac>`,
-			`      <source type="unix" path="/tmp/vhost0.sock" mode="server"></source>`,
+			`      <source type="unix" mode="server" path="/tmp/vhost0.sock"></source>`,
 			`      <model type="virtio"></model>`,
 			`    </interface>`,
 			`  </devices>`,
@@ -1726,10 +1727,11 @@ var domainTestData = []struct {
 							Type: "virtio",
 						},
 						Source: &DomainInterfaceSource{
-							VHostUser: &DomainInterfaceSourceVHostUser{
-								Type: "unix",
-								Path: "/tmp/vhost0.sock",
-								Mode: "server",
+							VHostUser: &DomainChardevSource{
+								UNIX: &DomainChardevSourceUNIX{
+									Path: "/tmp/vhost0.sock",
+									Mode: "server",
+								},
 							},
 						},
 						Bandwidth: &DomainInterfaceBandwidth{
@@ -1752,7 +1754,7 @@ var domainTestData = []struct {
 			`  <devices>`,
 			`    <interface type="vhostuser">`,
 			`      <mac address="52:54:00:39:97:ac"></mac>`,
-			`      <source type="unix" path="/tmp/vhost0.sock" mode="server"></source>`,
+			`      <source type="unix" mode="server" path="/tmp/vhost0.sock"></source>`,
 			`      <model type="virtio"></model>`,
 			`      <bandwidth>`,
 			`        <inbound average="1000" burst="10000"></inbound>`,

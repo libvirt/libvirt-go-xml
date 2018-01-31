@@ -369,18 +369,18 @@ type DomainInterfaceModel struct {
 }
 
 type DomainInterfaceSource struct {
-	User      *DomainInterfaceSourceUser      `xml:"-"`
-	Ethernet  *DomainInterfaceSourceEthernet  `xml:"-"`
-	VHostUser *DomainInterfaceSourceVHostUser `xml:"-"`
-	Server    *DomainInterfaceSourceServer    `xml:"-"`
-	Client    *DomainInterfaceSourceClient    `xml:"-"`
-	MCast     *DomainInterfaceSourceMCast     `xml:"-"`
-	Network   *DomainInterfaceSourceNetwork   `xml:"-"`
-	Bridge    *DomainInterfaceSourceBridge    `xml:"-"`
-	Internal  *DomainInterfaceSourceInternal  `xml:"-"`
-	Direct    *DomainInterfaceSourceDirect    `xml:"-"`
-	Hostdev   *DomainInterfaceSourceHostdev   `xml:"-"`
-	UDP       *DomainInterfaceSourceUDP       `xml:"-"`
+	User      *DomainInterfaceSourceUser     `xml:"-"`
+	Ethernet  *DomainInterfaceSourceEthernet `xml:"-"`
+	VHostUser *DomainChardevSource           `xml:"-"`
+	Server    *DomainInterfaceSourceServer   `xml:"-"`
+	Client    *DomainInterfaceSourceClient   `xml:"-"`
+	MCast     *DomainInterfaceSourceMCast    `xml:"-"`
+	Network   *DomainInterfaceSourceNetwork  `xml:"-"`
+	Bridge    *DomainInterfaceSourceBridge   `xml:"-"`
+	Internal  *DomainInterfaceSourceInternal `xml:"-"`
+	Direct    *DomainInterfaceSourceDirect   `xml:"-"`
+	Hostdev   *DomainInterfaceSourceHostdev  `xml:"-"`
+	UDP       *DomainInterfaceSourceUDP      `xml:"-"`
 }
 
 type DomainInterfaceSourceUser struct {
@@ -389,12 +389,6 @@ type DomainInterfaceSourceUser struct {
 type DomainInterfaceSourceEthernet struct {
 	IP    []DomainInterfaceIP    `xml:"ip"`
 	Route []DomainInterfaceRoute `xml:"route"`
-}
-
-type DomainInterfaceSourceVHostUser struct {
-	Type string `xml:"type,attr"`
-	Path string `xml:"path,attr,omitempty"`
-	Mode string `xml:"mode,attr,omitempty"`
 }
 
 type DomainInterfaceSourceServer struct {
@@ -2958,6 +2952,12 @@ func (a *DomainInterfaceSource) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		}
 		return nil
 	} else if a.VHostUser != nil {
+		typ := getChardevSourceType(a.VHostUser)
+		if typ != "" {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, typ,
+			})
+		}
 		return e.EncodeElement(a.VHostUser, start)
 	} else if a.Server != nil {
 		return e.EncodeElement(a.Server, start)
@@ -2987,6 +2987,11 @@ func (a *DomainInterfaceSource) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	} else if a.Ethernet != nil {
 		return d.DecodeElement(a.Ethernet, &start)
 	} else if a.VHostUser != nil {
+		typ, ok := getAttr(start.Attr, "type")
+		if !ok {
+			typ = "pty"
+		}
+		a.VHostUser = createChardevSource(typ)
 		return d.DecodeElement(a.VHostUser, &start)
 	} else if a.Server != nil {
 		return d.DecodeElement(a.Server, &start)
@@ -3080,7 +3085,7 @@ func (a *DomainInterface) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	} else if typ == "ethernet" {
 		a.Source.Ethernet = &DomainInterfaceSourceEthernet{}
 	} else if typ == "vhostuser" {
-		a.Source.VHostUser = &DomainInterfaceSourceVHostUser{}
+		a.Source.VHostUser = &DomainChardevSource{}
 	} else if typ == "server" {
 		a.Source.Server = &DomainInterfaceSourceServer{}
 	} else if typ == "client" {
