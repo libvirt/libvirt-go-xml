@@ -562,7 +562,7 @@ type DomainInterfaceGuest struct {
 
 type DomainInterfaceFilterRef struct {
 	Filter      string                       `xml:"filter,attr"`
-	Pararmeters []DomainInterfaceFilterParam `xml:"parameter"`
+	Parameters []DomainInterfaceFilterParam `xml:"parameter"`
 }
 
 type DomainInterfaceFilterParam struct {
