@@ -1599,8 +1599,8 @@ type DomainSysInfo struct {
 	System     *DomainSysInfoSystem     `xml:"system"`
 	BaseBoard  []DomainSysInfoBaseBoard `xml:"baseBoard"`
 	Chassis    *DomainSysInfoChassis    `xml:"chassis"`
-	Processor  *DomainSysInfoProcessor  `xml:"processor"`
-	Memory     *DomainSysInfoMemory     `xml:"memory"`
+	Processor  []DomainSysInfoProcessor `xml:"processor"`
+	Memory     []DomainSysInfoMemory    `xml:"memory"`
 	OEMStrings *DomainSysInfoOEMStrings `xml:"oemStrings"`
 }
 
