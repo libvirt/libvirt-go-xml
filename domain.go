@@ -1585,6 +1585,10 @@ type DomainSysInfoMemory struct {
 	Entry []DomainSysInfoEntry `xml:"entry"`
 }
 
+type DomainSysInfoChassis struct {
+	Entry []DomainSysInfoEntry `xml:"entry"`
+}
+
 type DomainSysInfoOEMStrings struct {
 	Entry []string `xml:"entry"`
 }
@@ -1594,6 +1598,7 @@ type DomainSysInfo struct {
 	BIOS       *DomainSysInfoBIOS       `xml:"bios"`
 	System     *DomainSysInfoSystem     `xml:"system"`
 	BaseBoard  []DomainSysInfoBaseBoard `xml:"baseBoard"`
+	Chassis    *DomainSysInfoChassis    `xml:"chassis"`
 	Processor  *DomainSysInfoProcessor  `xml:"processor"`
 	Memory     *DomainSysInfoMemory     `xml:"memory"`
 	OEMStrings *DomainSysInfoOEMStrings `xml:"oemStrings"`
