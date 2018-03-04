@@ -4226,12 +4226,12 @@ func (a *DomainGraphic) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return e.EncodeElement(a.VNC, start)
 	} else if a.RDP != nil {
 		start.Attr = append(start.Attr, xml.Attr{
-			xml.Name{Local: "type"}, "vnc",
+			xml.Name{Local: "type"}, "rdp",
 		})
 		return e.EncodeElement(a.RDP, start)
 	} else if a.Desktop != nil {
 		start.Attr = append(start.Attr, xml.Attr{
-			xml.Name{Local: "type"}, "vnc",
+			xml.Name{Local: "type"}, "desktop",
 		})
 		return e.EncodeElement(a.Desktop, start)
 	} else if a.Spice != nil {

@@ -3782,6 +3782,32 @@ var domainTestData = []struct {
 			`</domain>`,
 		},
 	},
+	{
+		Object: &Domain{
+			Name: "demo",
+			Devices: &DomainDeviceList{
+				Graphics: []DomainGraphic{
+					DomainGraphic{SDL: &DomainGraphicSDL{}},
+					DomainGraphic{VNC: &DomainGraphicVNC{}},
+					DomainGraphic{RDP: &DomainGraphicRDP{}},
+					DomainGraphic{Desktop: &DomainGraphicDesktop{}},
+					DomainGraphic{Spice: &DomainGraphicSpice{}},
+				},
+			},
+		},
+		Expected: []string{
+			`<domain>`,
+			`  <name>demo</name>`,
+			`  <devices>`,
+			`    <graphics type="sdl"></graphics>`,
+			`    <graphics type="vnc"></graphics>`,
+			`    <graphics type="rdp"></graphics>`,
+			`    <graphics type="desktop"></graphics>`,
+			`    <graphics type="spice"></graphics>`,
+			`  </devices>`,
+			`</domain>`,
+		},
+	},
 }
 
 func TestDomain(t *testing.T) {
