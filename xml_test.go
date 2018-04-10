@@ -86,7 +86,6 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/vircaps2xmldata",
 	"testdata/libvirt/tests/virstorageutildata",
 	"testdata/libvirt/tests/vmx2xmldata",
-	"testdata/libvirt/tests/xencapsdata",
 	"testdata/libvirt/tests/xlconfigdata",
 	"testdata/libvirt/tests/xmconfigdata",
 	"testdata/libvirt/tests/xml2sexprdata",
