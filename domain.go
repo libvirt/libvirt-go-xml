@@ -596,8 +596,9 @@ type DomainInterfaceCoalesceRXFrames struct {
 }
 
 type DomainROM struct {
-	Bar  string `xml:"bar,attr,omitempty"`
-	File string `xml:"file,attr,omitempty"`
+	Bar     string `xml:"bar,attr,omitempty"`
+	File    string `xml:"file,attr,omitempty"`
+	Enabled string `xml:"enabled,attr,omitempty"`
 }
 
 type DomainInterfaceIP struct {
