@@ -30,16 +30,17 @@ import (
 )
 
 type DomainCaps struct {
-	XMLName  xml.Name            `xml:"domainCapabilities"`
-	Path     string              `xml:"path"`
-	Domain   string              `xml:"domain"`
-	Machine  string              `xml:"machine,omitempty"`
-	Arch     string              `xml:"arch"`
-	VCPU     *DomainCapsVCPU     `xml:"vcpu"`
-	OS       DomainCapsOS        `xml:"os"`
-	CPU      *DomainCapsCPU      `xml:"cpu"`
-	Devices  *DomainCapsDevices  `xml:"devices"`
-	Features *DomainCapsFeatures `xml:"features"`
+	XMLName   xml.Name             `xml:"domainCapabilities"`
+	Path      string               `xml:"path"`
+	Domain    string               `xml:"domain"`
+	Machine   string               `xml:"machine,omitempty"`
+	Arch      string               `xml:"arch"`
+	VCPU      *DomainCapsVCPU      `xml:"vcpu"`
+	IOThreads *DomainCapsIOThreads `xml:"iothreads"`
+	OS        DomainCapsOS         `xml:"os"`
+	CPU       *DomainCapsCPU       `xml:"cpu"`
+	Devices   *DomainCapsDevices   `xml:"devices"`
+	Features  *DomainCapsFeatures  `xml:"features"`
 }
 
 type DomainCapsVCPU struct {
@@ -55,6 +56,10 @@ type DomainCapsOSLoader struct {
 	Supported string           `xml:"supported,attr"`
 	Values    []string         `xml:"value"`
 	Enums     []DomainCapsEnum `xml:"enum"`
+}
+
+type DomainCapsIOThreads struct {
+	Supported string `xml:"supported,attr"`
 }
 
 type DomainCapsCPU struct {
