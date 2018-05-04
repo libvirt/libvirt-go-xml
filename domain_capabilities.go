@@ -103,12 +103,17 @@ type DomainCapsDevice struct {
 }
 
 type DomainCapsFeatures struct {
-	GIC *DomainCapsFeatureGIC `xml:"gic"`
+	GIC        *DomainCapsFeatureGIC        `xml:"gic"`
+	VMCoreInfo *DomainCapsFeatureVMCoreInfo `xml:"vmcoreinfo"`
 }
 
 type DomainCapsFeatureGIC struct {
 	Supported string           `xml:"supported,attr"`
 	Enums     []DomainCapsEnum `xml:"enum"`
+}
+
+type DomainCapsFeatureVMCoreInfo struct {
+	Supported string `xml:"supported,attr"`
 }
 
 func (c *DomainCaps) Unmarshal(doc string) error {
