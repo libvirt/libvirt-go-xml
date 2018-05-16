@@ -982,10 +982,15 @@ type DomainGraphicFileTransfer struct {
 	Enable string `xml:"enable,attr,omitempty"`
 }
 
+type DomainGraphicsSDLGL struct {
+	Enable string `xml:"enable,attr,omitempty"`
+}
+
 type DomainGraphicSDL struct {
-	Display    string `xml:"display,attr,omitempty"`
-	XAuth      string `xml:"xauth,attr,omitempty"`
-	FullScreen string `xml:"fullscreen,attr,omitempty"`
+	Display    string               `xml:"display,attr,omitempty"`
+	XAuth      string               `xml:"xauth,attr,omitempty"`
+	FullScreen string               `xml:"fullscreen,attr,omitempty"`
+	GL         *DomainGraphicsSDLGL `xml:"gl"`
 }
 
 type DomainGraphicVNC struct {
