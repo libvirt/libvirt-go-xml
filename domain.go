@@ -112,6 +112,14 @@ type DomainDiskSourceHost struct {
 	Socket    string `xml:"socket,attr,omitempty"`
 }
 
+type DomainDiskReservationsSource DomainChardevSource
+
+type DomainDiskReservations struct {
+	Enabled string                        `xml:"enabled,attr,omitempty"`
+	Managed string                        `xml:"managed,attr,omitempty"`
+	Source  *DomainDiskReservationsSource `xml:"source"`
+}
+
 type DomainDiskSource struct {
 	File          *DomainDiskSourceFile    `xml:"-"`
 	Block         *DomainDiskSourceBlock   `xml:"-"`
@@ -120,6 +128,7 @@ type DomainDiskSource struct {
 	Volume        *DomainDiskSourceVolume  `xml:"-"`
 	StartupPolicy string                   `xml:"startupPolicy,attr,omitempty"`
 	Encryption    *DomainDiskEncryption    `xml:"encryption"`
+	Reservations  *DomainDiskReservations  `xml:"reservations"`
 }
 
 type DomainDiskSourceFile struct {
@@ -2337,6 +2346,32 @@ func (d *DomainController) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainDiskReservationsSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "source"
+	src := DomainChardevSource(*a)
+	typ := getChardevSourceType(&src)
+	if typ != "" {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, typ,
+		})
+	}
+	return e.EncodeElement(&src, start)
+}
+
+func (a *DomainDiskReservationsSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "unix"
+	}
+	src := createChardevSource(typ)
+	err := d.DecodeElement(&src, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainDiskReservationsSource(*src)
+	return nil
 }
 
 type domainDiskSource DomainDiskSource
