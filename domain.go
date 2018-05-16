@@ -1351,6 +1351,7 @@ type DomainMemorydev struct {
 	XMLName xml.Name               `xml:"memory"`
 	Model   string                 `xml:"model,attr"`
 	Access  string                 `xml:"access,attr,omitempty"`
+	Discard string                 `xml:"discard,attr,omitempty"`
 	Source  *DomainMemorydevSource `xml:"source"`
 	Target  *DomainMemorydevTarget `xml:"target"`
 	Alias   *DomainAlias           `xml:"alias"`
@@ -1542,6 +1543,9 @@ type DomainMemoryAllocation struct {
 	Mode string `xml:"mode,attr,omitempty"`
 }
 
+type DomainMemoryDiscard struct {
+}
+
 type DomainMemoryBacking struct {
 	MemoryHugePages    *DomainMemoryHugepages    `xml:"hugepages"`
 	MemoryNosharepages *DomainMemoryNosharepages `xml:"nosharepages"`
@@ -1549,6 +1553,7 @@ type DomainMemoryBacking struct {
 	MemorySource       *DomainMemorySource       `xml:"source"`
 	MemoryAccess       *DomainMemoryAccess       `xml:"access"`
 	MemoryAllocation   *DomainMemoryAllocation   `xml:"allocation"`
+	MemoryDiscard      *DomainMemoryDiscard      `xml:"discard"`
 }
 
 type DomainOSType struct {
@@ -1733,6 +1738,7 @@ type DomainCell struct {
 	Memory    string               `xml:"memory,attr"`
 	Unit      string               `xml:"unit,attr,omitempty"`
 	MemAccess string               `xml:"memAccess,attr,omitempty"`
+	Discard   string               `xml:"discard,attr,omitempty"`
 	Distances *DomainCellDistances `xml:"distances"`
 }
 
