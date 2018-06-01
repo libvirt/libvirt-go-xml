@@ -1139,6 +1139,19 @@ type DomainMemBalloon struct {
 	Address     *DomainAddress          `xml:"address"`
 }
 
+type DomainVSockCID struct {
+	Auto    string `xml:"auto,attr,omitempty"`
+	Address string `xml:"address,attr,omitempty"`
+}
+
+type DomainVSock struct {
+	XMLName xml.Name        `xml:"vsock"`
+	Model   string          `xml:"model,attr,omitempty"`
+	CID     *DomainVSockCID `xml:"cid"`
+	Alias   *DomainAlias    `xml:"alias"`
+	Address *DomainAddress  `xml:"address"`
+}
+
 type DomainMemBalloonDriver struct {
 	IOMMU string `xml:"iommu,attr,omitempty"`
 	ATS   string `xml:"ats,attr,omitempty"`
@@ -1501,6 +1514,7 @@ type DomainDeviceList struct {
 	Shmems       []DomainShmem       `xml:"shmem"`
 	Memorydevs   []DomainMemorydev   `xml:"memory"`
 	IOMMU        *DomainIOMMU        `xml:"iommu"`
+	VSock        *DomainVSock        `xml:"vsock"`
 }
 
 type DomainMemory struct {
@@ -3826,6 +3840,18 @@ func (d *DomainMemBalloon) Unmarshal(doc string) error {
 }
 
 func (d *DomainMemBalloon) Marshal() (string, error) {
+	doc, err := xml.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(doc), nil
+}
+
+func (d *DomainVSock) Unmarshal(doc string) error {
+	return xml.Unmarshal([]byte(doc), d)
+}
+
+func (d *DomainVSock) Marshal() (string, error) {
 	doc, err := xml.MarshalIndent(d, "", "  ")
 	if err != nil {
 		return "", err
