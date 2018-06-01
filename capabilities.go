@@ -44,6 +44,10 @@ type CapsHostCPUPageSize struct {
 	Unit string `xml:"unit,attr"`
 }
 
+type CapsHostCPUMicrocode struct {
+	Version int `xml:"version,attr"`
+}
+
 type CapsHostCPU struct {
 	XMLName      xml.Name                 `xml:"cpu"`
 	Arch         string                   `xml:"arch,omitempty"`
@@ -53,6 +57,7 @@ type CapsHostCPU struct {
 	FeatureFlags []CapsHostCPUFeatureFlag `xml:"feature"`
 	Features     *CapsHostCPUFeatures     `xml:"features"`
 	PageSizes    []CapsHostCPUPageSize    `xml:"pages"`
+	Microcode    *CapsHostCPUMicrocode    `xml:"microcode"`
 }
 
 type CapsHostCPUFeature struct {
