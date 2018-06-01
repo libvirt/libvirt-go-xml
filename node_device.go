@@ -253,20 +253,24 @@ type NodeDeviceStorageSubCapability struct {
 }
 
 type NodeDeviceStorageRemovableCapability struct {
-	MediaAvailable *uint  `xml:"media_available"`
-	MediaSize      *uint  `xml:"media_size"`
-	MediaLabel     string `xml:"media_label,omitempty"`
+	MediaAvailable   *uint  `xml:"media_available"`
+	MediaSize        *uint  `xml:"media_size"`
+	MediaLabel       string `xml:"media_label,omitempty"`
+	LogicalBlockSize *uint  `xml:"logical_block_size"`
+	NumBlocks        *uint  `xml:"num_blocks"`
 }
 
 type NodeDeviceStorageCapability struct {
-	Block        string                           `xml:"block,omitempty"`
-	Bus          string                           `xml:"bus,omitempty"`
-	DriverType   string                           `xml:"drive_type,omitempty"`
-	Model        string                           `xml:"model,omitempty"`
-	Vendor       string                           `xml:"vendor,omitempty"`
-	Serial       string                           `xml:"serial,omitempty"`
-	Size         *uint                            `xml:"size"`
-	Capatibility []NodeDeviceStorageSubCapability `xml:"capability"`
+	Block            string                           `xml:"block,omitempty"`
+	Bus              string                           `xml:"bus,omitempty"`
+	DriverType       string                           `xml:"drive_type,omitempty"`
+	Model            string                           `xml:"model,omitempty"`
+	Vendor           string                           `xml:"vendor,omitempty"`
+	Serial           string                           `xml:"serial,omitempty"`
+	Size             *uint                            `xml:"size"`
+	LogicalBlockSize *uint                            `xml:"logical_block_size"`
+	NumBlocks        *uint                            `xml:"num_blocks"`
+	Capatibility     []NodeDeviceStorageSubCapability `xml:"capability"`
 }
 
 type NodeDeviceDRMCapability struct {
