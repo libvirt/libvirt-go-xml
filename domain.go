@@ -2105,6 +2105,10 @@ type DomainPerfEvent struct {
 	Enabled string `xml:"enabled,attr"`
 }
 
+type DomainGenID struct {
+	Value string `xml:",chardata"`
+}
+
 // NB, try to keep the order of fields in this struct
 // matching the order of XML elements that libvirt
 // will generate when dumping XML.
@@ -2114,6 +2118,7 @@ type Domain struct {
 	ID                   *int                 `xml:"id,attr"`
 	Name                 string               `xml:"name,omitempty"`
 	UUID                 string               `xml:"uuid,omitempty"`
+	GenID                *DomainGenID         `xml:"genid"`
 	Title                string               `xml:"title,omitempty"`
 	Description          string               `xml:"description,omitempty"`
 	Metadata             *DomainMetadata      `xml:"metadata"`
