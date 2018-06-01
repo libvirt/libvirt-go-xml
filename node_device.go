@@ -270,7 +270,7 @@ type NodeDeviceStorageCapability struct {
 	Size             *uint                            `xml:"size"`
 	LogicalBlockSize *uint                            `xml:"logical_block_size"`
 	NumBlocks        *uint                            `xml:"num_blocks"`
-	Capatibility     []NodeDeviceStorageSubCapability `xml:"capability"`
+	Capability       []NodeDeviceStorageSubCapability `xml:"capability"`
 }
 
 type NodeDeviceDRMCapability struct {
