@@ -146,6 +146,7 @@ type CapsHost struct {
 	UUID              string                     `xml:"uuid,omitempty"`
 	CPU               *CapsHostCPU               `xml:"cpu"`
 	PowerManagement   *CapsHostPowerManagement   `xml:"power_management"`
+	IOMMU             *CapsHostIOMMU             `xml:"iommu"`
 	MigrationFeatures *CapsHostMigrationFeatures `xml:"migration_features"`
 	NUMA              *CapsHostNUMATopology      `xml:"topology"`
 	Cache             *CapsHostCache             `xml:"cache"`
@@ -159,6 +160,10 @@ type CapsHostPowerManagement struct {
 }
 
 type CapsHostPowerManagementMode struct {
+}
+
+type CapsHostIOMMU struct {
+	Support string `xml:"support,attr"`
 }
 
 type CapsHostCache struct {
