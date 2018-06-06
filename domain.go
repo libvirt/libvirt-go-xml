@@ -1445,10 +1445,15 @@ type DomainTPM struct {
 
 type DomainTPMBackend struct {
 	Passthrough *DomainTPMBackendPassthrough `xml:"-"`
+	Emulator    *DomainTPMBackendEmulator    `xml:"-"`
 }
 
 type DomainTPMBackendPassthrough struct {
 	Device *DomainTPMBackendDevice `xml:"device"`
+}
+
+type DomainTPMBackendEmulator struct {
+	Version string `xml:"version,attr,omitempty"`
 }
 
 type DomainTPMBackendDevice struct {
@@ -3269,6 +3274,14 @@ func (a *DomainTPMBackend) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		if err != nil {
 			return err
 		}
+	} else if a.Emulator != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "emulator",
+		})
+		err := e.EncodeElement(a.Emulator, start)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -3281,6 +3294,12 @@ func (a *DomainTPMBackend) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	if typ == "passthrough" {
 		a.Passthrough = &DomainTPMBackendPassthrough{}
 		err := d.DecodeElement(a.Passthrough, &start)
+		if err != nil {
+			return err
+		}
+	} else if typ == "emulator" {
+		a.Emulator = &DomainTPMBackendEmulator{}
+		err := d.DecodeElement(a.Emulator, &start)
 		if err != nil {
 			return err
 		}
