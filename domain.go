@@ -1849,6 +1849,16 @@ type DomainFeatureHPT struct {
 	Resizing string `xml:"resizing,attr,omitempty"`
 }
 
+type DomainFeatureSMM struct {
+	State string                `xml:"state,attr,omitempty"`
+	TSeg  *DomainFeatureSMMTSeg `xml:"tseg"`
+}
+
+type DomainFeatureSMMTSeg struct {
+	Unit  string `xml:"unit,attr,omitempty"`
+	Value uint   `xml:",chardata"`
+}
+
 type DomainFeatureCapability struct {
 	State string `xml:"state,attr,omitempty"`
 }
@@ -1907,7 +1917,7 @@ type DomainFeatureList struct {
 	PMU          *DomainFeatureState        `xml:"pmu"`
 	VMPort       *DomainFeatureState        `xml:"vmport"`
 	GIC          *DomainFeatureGIC          `xml:"gic"`
-	SMM          *DomainFeatureState        `xml:"smm"`
+	SMM          *DomainFeatureSMM          `xml:"smm"`
 	IOAPIC       *DomainFeatureIOAPIC       `xml:"ioapic"`
 	HPT          *DomainFeatureHPT          `xml:"hpt"`
 	Capabilities *DomainFeatureCapabilities `xml:"capabilities"`
