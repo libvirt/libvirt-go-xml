@@ -106,6 +106,7 @@ type DomainCapsFeatures struct {
 	GIC        *DomainCapsFeatureGIC        `xml:"gic"`
 	VMCoreInfo *DomainCapsFeatureVMCoreInfo `xml:"vmcoreinfo"`
 	GenID      *DomainCapsFeatureGenID      `xml:"genid"`
+	SEV        *DomainCapsFeatureSEV        `xml:"sev"`
 }
 
 type DomainCapsFeatureGIC struct {
@@ -119,6 +120,12 @@ type DomainCapsFeatureVMCoreInfo struct {
 
 type DomainCapsFeatureGenID struct {
 	Supported string `xml:"supported,attr"`
+}
+
+type DomainCapsFeatureSEV struct {
+	Supported       string `xml:"supported,attr"`
+	CBitPos         uint   `xml:"cbitpos,omitempty"`
+	ReducedPhysBits uint   `xml:"reducedPhysBits,omitempty"`
 }
 
 func (c *DomainCaps) Unmarshal(doc string) error {
