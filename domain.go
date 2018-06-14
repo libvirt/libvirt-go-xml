@@ -1863,6 +1863,18 @@ type DomainFeatureCapability struct {
 	State string `xml:"state,attr,omitempty"`
 }
 
+type DomainLaunchSecurity struct {
+	SEV *DomainLaunchSecuritySEV `xml:"-"`
+}
+
+type DomainLaunchSecuritySEV struct {
+	CBitPos         *uint  `xml:"cbitpos"`
+	ReducedPhysBits *uint  `xml:"reducedPhysBits"`
+	Policy          *uint  `xml:"policy"`
+	DHCert          string `xml:"dhCert"`
+	Session         string `xml:"sesion"`
+}
+
 type DomainFeatureCapabilities struct {
 	Policy         string                   `xml:"policy,attr,omitempty"`
 	AuditControl   *DomainFeatureCapability `xml:"audit_control"`
@@ -2182,7 +2194,8 @@ type Domain struct {
 	QEMUCommandline      *DomainQEMUCommandline
 	LXCNamespace         *DomainLXCNamespace
 	VMWareDataCenterPath *DomainVMWareDataCenterPath
-	KeyWrap              *DomainKeyWrap `xml:"keywrap"`
+	KeyWrap              *DomainKeyWrap        `xml:"keywrap"`
+	LaunchSecurity       *DomainLaunchSecurity `xml:"launchSecurity"`
 }
 
 func (d *Domain) Unmarshal(doc string) error {
@@ -4863,4 +4876,151 @@ func (d *DomainCPU) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+func (a *DomainLaunchSecuritySEV) MarshalXML (e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	cbitpos := xml.StartElement{
+		Name: xml.Name{Local: "cbitpos"},
+	}
+	e.EncodeToken(cbitpos)
+	e.EncodeToken(xml.CharData(fmt.Sprintf("%d", *a.CBitPos)))
+	e.EncodeToken(cbitpos.End())
+
+	reducedPhysBits := xml.StartElement{
+		Name: xml.Name{Local: "reducedPhysBits"},
+	}
+	e.EncodeToken(reducedPhysBits)
+	e.EncodeToken(xml.CharData(fmt.Sprintf("%d", *a.ReducedPhysBits)))
+	e.EncodeToken(reducedPhysBits.End())
+
+	if a.Policy != nil {
+		policy := xml.StartElement{
+			Name: xml.Name{Local: "policy"},
+		}
+		e.EncodeToken(policy)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("0x%04x", *a.Policy)))
+		e.EncodeToken(policy.End())
+	}
+
+	dhcert := xml.StartElement{
+		Name: xml.Name{Local: "dhCert"},
+	}
+	e.EncodeToken(dhcert)
+	e.EncodeToken(xml.CharData(fmt.Sprintf("%s", a.DHCert)))
+	e.EncodeToken(dhcert.End())
+
+	session := xml.StartElement{
+		Name: xml.Name{Local: "session"},
+	}
+	e.EncodeToken(session)
+	e.EncodeToken(xml.CharData(fmt.Sprintf("%s", a.Session)))
+	e.EncodeToken(session.End())
+
+	e.EncodeToken(start.End())
+
+	return nil
+}
+
+func (a *DomainLaunchSecuritySEV) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		switch tok := tok.(type) {
+		case xml.StartElement:
+			if tok.Name.Local == "policy" {
+				data, err := d.Token()
+				if err != nil {
+					return err
+				}
+				switch data := data.(type) {
+				case xml.CharData:
+					if err := unmarshalUintAttr(string(data), &a.Policy, 16); err != nil {
+						return err
+					}
+				}
+			} else if tok.Name.Local == "cbitpos" {
+				data, err := d.Token()
+				if err != nil {
+					return err
+				}
+				switch data := data.(type) {
+				case xml.CharData:
+					if err := unmarshalUintAttr(string(data), &a.CBitPos, 10); err != nil {
+						return err
+					}
+				}
+			} else if tok.Name.Local == "reducedPhysBits" {
+				data, err := d.Token()
+				if err != nil {
+					return err
+				}
+				switch data := data.(type) {
+				case xml.CharData:
+					if err := unmarshalUintAttr(string(data), &a.ReducedPhysBits, 10); err != nil {
+						return err
+					}
+				}
+			} else if tok.Name.Local == "dhCert" {
+				data, err := d.Token()
+				if err != nil {
+					return err
+				}
+				switch data := data.(type) {
+				case xml.CharData:
+					a.DHCert = string(data)
+				}
+			} else if tok.Name.Local == "session" {
+				data, err := d.Token()
+				if err != nil {
+					return err
+				}
+				switch data := data.(type) {
+				case xml.CharData:
+					a.Session = string(data)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (a *DomainLaunchSecurity) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+
+	if a.SEV != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "sev",
+		})
+		return e.EncodeElement(a.SEV, start)
+	} else {
+		return nil
+	}
+
+}
+
+func (a *DomainLaunchSecurity) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	var typ string
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "type" {
+			typ = attr.Value
+		}
+	}
+
+	if typ == "" {
+		d.Skip()
+		return nil
+	}
+
+	if typ == "sev" {
+		a.SEV = &DomainLaunchSecuritySEV{}
+		return d.DecodeElement(a.SEV, &start)
+	}
+
+	return nil
 }
