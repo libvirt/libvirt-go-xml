@@ -1424,6 +1424,7 @@ type DomainSmartcard struct {
 	Protocol    *DomainChardevProtocol    `xml:"protocol"`
 	Host        *DomainSmartcardHost      `xml:"-"`
 	HostCerts   []DomainSmartcardHostCert `xml:"certificate"`
+	Database    string                    `xml:"database,omitempty"`
 	Alias       *DomainAlias              `xml:"alias"`
 	Address     *DomainAddress            `xml:"address"`
 }
@@ -4878,7 +4879,7 @@ func (d *DomainCPU) Marshal() (string, error) {
 	return string(doc), nil
 }
 
-func (a *DomainLaunchSecuritySEV) MarshalXML (e *xml.Encoder, start xml.StartElement) error {
+func (a *DomainLaunchSecuritySEV) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	e.EncodeToken(start)
 	cbitpos := xml.StartElement{
 		Name: xml.Name{Local: "cbitpos"},
