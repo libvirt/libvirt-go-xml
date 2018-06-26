@@ -1847,7 +1847,13 @@ type DomainFeatureIOAPIC struct {
 }
 
 type DomainFeatureHPT struct {
-	Resizing string `xml:"resizing,attr,omitempty"`
+	Resizing    string                    `xml:"resizing,attr,omitempty"`
+	MaxPageSize *DomainFeatureHPTPageSize `xml:"maxpagesize"`
+}
+
+type DomainFeatureHPTPageSize struct {
+	Unit  string `xml:"unit,attr,omitempty"`
+	Value string `xml:",chardata"`
 }
 
 type DomainFeatureSMM struct {
