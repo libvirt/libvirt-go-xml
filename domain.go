@@ -1939,6 +1939,7 @@ type DomainFeatureList struct {
 	SMM          *DomainFeatureSMM          `xml:"smm"`
 	IOAPIC       *DomainFeatureIOAPIC       `xml:"ioapic"`
 	HPT          *DomainFeatureHPT          `xml:"hpt"`
+	HTM          *DomainFeatureState        `xml:"htm"`
 	Capabilities *DomainFeatureCapabilities `xml:"capabilities"`
 	VMCoreInfo   *DomainFeatureState        `xml:"vmcoreinfo"`
 }
