@@ -1281,8 +1281,9 @@ type DomainHostdevSubsysMDevSource struct {
 }
 
 type DomainHostdevSubsysMDev struct {
-	Model  string                         `xml:"model,attr,omitempty"`
-	Source *DomainHostdevSubsysMDevSource `xml:"source"`
+	Model   string                         `xml:"model,attr,omitempty"`
+	Display string                         `xml:"display,attr,omitempty"`
+	Source  *DomainHostdevSubsysMDevSource `xml:"source"`
 }
 
 type DomainHostdevCapsStorage struct {
