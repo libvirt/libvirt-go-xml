@@ -1086,7 +1086,7 @@ type DomainGraphicSpice struct {
 	GL            *DomainGraphicSpiceGL           `xml:"gl"`
 }
 
-type DomainGraphicEDLHeadless struct {
+type DomainGraphicEGLHeadless struct {
 }
 
 type DomainGraphic struct {
@@ -1096,7 +1096,7 @@ type DomainGraphic struct {
 	RDP         *DomainGraphicRDP         `xml:"-"`
 	Desktop     *DomainGraphicDesktop     `xml:"-"`
 	Spice       *DomainGraphicSpice       `xml:"-"`
-	EGLHeadless *DomainGraphicEDLHeadless `xml:"-"`
+	EGLHeadless *DomainGraphicEGLHeadless `xml:"-"`
 }
 
 type DomainVideoAccel struct {
@@ -4427,7 +4427,7 @@ func (a *DomainGraphic) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		a.Spice = &spice
 		return nil
 	} else if typ == "egl-headless" {
-		var egl DomainGraphicEDLHeadless
+		var egl DomainGraphicEGLHeadless
 		err := d.DecodeElement(&egl, &start)
 		if err != nil {
 			return err
