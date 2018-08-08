@@ -146,13 +146,22 @@ type DomainDiskSourceDir struct {
 }
 
 type DomainDiskSourceNetwork struct {
-	Protocol string                           `xml:"protocol,attr,omitempty"`
-	Name     string                           `xml:"name,attr,omitempty"`
-	TLS      string                           `xml:"tls,attr,omitempty"`
-	Hosts    []DomainDiskSourceHost           `xml:"host"`
-	Snapshot *DomainDiskSourceNetworkSnapshot `xml:"snapshot"`
-	Config   *DomainDiskSourceNetworkConfig   `xml:"config"`
-	Auth     *DomainDiskAuth                  `xml:"auth"`
+	Protocol  string                            `xml:"protocol,attr,omitempty"`
+	Name      string                            `xml:"name,attr,omitempty"`
+	TLS       string                            `xml:"tls,attr,omitempty"`
+	Hosts     []DomainDiskSourceHost            `xml:"host"`
+	Initiator *DomainDiskSourceNetworkInitiator `xml:"initiator"`
+	Snapshot  *DomainDiskSourceNetworkSnapshot  `xml:"snapshot"`
+	Config    *DomainDiskSourceNetworkConfig    `xml:"config"`
+	Auth      *DomainDiskAuth                   `xml:"auth"`
+}
+
+type DomainDiskSourceNetworkInitiator struct {
+	IQN *DomainDiskSourceNetworkIQN `xml:"iqn"`
+}
+
+type DomainDiskSourceNetworkIQN struct {
+	Name string `xml:"name,attr,omitempty"`
 }
 
 type DomainDiskSourceNetworkSnapshot struct {
