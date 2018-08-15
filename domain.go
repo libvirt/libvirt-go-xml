@@ -2009,6 +2009,16 @@ type DomainCPUCacheTuneCache struct {
 	Unit  string `xml:"unit,attr"`
 }
 
+type DomainCPUMemoryTune struct {
+	VCPUs string                    `xml:"vcpus,attr"`
+	Nodes []DomainCPUMemoryTuneNode `xml:"node"`
+}
+
+type DomainCPUMemoryTuneNode struct {
+	ID        uint `xml:"id,attr"`
+	Bandwidth uint `xml:"bandwidth,attr"`
+}
+
 type DomainCPUTune struct {
 	Shares         *DomainCPUTuneShares         `xml:"shares"`
 	Period         *DomainCPUTunePeriod         `xml:"period"`
@@ -2025,6 +2035,7 @@ type DomainCPUTune struct {
 	VCPUSched      []DomainCPUTuneVCPUSched     `xml:"vcpusched"`
 	IOThreadSched  []DomainCPUTuneIOThreadSched `xml:"iothreadsched"`
 	CacheTune      []DomainCPUCacheTune         `xml:"cachetune"`
+	MemoryTune     []DomainCPUMemoryTune        `xml:"memorytune"`
 }
 
 type DomainQEMUCommandlineArg struct {
