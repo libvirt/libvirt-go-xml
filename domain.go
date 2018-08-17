@@ -1837,15 +1837,18 @@ type DomainFeatureHyperVSpinlocks struct {
 
 type DomainFeatureHyperV struct {
 	DomainFeature
-	Relaxed   *DomainFeatureState           `xml:"relaxed"`
-	VAPIC     *DomainFeatureState           `xml:"vapic"`
-	Spinlocks *DomainFeatureHyperVSpinlocks `xml:"spinlocks"`
-	VPIndex   *DomainFeatureState           `xml:"vpindex"`
-	Runtime   *DomainFeatureState           `xml:"runtime"`
-	Synic     *DomainFeatureState           `xml:"synic"`
-	STimer    *DomainFeatureState           `xml:"stimer"`
-	Reset     *DomainFeatureState           `xml:"reset"`
-	VendorId  *DomainFeatureHyperVVendorId  `xml:"vendor_id"`
+	Relaxed         *DomainFeatureState           `xml:"relaxed"`
+	VAPIC           *DomainFeatureState           `xml:"vapic"`
+	Spinlocks       *DomainFeatureHyperVSpinlocks `xml:"spinlocks"`
+	VPIndex         *DomainFeatureState           `xml:"vpindex"`
+	Runtime         *DomainFeatureState           `xml:"runtime"`
+	Synic           *DomainFeatureState           `xml:"synic"`
+	STimer          *DomainFeatureState           `xml:"stimer"`
+	Reset           *DomainFeatureState           `xml:"reset"`
+	VendorId        *DomainFeatureHyperVVendorId  `xml:"vendor_id"`
+	Frequencies     *DomainFeatureState           `xml:"frequencies"`
+	ReEnlightenment *DomainFeatureState           `xml:"reenlightenment"`
+	TLBFlush        *DomainFeatureState           `xml:"tlbflush"`
 }
 
 type DomainFeatureKVM struct {
