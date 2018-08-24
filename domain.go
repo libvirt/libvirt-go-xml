@@ -127,6 +127,7 @@ type DomainDiskSource struct {
 	Network       *DomainDiskSourceNetwork `xml:"-"`
 	Volume        *DomainDiskSourceVolume  `xml:"-"`
 	StartupPolicy string                   `xml:"startupPolicy,attr,omitempty"`
+	Index         uint                     `xml:"index,attr,omitempty"`
 	Encryption    *DomainDiskEncryption    `xml:"encryption"`
 	Reservations  *DomainDiskReservations  `xml:"reservations"`
 }
