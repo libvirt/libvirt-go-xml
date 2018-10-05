@@ -431,6 +431,7 @@ type DomainInterfaceSourceMCast struct {
 type DomainInterfaceSourceNetwork struct {
 	Network   string `xml:"network,attr,omitempty"`
 	PortGroup string `xml:"portgroup,attr,omitempty"`
+	Bridge    string `xml:"bridge,attr,omitempty"`
 }
 
 type DomainInterfaceSourceBridge struct {
