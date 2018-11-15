@@ -2002,8 +2002,9 @@ type DomainCPUTuneIOThreadSched struct {
 }
 
 type DomainCPUCacheTune struct {
-	VCPUs string                    `xml:"vcpus,attr,omitempty"`
-	Cache []DomainCPUCacheTuneCache `xml:"cache"`
+	VCPUs   string                      `xml:"vcpus,attr,omitempty"`
+	Cache   []DomainCPUCacheTuneCache   `xml:"cache"`
+	Monitor []DomainCPUCacheTuneMonitor `xml:"monitor"`
 }
 
 type DomainCPUCacheTuneCache struct {
@@ -2012,6 +2013,11 @@ type DomainCPUCacheTuneCache struct {
 	Type  string `xml:"type,attr"`
 	Size  uint   `xml:"size,attr"`
 	Unit  string `xml:"unit,attr"`
+}
+
+type DomainCPUCacheTuneMonitor struct {
+	Level uint   `xml:"level,attr,omitempty"`
+	VCPUs string `xml:"vcpus,attr,omitempty"`
 }
 
 type DomainCPUMemoryTune struct {
