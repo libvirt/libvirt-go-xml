@@ -1851,6 +1851,8 @@ type DomainFeatureHyperV struct {
 	Frequencies     *DomainFeatureState           `xml:"frequencies"`
 	ReEnlightenment *DomainFeatureState           `xml:"reenlightenment"`
 	TLBFlush        *DomainFeatureState           `xml:"tlbflush"`
+	IPI             *DomainFeatureState           `xml:"ipi"`
+	EVMCS           *DomainFeatureState           `xml:"evmcs"`
 }
 
 type DomainFeatureKVM struct {
