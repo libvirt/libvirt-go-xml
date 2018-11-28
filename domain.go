@@ -1967,6 +1967,7 @@ type DomainFeatureList struct {
 	IOAPIC       *DomainFeatureIOAPIC       `xml:"ioapic"`
 	HPT          *DomainFeatureHPT          `xml:"hpt"`
 	HTM          *DomainFeatureState        `xml:"htm"`
+	NestedHV     *DomainFeatureState        `xml:"nested-hv"`
 	Capabilities *DomainFeatureCapabilities `xml:"capabilities"`
 	VMCoreInfo   *DomainFeatureState        `xml:"vmcoreinfo"`
 }
