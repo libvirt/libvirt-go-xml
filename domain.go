@@ -1103,7 +1103,12 @@ type DomainGraphicSpice struct {
 	GL            *DomainGraphicSpiceGL           `xml:"gl"`
 }
 
+type DomainGraphicEGLHeadlessGL struct {
+	RenderNode string `xml:"rendernode,attr,omitempty"`
+}
+
 type DomainGraphicEGLHeadless struct {
+	GL *DomainGraphicEGLHeadlessGL `xml:"gl"`
 }
 
 type DomainGraphic struct {
