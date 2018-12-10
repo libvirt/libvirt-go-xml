@@ -161,6 +161,12 @@ var extraActualNodes = map[string][]string{
 		"/domain[0]/devices[0]/disk[2]/mirror[0]/format[0]",
 		"/domain[0]/devices[0]/disk[2]/mirror[0]/source[0]",
 	},
+	"testdata/libvirt/tests/xlconfigdata/test-fullvirt-ovswitch-tagged.xml": []string{
+		"/domain[0]/devices[0]/interface[0]/virtualport[0]/parameters[0]",
+	},
+	"testdata/libvirt/tests/xlconfigdata/test-fullvirt-ovswitch-trunked.xml": []string{
+		"/domain[0]/devices[0]/interface[0]/virtualport[0]/parameters[0]",
+	},
 
 	"testdata/libvirt/tests/networkxml2xmlin/openvswitch-net.xml": []string{
 		"/network[0]/virtualport[0]/parameters[0]",
