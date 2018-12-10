@@ -387,6 +387,10 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 	extraActualNodes, _ := extraActualNodes[filename]
 	err = testCompareXML(filename, xml, newxml, extraExpectNodes, extraActualNodes)
 	if err != nil {
+		if os.Getenv("LIBVIRT_DEBUG") == "1" {
+			fmt.Printf("Expected %s\n", xml)
+			fmt.Printf("Actual %s\n", newxml)
+		}
 		t.Fatal(err)
 	}
 }
