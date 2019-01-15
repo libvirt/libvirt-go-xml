@@ -1363,9 +1363,14 @@ type DomainHostdev struct {
 }
 
 type DomainMemorydevSource struct {
-	NodeMask string                         `xml:"nodemask,omitempty"`
-	PageSize *DomainMemorydevSourcePagesize `xml:"pagesize"`
-	Path     string                         `xml:"path,omitempty"`
+	NodeMask  string                          `xml:"nodemask,omitempty"`
+	PageSize  *DomainMemorydevSourcePagesize  `xml:"pagesize"`
+	Path      string                          `xml:"path,omitempty"`
+	AlignSize *DomainMemorydevSourceAlignsize `xml:"alignsize"`
+	PMem      *DomainMemorydevSourcePMem      `xml:"pmem"`
+}
+
+type DomainMemorydevSourcePMem struct {
 }
 
 type DomainMemorydevSourcePagesize struct {
@@ -1373,8 +1378,16 @@ type DomainMemorydevSourcePagesize struct {
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 
+type DomainMemorydevSourceAlignsize struct {
+	Value uint64 `xml:",chardata"`
+	Unit  string `xml:"unit,attr,omitempty"`
+}
+
 type DomainMemorydevTargetNode struct {
 	Value uint `xml:",chardata"`
+}
+
+type DomainMemorydevTargetReadOnly struct {
 }
 
 type DomainMemorydevTargetSize struct {
@@ -1387,9 +1400,10 @@ type DomainMemorydevTargetLabel struct {
 }
 
 type DomainMemorydevTarget struct {
-	Size  *DomainMemorydevTargetSize  `xml:"size"`
-	Node  *DomainMemorydevTargetNode  `xml:"node"`
-	Label *DomainMemorydevTargetLabel `xml:"label"`
+	Size     *DomainMemorydevTargetSize     `xml:"size"`
+	Node     *DomainMemorydevTargetNode     `xml:"node"`
+	Label    *DomainMemorydevTargetLabel    `xml:"label"`
+	ReadOnly *DomainMemorydevTargetReadOnly `xml:"readonly"`
 }
 
 type DomainMemorydev struct {
