@@ -153,6 +153,29 @@ type StoragePool struct {
 	Available  *StoragePoolSize   `xml:"available"`
 	Target     *StoragePoolTarget `xml:"target"`
 	Source     *StoragePoolSource `xml:"source"`
+
+	/* Pool backend namespcaes must be last */
+	FSCommandline  *StoragePoolFSCommandline
+	RBDCommandline *StoragePoolRBDCommandline
+}
+
+type StoragePoolFSCommandlineOption struct {
+	Name string `xml:"name,attr"`
+}
+
+type StoragePoolFSCommandline struct {
+	XMLName xml.Name                         `xml:"http://libvirt.org/schemas/storagepool/fs/1.0 mount_opts"`
+	Options []StoragePoolFSCommandlineOption `xml:"option"`
+}
+
+type StoragePoolRBDCommandlineOption struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value,attr"`
+}
+
+type StoragePoolRBDCommandline struct {
+	XMLName xml.Name                          `xml:"http://libvirt.org/schemas/storagepool/rbd/1.0 config_opts"`
+	Options []StoragePoolRBDCommandlineOption `xml:"option"`
 }
 
 func (a *StoragePoolPCIAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
