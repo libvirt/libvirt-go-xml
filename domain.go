@@ -2104,6 +2104,21 @@ type DomainLXCNamespaceMap struct {
 	Value string `xml:"value,attr"`
 }
 
+type DomainBHyveCommandlineArg struct {
+	Value string `xml:"value,attr"`
+}
+
+type DomainBHyveCommandlineEnv struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:"value,attr,omitempty"`
+}
+
+type DomainBHyveCommandline struct {
+	XMLName xml.Name                    `xml:"http://libvirt.org/schemas/domain/bhyve/1.0 commandline"`
+	Args    []DomainBHyveCommandlineArg `xml:"arg"`
+	Envs    []DomainBHyveCommandlineEnv `xml:"env"`
+}
+
 type DomainBlockIOTune struct {
 	Weight uint                      `xml:"weight,omitempty"`
 	Device []DomainBlockIOTuneDevice `xml:"device"`
@@ -2265,6 +2280,7 @@ type Domain struct {
 	SecLabel             []DomainSecLabel     `xml:"seclabel"`
 	QEMUCommandline      *DomainQEMUCommandline
 	LXCNamespace         *DomainLXCNamespace
+	BHyveCommandline     *DomainBHyveCommandline
 	VMWareDataCenterPath *DomainVMWareDataCenterPath
 	KeyWrap              *DomainKeyWrap        `xml:"keywrap"`
 	LaunchSecurity       *DomainLaunchSecurity `xml:"launchSecurity"`
