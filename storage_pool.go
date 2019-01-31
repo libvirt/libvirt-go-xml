@@ -55,6 +55,11 @@ type StoragePoolTarget struct {
 type StoragePoolSourceFormat struct {
 	Type string `xml:"type,attr"`
 }
+
+type StoragePoolSourceProtocol struct {
+	Version string `xml:"ver,attr"`
+}
+
 type StoragePoolSourceHost struct {
 	Name string `xml:"name,attr"`
 	Port string `xml:"port,attr,omitempty"`
@@ -133,6 +138,7 @@ type StoragePoolSource struct {
 	Vendor    *StoragePoolSourceVendor    `xml:"vendor"`
 	Product   *StoragePoolSourceProduct   `xml:"product"`
 	Format    *StoragePoolSourceFormat    `xml:"format"`
+	Protocol  *StoragePoolSourceProtocol  `xml:"protocol"`
 	Adapter   *StoragePoolSourceAdapter   `xml:"adapter"`
 	Initiator *StoragePoolSourceInitiator `xml:"initiator"`
 }
