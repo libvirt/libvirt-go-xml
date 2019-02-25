@@ -1969,6 +1969,10 @@ type DomainFeatureCapabilities struct {
 	WakeAlarm      *DomainFeatureCapability `xml:"wake_alarm"`
 }
 
+type DomainFeatureMSRS struct {
+	Unknown string `xml:"unknown,attr"`
+}
+
 type DomainFeatureList struct {
 	PAE          *DomainFeature             `xml:"pae"`
 	ACPI         *DomainFeature             `xml:"acpi"`
@@ -1989,6 +1993,7 @@ type DomainFeatureList struct {
 	NestedHV     *DomainFeatureState        `xml:"nested-hv"`
 	Capabilities *DomainFeatureCapabilities `xml:"capabilities"`
 	VMCoreInfo   *DomainFeatureState        `xml:"vmcoreinfo"`
+	MSRS         *DomainFeatureMSRS         `xml:"msrs"`
 }
 
 type DomainCPUTuneShares struct {
