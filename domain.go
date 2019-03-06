@@ -278,6 +278,7 @@ type DomainDisk struct {
 	RawIO        string                  `xml:"rawio,attr,omitempty"`
 	SGIO         string                  `xml:"sgio,attr,omitempty"`
 	Snapshot     string                  `xml:"snapshot,attr,omitempty"`
+	Model        string                  `xml:"model,attr,omitempty"`
 	Driver       *DomainDiskDriver       `xml:"driver"`
 	Auth         *DomainDiskAuth         `xml:"auth"`
 	Source       *DomainDiskSource       `xml:"source"`
@@ -369,6 +370,7 @@ type DomainFilesystemSpaceSoftLimit struct {
 type DomainFilesystem struct {
 	XMLName        xml.Name                        `xml:"filesystem"`
 	AccessMode     string                          `xml:"accessmode,attr,omitempty"`
+	Model          string                          `xml:"model,attr,omitempty"`
 	Driver         *DomainFilesystemDriver         `xml:"driver"`
 	Source         *DomainFilesystemSource         `xml:"source"`
 	Target         *DomainFilesystemTarget         `xml:"target"`
@@ -956,6 +958,7 @@ type DomainInput struct {
 	XMLName xml.Name           `xml:"input"`
 	Type    string             `xml:"type,attr"`
 	Bus     string             `xml:"bus,attr,omitempty"`
+	Model   string             `xml:"model,attr,omitempty"`
 	Driver  *DomainInputDriver `xml:"driver"`
 	Source  *DomainInputSource `xml:"source"`
 	Alias   *DomainAlias       `xml:"alias"`
@@ -1273,6 +1276,7 @@ type DomainHostdevSubsysSCSISourceISCSI struct {
 }
 
 type DomainHostdevSubsysSCSIHost struct {
+	Model  string                             `xml:"model,attr,omitempty"`
 	Source *DomainHostdevSubsysSCSIHostSource `xml:"source"`
 }
 
