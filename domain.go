@@ -735,7 +735,7 @@ type DomainChardevSourceTCP struct {
 
 type DomainChardevSourceUNIX struct {
 	Mode      string                        `xml:"mode,attr,omitempty"`
-	Path      string                        `xml:"path,attr"`
+	Path      string                        `xml:"path,attr,omitempty"`
 	Reconnect *DomainChardevSourceReconnect `xml:"reconnect"`
 	SecLabel  []DomainDeviceSecLabel        `xml:"seclabel"`
 }
