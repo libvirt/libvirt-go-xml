@@ -215,9 +215,6 @@ var extraActualNodes = map[string][]string{
 }
 
 var extraExpectNodes = map[string][]string{
-	"testdata/libvirt/tests/genericxml2xmlindata/chardev-unix.xml": []string{
-		"/domain[0]/devices[0]/channel[1]/source[0]",
-	},
 	"testdata/libvirt/tests/qemuxml2argvdata/usb-redir-filter.xml": []string{
 		"/domain[0]/devices[0]/redirfilter[0]/usbdev[1]/@vendor",
 		"/domain[0]/devices[0]/redirfilter[0]/usbdev[1]/@product",
@@ -273,9 +270,6 @@ var extraExpectNodes = map[string][]string{
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-nocow.xml":              []string{volsrc},
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2.xml":                    []string{volsrc},
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-sheepdog.xml":                 []string{volsrc},
-	"testdata/libvirt/tests/qemuhotplugtestdevices/qemuhotplug-qemu-agent.xml": []string{
-		"/channel[0]/source[0]",
-	},
 	"testdata/libvirt/tests/domainsnapshotxml2xmlin/disk_snapshot.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[3]/source[0]",
 	},

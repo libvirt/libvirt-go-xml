@@ -3598,7 +3598,7 @@ func (a *DomainChardevSource) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	} else if a.TCP != nil {
 		return e.EncodeElement(a.TCP, start)
 	} else if a.UNIX != nil {
-		if a.UNIX.Path == "" {
+		if a.UNIX.Path == "" && a.UNIX.Mode == "" {
 			return nil
 		}
 		return e.EncodeElement(a.UNIX, start)
