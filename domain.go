@@ -1722,6 +1722,7 @@ type DomainOSInitEnv struct {
 
 type DomainOS struct {
 	Type        *DomainOSType      `xml:"type"`
+	Firmware    string             `xml:"firmware,attr,omitempty"`
 	Init        string             `xml:"init,omitempty"`
 	InitArgs    []string           `xml:"initarg"`
 	InitEnv     []DomainOSInitEnv  `xml:"initenv"`
