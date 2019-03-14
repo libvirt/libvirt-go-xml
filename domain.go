@@ -71,6 +71,10 @@ type DomainControllerVirtIOSerial struct {
 	Vectors *uint `xml:"vectors,attr"`
 }
 
+type DomainControllerXenBus struct {
+	MaxGrantFrames uint `xml:"maxGrantFrames,attr,omitempty"`
+}
+
 type DomainControllerDriver struct {
 	Queues     *uint  `xml:"queues,attr"`
 	CmdPerLUN  *uint  `xml:"cmd_per_lun,attr"`
@@ -90,6 +94,7 @@ type DomainController struct {
 	PCI          *DomainControllerPCI          `xml:"-"`
 	USB          *DomainControllerUSB          `xml:"-"`
 	VirtIOSerial *DomainControllerVirtIOSerial `xml:"-"`
+	XenBus       *DomainControllerXenBus       `xml:"-"`
 	Alias        *DomainAlias                  `xml:"alias"`
 	Address      *DomainAddress                `xml:"address"`
 }
@@ -2327,6 +2332,11 @@ type domainControllerVirtIOSerial struct {
 	domainController
 }
 
+type domainControllerXenBus struct {
+	DomainControllerXenBus
+	domainController
+}
+
 func (a *DomainControllerPCITarget) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	marshalUintAttr(&start, "chassisNr", a.ChassisNr, "%d")
 	marshalUintAttr(&start, "chassis", a.Chassis, "%d")
@@ -2424,6 +2434,13 @@ func (a *DomainController) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 			vioserial.DomainControllerVirtIOSerial = *a.VirtIOSerial
 		}
 		return e.EncodeElement(vioserial, start)
+	} else if a.Type == "xenbus" {
+		xenbus := domainControllerXenBus{}
+		xenbus.domainController = domainController(*a)
+		if a.XenBus != nil {
+			xenbus.DomainControllerXenBus = *a.XenBus
+		}
+		return e.EncodeElement(xenbus, start)
 	} else {
 		gen := domainController(*a)
 		return e.EncodeElement(gen, start)
@@ -2470,6 +2487,15 @@ func (a *DomainController) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		}
 		*a = DomainController(vioserial.domainController)
 		a.VirtIOSerial = &vioserial.DomainControllerVirtIOSerial
+		return nil
+	} else if typ == "xenbus" {
+		var xenbus domainControllerXenBus
+		err := d.DecodeElement(&xenbus, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainController(xenbus.domainController)
+		a.XenBus = &xenbus.DomainControllerXenBus
 		return nil
 	} else {
 		var gen domainController
