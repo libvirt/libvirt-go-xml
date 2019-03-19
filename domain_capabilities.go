@@ -37,7 +37,7 @@ type DomainCaps struct {
 	Arch      string               `xml:"arch"`
 	VCPU      *DomainCapsVCPU      `xml:"vcpu"`
 	IOThreads *DomainCapsIOThreads `xml:"iothreads"`
-	OS        DomainCapsOS         `xml:"os"`
+	OS        *DomainCapsOS        `xml:"os"`
 	CPU       *DomainCapsCPU       `xml:"cpu"`
 	Devices   *DomainCapsDevices   `xml:"devices"`
 	Features  *DomainCapsFeatures  `xml:"features"`
