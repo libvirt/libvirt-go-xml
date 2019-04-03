@@ -271,10 +271,11 @@ type DomainDiskBackingStore struct {
 }
 
 type DomainDiskMirror struct {
-	Job    string            `xml:"job,attr,omitempty"`
-	Ready  string            `xml:"ready,attr,omitempty"`
-	Format *DomainDiskFormat `xml:"format"`
-	Source *DomainDiskSource `xml:"source"`
+	Job          string                  `xml:"job,attr,omitempty"`
+	Ready        string                  `xml:"ready,attr,omitempty"`
+	Format       *DomainDiskFormat       `xml:"format"`
+	Source       *DomainDiskSource       `xml:"source"`
+	BackingStore *DomainDiskBackingStore `xml:"backingStore"`
 }
 
 type DomainDisk struct {
