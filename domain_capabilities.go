@@ -50,6 +50,7 @@ type DomainCapsVCPU struct {
 type DomainCapsOS struct {
 	Supported string              `xml:"supported,attr"`
 	Loader    *DomainCapsOSLoader `xml:"loader"`
+	Enums     []DomainCapsEnum    `xml:"enum"`
 }
 
 type DomainCapsOSLoader struct {
