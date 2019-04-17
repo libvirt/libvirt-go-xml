@@ -2045,6 +2045,11 @@ type DomainCPUTuneIOThreadSched struct {
 	Priority  *int   `xml:"priority,attr"`
 }
 
+type DomainCPUTuneEmulatorSched struct {
+	Scheduler string `xml:"scheduler,attr,omitempty"`
+	Priority  *int   `xml:"priority,attr"`
+}
+
 type DomainCPUCacheTune struct {
 	VCPUs   string                      `xml:"vcpus,attr,omitempty"`
 	Cache   []DomainCPUCacheTuneCache   `xml:"cache"`
@@ -2088,6 +2093,7 @@ type DomainCPUTune struct {
 	EmulatorPin    *DomainCPUTuneEmulatorPin    `xml:"emulatorpin"`
 	IOThreadPin    []DomainCPUTuneIOThreadPin   `xml:"iothreadpin"`
 	VCPUSched      []DomainCPUTuneVCPUSched     `xml:"vcpusched"`
+	EmulatorSched  *DomainCPUTuneEmulatorSched  `xml:"emulatorsched"`
 	IOThreadSched  []DomainCPUTuneIOThreadSched `xml:"iothreadsched"`
 	CacheTune      []DomainCPUCacheTune         `xml:"cachetune"`
 	MemoryTune     []DomainCPUMemoryTune        `xml:"memorytune"`
