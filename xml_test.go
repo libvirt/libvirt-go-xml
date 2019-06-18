@@ -83,6 +83,7 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/storagevolxml2xmlin",
 	"testdata/libvirt/tests/storagevolxml2xmlout",
 	"testdata/libvirt/tests/vircaps2xmldata",
+	"testdata/libvirt/tests/virnwfilterbindingxml2xmldata",
 	"testdata/libvirt/tests/virstorageutildata",
 	"testdata/libvirt/tests/vmx2xmldata",
 	"testdata/libvirt/tests/xlconfigdata",
@@ -325,6 +326,8 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		} else {
 			doc = &CapsHostCPU{}
 		}
+	} else if strings.HasPrefix(xml, "<filterbinding") {
+		doc = &NWFilterBinding{}
 	} else if strings.HasPrefix(xml, "<filter") {
 		doc = &NWFilter{}
 	} else if strings.HasPrefix(xml, "<interface") {
