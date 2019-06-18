@@ -84,6 +84,7 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/storagevolxml2xmlout",
 	"testdata/libvirt/tests/vircaps2xmldata",
 	"testdata/libvirt/tests/virnwfilterbindingxml2xmldata",
+	"testdata/libvirt/tests/virnetworkportxml2xmldata",
 	"testdata/libvirt/tests/virstorageutildata",
 	"testdata/libvirt/tests/vmx2xmldata",
 	"testdata/libvirt/tests/xlconfigdata",
@@ -307,6 +308,8 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		doc = &Domain{}
 	} else if strings.HasPrefix(xml, "<capabilities") {
 		doc = &Caps{}
+	} else if strings.HasPrefix(xml, "<networkport") {
+		doc = &NetworkPort{}
 	} else if strings.HasPrefix(xml, "<network") {
 		doc = &Network{}
 	} else if strings.HasPrefix(xml, "<secret") {

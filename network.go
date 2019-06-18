@@ -282,6 +282,7 @@ type NetworkBandwidthParams struct {
 }
 
 type NetworkBandwidth struct {
+	ClassID  uint                    `xml:"classID,attr,omitempty"`
 	Inbound  *NetworkBandwidthParams `xml:"inbound"`
 	Outbound *NetworkBandwidthParams `xml:"outbound"`
 }

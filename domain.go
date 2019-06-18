@@ -440,6 +440,7 @@ type DomainInterfaceSourceNetwork struct {
 	Network   string `xml:"network,attr,omitempty"`
 	PortGroup string `xml:"portgroup,attr,omitempty"`
 	Bridge    string `xml:"bridge,attr,omitempty"`
+	PortID    string `xml:"portid,attr,omitempty"`
 }
 
 type DomainInterfaceSourceBridge struct {
