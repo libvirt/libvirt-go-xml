@@ -65,7 +65,6 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/nwfilterxml2xmlin",
 	"testdata/libvirt/tests/nwfilterxml2xmlout",
 	"testdata/libvirt/tests/qemuagentdata",
-	"testdata/libvirt/tests/qemuargv2xmldata",
 	"testdata/libvirt/tests/qemucapabilitiesdata",
 	"testdata/libvirt/tests/qemuhotplugtestcpus",
 	"testdata/libvirt/tests/qemuhotplugtestdevices",
