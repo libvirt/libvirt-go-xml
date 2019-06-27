@@ -2115,6 +2115,15 @@ type DomainQEMUCommandline struct {
 	Envs    []DomainQEMUCommandlineEnv `xml:"env"`
 }
 
+type DomainQEMUCapabilitiesEntry struct {
+	Name string `xml:"capability,attr"`
+}
+type DomainQEMUCapabilities struct {
+	XMLName xml.Name                      `xml:"http://libvirt.org/schemas/domain/qemu/1.0 capabilities"`
+	Add     []DomainQEMUCapabilitiesEntry `xml:"add"`
+	Del     []DomainQEMUCapabilitiesEntry `xml:"del"`
+}
+
 type DomainLXCNamespace struct {
 	XMLName  xml.Name               `xml:"http://libvirt.org/schemas/domain/lxc/1.0 namespace"`
 	ShareNet *DomainLXCNamespaceMap `xml:"sharenet"`
@@ -2306,6 +2315,7 @@ type Domain struct {
 
 	/* Hypervisor namespaces must all be last */
 	QEMUCommandline      *DomainQEMUCommandline
+	QEMUCapabilities     *DomainQEMUCapabilities
 	LXCNamespace         *DomainLXCNamespace
 	BHyveCommandline     *DomainBHyveCommandline
 	VMWareDataCenterPath *DomainVMWareDataCenterPath
