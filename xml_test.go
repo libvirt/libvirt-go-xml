@@ -74,7 +74,6 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/qemuxml2xmloutdata",
 	"testdata/libvirt/tests/secretxml2xmlin",
 	"testdata/libvirt/tests/securityselinuxlabeldata",
-	"testdata/libvirt/tests/sexpr2xmldata",
 	"testdata/libvirt/tests/storagepoolschemadata",
 	"testdata/libvirt/tests/storagepoolxml2xmlin",
 	"testdata/libvirt/tests/storagepoolxml2xmlout",
@@ -89,7 +88,6 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/vmx2xmldata",
 	"testdata/libvirt/tests/xlconfigdata",
 	"testdata/libvirt/tests/xmconfigdata",
-	"testdata/libvirt/tests/xml2sexprdata",
 	"testdata/libvirt/tests/xml2vmxdata",
 }
 
@@ -109,36 +107,10 @@ var blacklist = map[string]bool{
 	// udp source in different order
 	"testdata/libvirt/tests/genericxml2xmlindata/chardev-udp.xml":                 true,
 	"testdata/libvirt/tests/genericxml2xmlindata/chardev-udp-multiple-source.xml": true,
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-fv-serial-udp.xml":            true,
 }
 
 var extraActualNodes = map[string][]string{
 
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-pv-vcpus.xml":              []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-pv.xml":                    []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-pv-bootloader.xml":         []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-pv-bootloader-cmdline.xml": []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-pci-devs.xml":              []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-net-routed.xml":            []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-net-e1000.xml":             []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-net-bridged.xml":           []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-fv-kernel.xml":             []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-escape.xml":                []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-file.xml":             []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-drv-loop.xml":         []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-drv-blktap2.xml":      []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-drv-blktap2-raw.xml":  []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-drv-blktap.xml":       []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-drv-blktap-raw.xml":   []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-drv-blktap-qcow.xml":  []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-drv-blkback.xml":      []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-block.xml":            []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-disk-block-shareable.xml":  []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-bridge-ipaddr.xml":         []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-boot-grub.xml":             []string{consoletype},
-	"testdata/libvirt/tests/xml2sexprdata/xml2sexpr-no-source-cdrom.xml": []string{
-		"/domain[0]/devices[0]/disk[1]/@type",
-	},
 	"testdata/libvirt/tests/qemuxml2argvdata/disk-discard.xml": []string{
 		"/domain[0]/devices[0]/disk[0]/@type",
 	},
