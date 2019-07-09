@@ -45,8 +45,6 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/domaincapsschemadata",
 	"testdata/libvirt/tests/domainconfdata",
 	"testdata/libvirt/tests/domainschemadata",
-	"testdata/libvirt/tests/domainsnapshotxml2xmlin",
-	"testdata/libvirt/tests/domainsnapshotxml2xmlout",
 	"testdata/libvirt/tests/genericxml2xmlindata",
 	"testdata/libvirt/tests/genericxml2xmloutdata",
 	"testdata/libvirt/tests/interfaceschemadata",
@@ -66,6 +64,8 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/nwfilterxml2xmlout",
 	"testdata/libvirt/tests/qemuagentdata",
 	"testdata/libvirt/tests/qemucapabilitiesdata",
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlin",
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlout",
 	"testdata/libvirt/tests/qemuhotplugtestcpus",
 	"testdata/libvirt/tests/qemuhotplugtestdevices",
 	"testdata/libvirt/tests/qemuhotplugtestdomains",
@@ -191,27 +191,27 @@ var extraActualNodes = map[string][]string{
 	"testdata/libvirt/tests/interfaceschemadata/vlan.xml": []string{
 		"/interface[0]/vlan[0]/interface[0]/@type",
 	},
-	"testdata/libvirt/tests/domainsnapshotxml2xmlin/disk_driver_name_null.xml": []string{
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlin/disk_driver_name_null.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
 	},
-	"testdata/libvirt/tests/domainsnapshotxml2xmlin/disk_snapshot.xml": []string{
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlin/disk_snapshot.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[1]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[2]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[3]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[4]/@type",
 	},
-	"testdata/libvirt/tests/domainsnapshotxml2xmlout/disk_snapshot.xml": []string{
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlout/disk_snapshot.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[1]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[2]/@type",
 	},
-	"testdata/libvirt/tests/domainsnapshotxml2xmlout/disk_snapshot_redefine.xml": []string{
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlout/disk_snapshot_redefine.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[1]/@type",
 		"/domainsnapshot[0]/disks[0]/disk[2]/@type",
 	},
-	"testdata/libvirt/tests/domainsnapshotxml2xmlout/external_vm_redefine.xml": []string{
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlout/external_vm_redefine.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
 	},
 }
@@ -272,7 +272,7 @@ var extraExpectNodes = map[string][]string{
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2-nocow.xml":              []string{volsrc},
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-qcow2.xml":                    []string{volsrc},
 	"testdata/libvirt/tests/storagevolxml2xmlout/vol-sheepdog.xml":                 []string{volsrc},
-	"testdata/libvirt/tests/domainsnapshotxml2xmlin/disk_snapshot.xml": []string{
+	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlin/disk_snapshot.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[3]/source[0]",
 	},
 }
