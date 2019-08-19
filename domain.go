@@ -1879,6 +1879,11 @@ type DomainFeatureHyperVSpinlocks struct {
 	Retries uint `xml:"retries,attr,omitempty"`
 }
 
+type DomainFeatureHyperVSTimer struct {
+	DomainFeatureState
+	Direct *DomainFeatureState `xml:"direct"`
+}
+
 type DomainFeatureHyperV struct {
 	DomainFeature
 	Relaxed         *DomainFeatureState           `xml:"relaxed"`
@@ -1887,7 +1892,7 @@ type DomainFeatureHyperV struct {
 	VPIndex         *DomainFeatureState           `xml:"vpindex"`
 	Runtime         *DomainFeatureState           `xml:"runtime"`
 	Synic           *DomainFeatureState           `xml:"synic"`
-	STimer          *DomainFeatureState           `xml:"stimer"`
+	STimer          *DomainFeatureHyperVSTimer    `xml:"stimer"`
 	Reset           *DomainFeatureState           `xml:"reset"`
 	VendorId        *DomainFeatureHyperVVendorId  `xml:"vendor_id"`
 	Frequencies     *DomainFeatureState           `xml:"frequencies"`
