@@ -1903,7 +1903,8 @@ type DomainFeatureHyperV struct {
 }
 
 type DomainFeatureKVM struct {
-	Hidden *DomainFeatureState `xml:"hidden"`
+	Hidden        *DomainFeatureState `xml:"hidden"`
+	HintDedicated *DomainFeatureState `xml:"hint-dedicated"`
 }
 
 type DomainFeatureGIC struct {
