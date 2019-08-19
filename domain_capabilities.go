@@ -96,6 +96,7 @@ type DomainCapsDevices struct {
 	Graphics *DomainCapsDevice `xml:"graphics"`
 	Video    *DomainCapsDevice `xml:"video"`
 	HostDev  *DomainCapsDevice `xml:"hostdev"`
+	RNG      *DomainCapsDevice `xml:"rng"`
 }
 
 type DomainCapsDevice struct {
