@@ -473,7 +473,8 @@ type DomainInterfaceSourceLocal struct {
 }
 
 type DomainInterfaceTarget struct {
-	Dev string `xml:"dev,attr"`
+	Dev     string `xml:"dev,attr"`
+	Managed string `xml:"managed,attr,omitempty"`
 }
 
 type DomainInterfaceLink struct {
