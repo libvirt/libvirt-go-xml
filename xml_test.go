@@ -327,6 +327,8 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 		doc = &DomainShmem{}
 	} else if strings.HasPrefix(xml, "<graphics") {
 		doc = &DomainGraphic{}
+	} else if strings.HasPrefix(xml, "<hostdev") {
+		doc = &DomainHostdev{}
 	} else if strings.HasPrefix(xml, "<host") {
 		if strings.Contains(xml, "mac=") {
 			doc = &NetworkDHCPHost{}
