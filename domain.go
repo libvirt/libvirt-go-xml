@@ -1133,8 +1133,9 @@ type DomainGraphic struct {
 }
 
 type DomainVideoAccel struct {
-	Accel3D string `xml:"accel3d,attr,omitempty"`
-	Accel2D string `xml:"accel2d,attr,omitempty"`
+	Accel3D    string `xml:"accel3d,attr,omitempty"`
+	Accel2D    string `xml:"accel2d,attr,omitempty"`
+	RenderNode string `xml:"rendernode,attr,omitempty"`
 }
 
 type DomainVideoModel struct {
@@ -1157,6 +1158,7 @@ type DomainVideo struct {
 }
 
 type DomainVideoDriver struct {
+	Name    string `xml:"name,attr,omitempty"`
 	VGAConf string `xml:"vgaconf,attr,omitempty"`
 	IOMMU   string `xml:"iommu,attr,omitempty"`
 	ATS     string `xml:"ats,attr,omitempty"`
