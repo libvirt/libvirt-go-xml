@@ -2020,6 +2020,7 @@ type DomainFeatureList struct {
 	Capabilities *DomainFeatureCapabilities `xml:"capabilities"`
 	VMCoreInfo   *DomainFeatureState        `xml:"vmcoreinfo"`
 	MSRS         *DomainFeatureMSRS         `xml:"msrs"`
+	CCFAssist    *DomainFeatureState        `xml:"ccf-assist"`
 }
 
 type DomainCPUTuneShares struct {
