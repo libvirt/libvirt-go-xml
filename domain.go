@@ -1138,15 +1138,21 @@ type DomainVideoAccel struct {
 	RenderNode string `xml:"rendernode,attr,omitempty"`
 }
 
+type DomainVideoResolution struct {
+	X uint `xml:"x,attr"`
+	Y uint `xml:"y,attr"`
+}
+
 type DomainVideoModel struct {
-	Type    string            `xml:"type,attr"`
-	Heads   uint              `xml:"heads,attr,omitempty"`
-	Ram     uint              `xml:"ram,attr,omitempty"`
-	VRam    uint              `xml:"vram,attr,omitempty"`
-	VRam64  uint              `xml:"vram64,attr,omitempty"`
-	VGAMem  uint              `xml:"vgamem,attr,omitempty"`
-	Primary string            `xml:"primary,attr,omitempty"`
-	Accel   *DomainVideoAccel `xml:"acceleration"`
+	Type       string                 `xml:"type,attr"`
+	Heads      uint                   `xml:"heads,attr,omitempty"`
+	Ram        uint                   `xml:"ram,attr,omitempty"`
+	VRam       uint                   `xml:"vram,attr,omitempty"`
+	VRam64     uint                   `xml:"vram64,attr,omitempty"`
+	VGAMem     uint                   `xml:"vgamem,attr,omitempty"`
+	Primary    string                 `xml:"primary,attr,omitempty"`
+	Accel      *DomainVideoAccel      `xml:"acceleration"`
+	Resolution *DomainVideoResolution `xml:"resolution"`
 }
 
 type DomainVideo struct {
