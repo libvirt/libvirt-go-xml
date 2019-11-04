@@ -42,7 +42,7 @@ var xmldirs = []string{
 	"testdata/libvirt/tests/bhyvexml2xmloutdata",
 	"testdata/libvirt/tests/capabilityschemadata",
 	"testdata/libvirt/tests/cputestdata",
-	"testdata/libvirt/tests/domaincapsschemadata",
+	"testdata/libvirt/tests/domaincapsdata",
 	"testdata/libvirt/tests/domainconfdata",
 	"testdata/libvirt/tests/domainschemadata",
 	"testdata/libvirt/tests/genericxml2xmlindata",
