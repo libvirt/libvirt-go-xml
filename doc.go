@@ -51,7 +51,7 @@
 //  )
 //
 //  conn, err := libvirt.NewConnect("qemu:///system")
-//  dom := conn.LookupDomainByName("demo")
+//  dom, err := conn.LookupDomainByName("demo")
 //  xmldoc, err := dom.GetXMLDesc(0)
 //
 //  domcfg := &libvirtxml.Domain{}
