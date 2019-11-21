@@ -57,6 +57,6 @@
 //  domcfg := &libvirtxml.Domain{}
 //  err = domcfg.Unmarshal(xmldoc)
 //
-//  fmt.Printf("Virt type %s", domcfg.Type)
+//  fmt.Printf("Virt type %s\n", domcfg.Type)
 //
 package libvirtxml
