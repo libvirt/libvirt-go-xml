@@ -105,10 +105,11 @@ type DomainCapsDevice struct {
 }
 
 type DomainCapsFeatures struct {
-	GIC        *DomainCapsFeatureGIC        `xml:"gic"`
-	VMCoreInfo *DomainCapsFeatureVMCoreInfo `xml:"vmcoreinfo"`
-	GenID      *DomainCapsFeatureGenID      `xml:"genid"`
-	SEV        *DomainCapsFeatureSEV        `xml:"sev"`
+	GIC               *DomainCapsFeatureGIC               `xml:"gic"`
+	VMCoreInfo        *DomainCapsFeatureVMCoreInfo        `xml:"vmcoreinfo"`
+	GenID             *DomainCapsFeatureGenID             `xml:"genid"`
+	BackingStoreInput *DomainCapsFeatureBackingStoreInput `xml:"backingStoreInput"`
+	SEV               *DomainCapsFeatureSEV               `xml:"sev"`
 }
 
 type DomainCapsFeatureGIC struct {
@@ -121,6 +122,10 @@ type DomainCapsFeatureVMCoreInfo struct {
 }
 
 type DomainCapsFeatureGenID struct {
+	Supported string `xml:"supported,attr"`
+}
+
+type DomainCapsFeatureBackingStoreInput struct {
 	Supported string `xml:"supported,attr"`
 }
 
