@@ -109,6 +109,7 @@ type DomainCapsFeatures struct {
 	VMCoreInfo        *DomainCapsFeatureVMCoreInfo        `xml:"vmcoreinfo"`
 	GenID             *DomainCapsFeatureGenID             `xml:"genid"`
 	BackingStoreInput *DomainCapsFeatureBackingStoreInput `xml:"backingStoreInput"`
+	Backup            *DomainCapsFeatureBackup            `xml:"backup"`
 	SEV               *DomainCapsFeatureSEV               `xml:"sev"`
 }
 
@@ -126,6 +127,10 @@ type DomainCapsFeatureGenID struct {
 }
 
 type DomainCapsFeatureBackingStoreInput struct {
+	Supported string `xml:"supported,attr"`
+}
+
+type DomainCapsFeatureBackup struct {
 	Supported string `xml:"supported,attr"`
 }
 
