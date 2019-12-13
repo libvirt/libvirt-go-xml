@@ -2093,13 +2093,19 @@ type DomainCPUCacheTuneMonitor struct {
 }
 
 type DomainCPUMemoryTune struct {
-	VCPUs string                    `xml:"vcpus,attr"`
-	Nodes []DomainCPUMemoryTuneNode `xml:"node"`
+	VCPUs   string                       `xml:"vcpus,attr"`
+	Nodes   []DomainCPUMemoryTuneNode    `xml:"node"`
+	Monitor []DomainCPUMemoryTuneMonitor `xml:"monitor"`
 }
 
 type DomainCPUMemoryTuneNode struct {
 	ID        uint `xml:"id,attr"`
 	Bandwidth uint `xml:"bandwidth,attr"`
+}
+
+type DomainCPUMemoryTuneMonitor struct {
+	Level uint   `xml:"level,attr,omitempty"`
+	VCPUs string `xml:"vcpus,attr,omitempty"`
 }
 
 type DomainCPUTune struct {
