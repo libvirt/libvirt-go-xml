@@ -407,6 +407,7 @@ func syncGit(t *testing.T) {
 
 func TestRoundTrip(t *testing.T) {
 	syncGit(t)
+	singlefile := os.Getenv("LIBVIRT_XML_TESTFILE")
 	for _, xmldir := range xmldirs {
 		xmlfiles, err := ioutil.ReadDir(xmldir)
 		if err != nil {
@@ -418,6 +419,9 @@ func TestRoundTrip(t *testing.T) {
 				fname := xmldir + "/" + xmlfile.Name()
 				_, ok := blacklist[fname]
 				if ok {
+					continue
+				}
+				if singlefile != "" && fname != singlefile {
 					continue
 				}
 				xml, err := ioutil.ReadFile(fname)
