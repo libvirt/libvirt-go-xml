@@ -53,6 +53,7 @@ var domainID int = 3
 
 var uhciIndex uint = 0
 var uhciAddr = PCIAddress{0, 0, 1, 2}
+var nvmeAddr = PCIAddress{0, 1, 3, 0}
 var pciIndex uint = 0
 var pciTargetChassisNr uint = 7
 var pciTargetChassis uint = 23
@@ -2598,6 +2599,42 @@ var domainTestData = []struct {
 			`  <mirror type="block" job="copy" ready="yes">`,
 			`    <source dev="/dev/HostVG/QEMUGuest1Copy"></source>`,
 			`  </mirror>`,
+			`  <target dev="vda" bus="virtio"></target>`,
+			`</disk>`,
+		},
+	},
+	{
+		Object: &DomainDisk{
+			Device: "cdrom",
+			Driver: &DomainDiskDriver{
+				Name: "qemu",
+				Type: "qcow2",
+			},
+			Source: &DomainDiskSource{
+				NVME: &DomainDiskSourceNVME{
+					PCI: &DomainDiskSourceNVMEPCI{
+						Managed:   "yes",
+						Namespace: 15,
+						Address: &DomainAddressPCI{
+							Domain:   &nvmeAddr.Domain,
+							Bus:      &nvmeAddr.Bus,
+							Slot:     &nvmeAddr.Slot,
+							Function: &nvmeAddr.Function,
+						},
+					},
+				},
+			},
+			Target: &DomainDiskTarget{
+				Dev: "vda",
+				Bus: "virtio",
+			},
+		},
+		Expected: []string{
+			`<disk type="nvme" device="cdrom">`,
+			`  <driver name="qemu" type="qcow2"></driver>`,
+			`  <source type="pci" managed="yes" namespace="15">`,
+			`    <address domain="0x0000" bus="0x01" slot="0x03" function="0x0"></address>`,
+			`  </source>`,
 			`  <target dev="vda" bus="virtio"></target>`,
 			`</disk>`,
 		},

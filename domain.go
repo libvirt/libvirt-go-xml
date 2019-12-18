@@ -131,6 +131,7 @@ type DomainDiskSource struct {
 	Dir           *DomainDiskSourceDir     `xml:"-"`
 	Network       *DomainDiskSourceNetwork `xml:"-"`
 	Volume        *DomainDiskSourceVolume  `xml:"-"`
+	NVME          *DomainDiskSourceNVME    `xml:"-"`
 	StartupPolicy string                   `xml:"startupPolicy,attr,omitempty"`
 	Index         uint                     `xml:"index,attr,omitempty"`
 	Encryption    *DomainDiskEncryption    `xml:"encryption"`
@@ -140,6 +141,16 @@ type DomainDiskSource struct {
 type DomainDiskSourceFile struct {
 	File     string                 `xml:"file,attr,omitempty"`
 	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
+}
+
+type DomainDiskSourceNVME struct {
+	PCI *DomainDiskSourceNVMEPCI
+}
+
+type DomainDiskSourceNVMEPCI struct {
+	Managed   string            `xml:"managed,attr,omitempty"`
+	Namespace uint64            `xml:"namespace,attr,omitempty"`
+	Address   *DomainAddressPCI `xml:"address"`
 }
 
 type DomainDiskSourceBlock struct {
@@ -2631,6 +2642,11 @@ type domainDiskSourceVolume struct {
 	domainDiskSource
 }
 
+type domainDiskSourceNVMEPCI struct {
+	DomainDiskSourceNVMEPCI
+	domainDiskSource
+}
+
 func (a *DomainDiskSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.File != nil {
 		if a.StartupPolicy == "" && a.Encryption == nil && a.File.File == "" {
@@ -2666,6 +2682,16 @@ func (a *DomainDiskSource) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 			*a.Volume, domainDiskSource(*a),
 		}
 		return e.EncodeElement(&volume, start)
+	} else if a.NVME != nil {
+		if a.NVME.PCI != nil {
+			nvme := domainDiskSourceNVMEPCI{
+				*a.NVME.PCI, domainDiskSource(*a),
+			}
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "pci",
+			})
+			return e.EncodeElement(&nvme, start)
+		}
 	}
 	return nil
 }
@@ -2721,6 +2747,23 @@ func (a *DomainDiskSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		}
 		*a = DomainDiskSource(volume.domainDiskSource)
 		a.Volume = &volume.DomainDiskSourceVolume
+	} else if a.NVME != nil {
+		typ, ok := getAttr(start.Attr, "type")
+		if !ok {
+			return fmt.Errorf("Missing nvme source type")
+		}
+		if typ == "pci" {
+			a.NVME.PCI = &DomainDiskSourceNVMEPCI{}
+			nvme := domainDiskSourceNVMEPCI{
+				*a.NVME.PCI, domainDiskSource(*a),
+			}
+			err := d.DecodeElement(&nvme, &start)
+			if err != nil {
+				return err
+			}
+			*a = DomainDiskSource(nvme.domainDiskSource)
+			a.NVME.PCI = &nvme.DomainDiskSourceNVMEPCI
+		}
 	}
 	return nil
 }
@@ -2895,6 +2938,10 @@ func (a *DomainDisk) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			start.Attr = append(start.Attr, xml.Attr{
 				xml.Name{Local: "type"}, "volume",
 			})
+		} else if a.Source.NVME != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "nvme",
+			})
 		}
 	}
 	disk := domainDisk(*a)
@@ -2917,6 +2964,8 @@ func (a *DomainDisk) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		a.Source.Dir = &DomainDiskSourceDir{}
 	} else if typ == "volume" {
 		a.Source.Volume = &DomainDiskSourceVolume{}
+	} else if typ == "nvme" {
+		a.Source.NVME = &DomainDiskSourceNVME{}
 	}
 	disk := domainDisk(*a)
 	err := d.DecodeElement(&disk, &start)
