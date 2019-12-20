@@ -887,6 +887,9 @@ type DomainAddressCCID struct {
 type DomainAddressVirtioS390 struct {
 }
 
+type DomainAddressUnassigned struct {
+}
+
 type DomainAddress struct {
 	PCI          *DomainAddressPCI
 	Drive        *DomainAddressDrive
@@ -899,6 +902,7 @@ type DomainAddress struct {
 	VirtioMMIO   *DomainAddressVirtioMMIO
 	ISA          *DomainAddressISA
 	DIMM         *DomainAddressDIMM
+	Unassigned   *DomainAddressUnassigned
 }
 
 type DomainChardevLog struct {
@@ -4801,6 +4805,12 @@ func (a *DomainAddressVirtioS390) MarshalXML(e *xml.Encoder, start xml.StartElem
 	return nil
 }
 
+func (a *DomainAddressUnassigned) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	e.EncodeToken(start.End())
+	return nil
+}
+
 func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if a.USB != nil {
 		start.Attr = append(start.Attr, xml.Attr{
@@ -4857,6 +4867,11 @@ func (a *DomainAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 			xml.Name{Local: "type"}, "virtio-s390",
 		})
 		return e.EncodeElement(a.VirtioS390, start)
+	} else if a.Unassigned != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "unassigned",
+		})
+		return e.EncodeElement(a.Unassigned, start)
 	} else {
 		return nil
 	}
@@ -5102,6 +5117,11 @@ func (a *DomainAddressVirtioS390) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	return nil
 }
 
+func (a *DomainAddressUnassigned) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	d.Skip()
+	return nil
+}
+
 func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var typ string
 	for _, attr := range start.Attr {
@@ -5148,6 +5168,9 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "virtio-s390" {
 		a.VirtioS390 = &DomainAddressVirtioS390{}
 		return d.DecodeElement(a.VirtioS390, &start)
+	} else if typ == "unassigned" {
+		a.Unassigned = &DomainAddressUnassigned{}
+		return d.DecodeElement(a.Unassigned, &start)
 	}
 
 	return nil
