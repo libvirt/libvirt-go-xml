@@ -5145,7 +5145,7 @@ func (a *DomainAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	} else if typ == "ccid" {
 		a.CCID = &DomainAddressCCID{}
 		return d.DecodeElement(a.CCID, &start)
-	} else if typ == "spapr-vio" {
+	} else if typ == "virtio-s390" {
 		a.VirtioS390 = &DomainAddressVirtioS390{}
 		return d.DecodeElement(a.VirtioS390, &start)
 	}
