@@ -402,6 +402,15 @@ func syncGit(t *testing.T) {
 		if err != nil {
 			t.Fatal(fmt.Errorf("Unable to update libvirt.git: %s: %s", err, msg))
 		}
+
+		ref := os.Getenv("LIBVIRT_REF")
+		if ref == "" {
+			ref = "master"
+		}
+		msg, err = exec.Command("git", "checkout", "--force", ref).CombinedOutput()
+		if err != nil {
+			t.Fatal(fmt.Errorf("Unable to checkout %s: %s: %s", ref, err, msg))
+		}
 	}
 }
 
