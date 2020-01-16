@@ -1,4 +1,4 @@
 [gitpublishprofile "default"]
 base = master
 to = libvir-list@redhat.com
-prefix = go-xml PATCH
+prefix = libvirt-go-xml PATCH
