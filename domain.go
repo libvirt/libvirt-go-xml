@@ -1809,6 +1809,7 @@ type DomainCPUModel struct {
 
 type DomainCPUTopology struct {
 	Sockets int `xml:"sockets,attr,omitempty"`
+	Dies    int `xml:"dies,attr,omitempty"`
 	Cores   int `xml:"cores,attr,omitempty"`
 	Threads int `xml:"threads,attr,omitempty"`
 }
