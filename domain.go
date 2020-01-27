@@ -1242,8 +1242,9 @@ type DomainRNGRate struct {
 }
 
 type DomainRNGBackend struct {
-	Random *DomainRNGBackendRandom `xml:"-"`
-	EGD    *DomainRNGBackendEGD    `xml:"-"`
+	Random  *DomainRNGBackendRandom  `xml:"-"`
+	EGD     *DomainRNGBackendEGD     `xml:"-"`
+	BuiltIn *DomainRNGBackendBuiltIn `xml:"-"`
 }
 
 type DomainRNGBackendEGD struct {
@@ -1253,6 +1254,9 @@ type DomainRNGBackendEGD struct {
 
 type DomainRNGBackendRandom struct {
 	Device string `xml:",chardata"`
+}
+
+type DomainRNGBackendBuiltIn struct {
 }
 
 type DomainRNG struct {
@@ -4181,6 +4185,11 @@ func (a *DomainRNGBackend) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 			xml.Name{Local: "model"}, "egd",
 		})
 		return e.EncodeElement(a.EGD, start)
+	} else if a.BuiltIn != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "model"}, "builtin",
+		})
+		return e.EncodeElement(a.BuiltIn, start)
 	}
 	return nil
 }
@@ -4199,6 +4208,12 @@ func (a *DomainRNGBackend) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	} else if model == "egd" {
 		a.EGD = &DomainRNGBackendEGD{}
 		err := d.DecodeElement(a.EGD, &start)
+		if err != nil {
+			return err
+		}
+	} else if model == "builtin" {
+		a.BuiltIn = &DomainRNGBackendBuiltIn{}
+		err := d.DecodeElement(a.BuiltIn, &start)
 		if err != nil {
 			return err
 		}
