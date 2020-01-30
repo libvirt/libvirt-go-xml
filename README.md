@@ -1,4 +1,4 @@
-# libvirt-go-xml [![Build Status](https://travis-ci.org/libvirt/libvirt-go-xml.svg?branch=master)](https://travis-ci.org/libvirt/libvirt-go-xml) [![GoDoc](https://godoc.org/github.com/libvirt/libvirt-go-xml?status.svg)](https://godoc.org/github.com/libvirt/libvirt-go-xml)
+# libvirt-go-xml [![Build Status](https://travis-ci.org/libvirt/libvirt-go-xml.svg?branch=master)](https://travis-ci.org/libvirt/libvirt-go-xml) [![GoDoc](https://godoc.org/libvirt.org/libvirt-go-xml?status.svg)](https://godoc.org/libvirt.org/libvirt-go-xml)
 
 Go API for manipulating libvirt XML documents
 
@@ -9,7 +9,7 @@ the way in which the application talks to libvirt.
 
 ## Documentation
 
-* [API documentation for the bindings](https://godoc.org/github.com/libvirt/libvirt-go-xml)
+* [API documentation for the bindings](https://godoc.org/libvirt.org/libvirt-go-xml)
 * [Libvirt XML schema documentation](https://libvirt.org/format.html):
   * [capabilities](https://libvirt.org/formatcaps.html)
   * [domain](https://libvirt.org/formatdomain.html)
