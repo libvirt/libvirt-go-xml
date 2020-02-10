@@ -658,6 +658,11 @@ type DomainInterfaceRoute struct {
 	Metric  uint   `xml:"metric,attr,omitempty"`
 }
 
+type DomainInterfaceTeaming struct {
+	Type       string `xml:"type,attr"`
+	Persistent string `xml:"persistent,attr,omitempty"`
+}
+
 type DomainInterface struct {
 	XMLName             xml.Name                    `xml:"interface"`
 	Managed             string                      `xml:"managed,attr,omitempty"`
@@ -677,6 +682,7 @@ type DomainInterface struct {
 	Backend             *DomainInterfaceBackend     `xml:"backend"`
 	FilterRef           *DomainInterfaceFilterRef   `xml:"filterref"`
 	Tune                *DomainInterfaceTune        `xml:"tune"`
+	Teaming             *DomainInterfaceTeaming     `xml:"teaming"`
 	Link                *DomainInterfaceLink        `xml:"link"`
 	MTU                 *DomainInterfaceMTU         `xml:"mtu"`
 	Bandwidth           *DomainInterfaceBandwidth   `xml:"bandwidth"`
