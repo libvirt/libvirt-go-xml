@@ -37,6 +37,7 @@ type NetworkPort struct {
 	MAC         *NetworkPortMAC         `xml:"mac"`
 	Group       string                  `xml:"group,omitempty"`
 	Bandwidth   *NetworkBandwidth       `xml:"bandwidth"`
+	VLAN        *NetworkPortVLAN        `xml:"vlan"`
 	PortOptions *NetworkPortPortOptions `xml:"port"`
 	VirtualPort *NetworkVirtualPort     `xml:"virtualport"`
 	RXFilters   *NetworkPortRXFilters   `xml:"rxfilters"`
@@ -45,6 +46,16 @@ type NetworkPort struct {
 
 type NetworkPortPortOptions struct {
 	Isolated string `xml:"isolated,attr,omitempty"`
+}
+
+type NetworkPortVLAN struct {
+	Trunk string               `xml:"trunk,attr,omitempty"`
+	Tags  []NetworkPortVLANTag `xml:"tag"`
+}
+
+type NetworkPortVLANTag struct {
+	ID         uint   `xml:"id,attr"`
+	NativeMode string `xml:"nativeMode,attr,omitempty"`
 }
 
 type NetworkPortOwner struct {
