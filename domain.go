@@ -136,6 +136,17 @@ type DomainDiskSource struct {
 	Index         uint                     `xml:"index,attr,omitempty"`
 	Encryption    *DomainDiskEncryption    `xml:"encryption"`
 	Reservations  *DomainDiskReservations  `xml:"reservations"`
+	Slices        *DomainDiskSlices        `xml:"slices"`
+}
+
+type DomainDiskSlices struct {
+	Slices []DomainDiskSlice `xml:"slice"`
+}
+
+type DomainDiskSlice struct {
+	Type   string `xml:"type,attr"`
+	Offset uint   `xml:"offset,attr"`
+	Size   uint   `xml:"size,attr"`
 }
 
 type DomainDiskSourceFile struct {
