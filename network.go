@@ -249,12 +249,17 @@ type Network struct {
 	DNS                 *NetworkDNS         `xml:"dns"`
 	VLAN                *NetworkVLAN        `xml:"vlan"`
 	Bandwidth           *NetworkBandwidth   `xml:"bandwidth"`
+	PortOptions         *NetworkPortOptions `xml:"port"`
 	IPs                 []NetworkIP         `xml:"ip"`
 	Routes              []NetworkRoute      `xml:"route"`
 	VirtualPort         *NetworkVirtualPort `xml:"virtualport"`
 	PortGroups          []NetworkPortGroup  `xml:"portgroup"`
 
 	DnsmasqOptions *NetworkDnsmasqOptions
+}
+
+type NetworkPortOptions struct {
+	Isolated string `xml:"isolated,attr,omitempty"`
 }
 
 type NetworkPortGroup struct {

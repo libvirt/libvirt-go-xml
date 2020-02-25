@@ -663,6 +663,10 @@ type DomainInterfaceTeaming struct {
 	Persistent string `xml:"persistent,attr,omitempty"`
 }
 
+type DomainInterfacePortOptions struct {
+	Isolated string `xml:"isolated,attr,omitempty"`
+}
+
 type DomainInterface struct {
 	XMLName             xml.Name                    `xml:"interface"`
 	Managed             string                      `xml:"managed,attr,omitempty"`
@@ -686,6 +690,7 @@ type DomainInterface struct {
 	Link                *DomainInterfaceLink        `xml:"link"`
 	MTU                 *DomainInterfaceMTU         `xml:"mtu"`
 	Bandwidth           *DomainInterfaceBandwidth   `xml:"bandwidth"`
+	PortOptions         *DomainInterfacePortOptions `xml:"port"`
 	Coalesce            *DomainInterfaceCoalesce    `xml:"coalesce"`
 	ROM                 *DomainROM                  `xml:"rom"`
 	Alias               *DomainAlias                `xml:"alias"`
