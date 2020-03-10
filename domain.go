@@ -336,6 +336,7 @@ type DomainFilesystemDriver struct {
 	WRPolicy string `xml:"wrpolicy,attr,omitempty"`
 	IOMMU    string `xml:"iommu,attr,omitempty"`
 	ATS      string `xml:"ats,attr,omitempty"`
+	Queue    uint   `xml:"queue,attr,omitempty"`
 }
 
 type DomainFilesystemSource struct {
@@ -395,11 +396,28 @@ type DomainFilesystemSpaceSoftLimit struct {
 	Unit  string `xml:"unit,attr,omitempty"`
 }
 
+type DomainFilesystemBinaryCache struct {
+	Mode string `xml:"mode,attr"`
+}
+
+type DomainFilesystemBinaryLock struct {
+	POSIX string `xml:"posix,attr,omitempty"`
+	Flock string `xml:"flock,attr,omitempty"`
+}
+
+type DomainFilesystemBinary struct {
+	Path  string                       `xml:"path,attr,omitempty"`
+	XAttr string                       `xml:"xattr,attr,omitempty"`
+	Cache *DomainFilesystemBinaryCache `xml:"cache"`
+	Lock  *DomainFilesystemBinaryLock  `xml:"lock"`
+}
+
 type DomainFilesystem struct {
 	XMLName        xml.Name                        `xml:"filesystem"`
 	AccessMode     string                          `xml:"accessmode,attr,omitempty"`
 	Model          string                          `xml:"model,attr,omitempty"`
 	Driver         *DomainFilesystemDriver         `xml:"driver"`
+	Binary         *DomainFilesystemBinary         `xml:"binary"`
 	Source         *DomainFilesystemSource         `xml:"source"`
 	Target         *DomainFilesystemTarget         `xml:"target"`
 	ReadOnly       *DomainFilesystemReadOnly       `xml:"readonly"`
