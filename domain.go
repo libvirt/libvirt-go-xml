@@ -117,6 +117,27 @@ type DomainDiskSourceHost struct {
 	Socket    string `xml:"socket,attr,omitempty"`
 }
 
+type DomainDiskSourceSSL struct {
+	Verify string `xml:"verify,attr"`
+}
+
+type DomainDiskCookie struct {
+	Name  string `xml:"name,attr"`
+	Value string `xml:",chardata"`
+}
+
+type DomainDiskCookies struct {
+	Cookies []DomainDiskCookie `xml:"cookie"`
+}
+
+type DomainDiskSourceReadahead struct {
+	Size string `xml:"size,attr"`
+}
+
+type DomainDiskSourceTimeout struct {
+	Seconds string `xml:"seconds,attr"`
+}
+
 type DomainDiskReservationsSource DomainChardevSource
 
 type DomainDiskReservations struct {
@@ -126,17 +147,21 @@ type DomainDiskReservations struct {
 }
 
 type DomainDiskSource struct {
-	File          *DomainDiskSourceFile    `xml:"-"`
-	Block         *DomainDiskSourceBlock   `xml:"-"`
-	Dir           *DomainDiskSourceDir     `xml:"-"`
-	Network       *DomainDiskSourceNetwork `xml:"-"`
-	Volume        *DomainDiskSourceVolume  `xml:"-"`
-	NVME          *DomainDiskSourceNVME    `xml:"-"`
-	StartupPolicy string                   `xml:"startupPolicy,attr,omitempty"`
-	Index         uint                     `xml:"index,attr,omitempty"`
-	Encryption    *DomainDiskEncryption    `xml:"encryption"`
-	Reservations  *DomainDiskReservations  `xml:"reservations"`
-	Slices        *DomainDiskSlices        `xml:"slices"`
+	File          *DomainDiskSourceFile      `xml:"-"`
+	Block         *DomainDiskSourceBlock     `xml:"-"`
+	Dir           *DomainDiskSourceDir       `xml:"-"`
+	Network       *DomainDiskSourceNetwork   `xml:"-"`
+	Volume        *DomainDiskSourceVolume    `xml:"-"`
+	NVME          *DomainDiskSourceNVME      `xml:"-"`
+	StartupPolicy string                     `xml:"startupPolicy,attr,omitempty"`
+	Index         uint                       `xml:"index,attr,omitempty"`
+	Encryption    *DomainDiskEncryption      `xml:"encryption"`
+	Reservations  *DomainDiskReservations    `xml:"reservations"`
+	Slices        *DomainDiskSlices          `xml:"slices"`
+	SSL           *DomainDiskSourceSSL       `xml:"ssl"`
+	Cookies       *DomainDiskCookies         `xml:"cookies"`
+	Readahead     *DomainDiskSourceReadahead `xml:"readahead"`
+	Timeout       *DomainDiskSourceTimeout   `xml:"timeout"`
 }
 
 type DomainDiskSlices struct {
