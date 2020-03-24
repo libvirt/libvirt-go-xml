@@ -1516,6 +1516,7 @@ type DomainMemorydev struct {
 	Model   string                 `xml:"model,attr"`
 	Access  string                 `xml:"access,attr,omitempty"`
 	Discard string                 `xml:"discard,attr,omitempty"`
+	UUID    string                 `xml:"uuid,omitempty"`
 	Source  *DomainMemorydevSource `xml:"source"`
 	Target  *DomainMemorydevTarget `xml:"target"`
 	Alias   *DomainAlias           `xml:"alias"`
