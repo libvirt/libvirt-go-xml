@@ -201,6 +201,7 @@ type DomainDiskSourceDir struct {
 type DomainDiskSourceNetwork struct {
 	Protocol  string                            `xml:"protocol,attr,omitempty"`
 	Name      string                            `xml:"name,attr,omitempty"`
+	Query     string                            `xml:"query,attr,omitempty"`
 	TLS       string                            `xml:"tls,attr,omitempty"`
 	Hosts     []DomainDiskSourceHost            `xml:"host"`
 	Initiator *DomainDiskSourceNetworkInitiator `xml:"initiator"`
