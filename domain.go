@@ -49,6 +49,7 @@ type DomainControllerPCITarget struct {
 	BusNr     *uint
 	Index     *uint
 	NUMANode  *uint
+	Hotplug   string
 }
 
 type DomainControllerPCI struct {
@@ -2486,6 +2487,11 @@ func (a *DomainControllerPCITarget) MarshalXML(e *xml.Encoder, start xml.StartEl
 	marshalUintAttr(&start, "port", a.Port, "%d")
 	marshalUintAttr(&start, "busNr", a.BusNr, "%d")
 	marshalUintAttr(&start, "index", a.Index, "%d")
+	if a.Hotplug != "" {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "hotplug"}, a.Hotplug,
+		})
+	}
 	e.EncodeToken(start)
 	if a.NUMANode != nil {
 		node := xml.StartElement{
@@ -2521,6 +2527,8 @@ func (a *DomainControllerPCITarget) UnmarshalXML(d *xml.Decoder, start xml.Start
 			if err := unmarshalUintAttr(attr.Value, &a.Index, 10); err != nil {
 				return err
 			}
+		} else if attr.Name.Local == "hotplug" {
+			a.Hotplug = attr.Value
 		}
 	}
 	for {
