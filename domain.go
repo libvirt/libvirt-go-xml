@@ -72,7 +72,8 @@ type DomainControllerVirtIOSerial struct {
 }
 
 type DomainControllerXenBus struct {
-	MaxGrantFrames uint `xml:"maxGrantFrames,attr,omitempty"`
+	MaxGrantFrames   uint `xml:"maxGrantFrames,attr,omitempty"`
+	MaxEventChannels uint `xml:"maxEventChannels,attr,omitempty"`
 }
 
 type DomainControllerDriver struct {
