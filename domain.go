@@ -2015,6 +2015,20 @@ type DomainFeatureKVM struct {
 	HintDedicated *DomainFeatureState `xml:"hint-dedicated"`
 }
 
+type DomainFeatureXenPassthrough struct {
+	State string `xml:"state,attr,omitempty"`
+	Mode  string `xml:"mode,attr,omitempty"`
+}
+
+type DomainFeatureXenE820Host struct {
+	State string `xml:"state,attr"`
+}
+
+type DomainFeatureXen struct {
+	E820Host    *DomainFeatureXenE820Host    `xml:"e820_host"`
+	Passthrough *DomainFeatureXenPassthrough `xml:"passthrough"`
+}
+
 type DomainFeatureGIC struct {
 	Version string `xml:"version,attr,omitempty"`
 }
@@ -2113,6 +2127,7 @@ type DomainFeatureList struct {
 	PrivNet      *DomainFeature             `xml:"privnet"`
 	HyperV       *DomainFeatureHyperV       `xml:"hyperv"`
 	KVM          *DomainFeatureKVM          `xml:"kvm"`
+	Xen          *DomainFeatureXen          `xml:"xen"`
 	PVSpinlock   *DomainFeatureState        `xml:"pvspinlock"`
 	PMU          *DomainFeatureState        `xml:"pmu"`
 	VMPort       *DomainFeatureState        `xml:"vmport"`
