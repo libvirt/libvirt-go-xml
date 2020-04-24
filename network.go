@@ -138,17 +138,24 @@ type NetworkMAC struct {
 }
 
 type NetworkDHCPRange struct {
-	XMLName xml.Name `xml:"range"`
-	Start   string   `xml:"start,attr,omitempty"`
-	End     string   `xml:"end,attr,omitempty"`
+	XMLName xml.Name          `xml:"range"`
+	Start   string            `xml:"start,attr,omitempty"`
+	End     string            `xml:"end,attr,omitempty"`
+	Lease   *NetworkDHCPLease `xml:"lease"`
+}
+
+type NetworkDHCPLease struct {
+	Expiry uint   `xml:"expiry,attr"`
+	Unit   string `xml:"unit,attr,omitempty"`
 }
 
 type NetworkDHCPHost struct {
-	XMLName xml.Name `xml:"host"`
-	ID      string   `xml:"id,attr,omitempty"`
-	MAC     string   `xml:"mac,attr,omitempty"`
-	Name    string   `xml:"name,attr,omitempty"`
-	IP      string   `xml:"ip,attr,omitempty"`
+	XMLName xml.Name          `xml:"host"`
+	ID      string            `xml:"id,attr,omitempty"`
+	MAC     string            `xml:"mac,attr,omitempty"`
+	Name    string            `xml:"name,attr,omitempty"`
+	IP      string            `xml:"ip,attr,omitempty"`
+	Lease   *NetworkDHCPLease `xml:"lease"`
 }
 
 type NetworkBootp struct {
