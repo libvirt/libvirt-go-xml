@@ -2118,6 +2118,18 @@ type DomainFeatureMSRS struct {
 	Unknown string `xml:"unknown,attr"`
 }
 
+type DomainFeatureCFPC struct {
+	Value string `xml:"value,attr"`
+}
+
+type DomainFeatureSBBC struct {
+	Value string `xml:"value,attr"`
+}
+
+type DomainFeatureIBS struct {
+	Value string `xml:"value,attr"`
+}
+
 type DomainFeatureList struct {
 	PAE          *DomainFeature             `xml:"pae"`
 	ACPI         *DomainFeature             `xml:"acpi"`
@@ -2141,6 +2153,9 @@ type DomainFeatureList struct {
 	VMCoreInfo   *DomainFeatureState        `xml:"vmcoreinfo"`
 	MSRS         *DomainFeatureMSRS         `xml:"msrs"`
 	CCFAssist    *DomainFeatureState        `xml:"ccf-assist"`
+	CFPC         *DomainFeatureCFPC         `xml:"cfpc"`
+	SBBC         *DomainFeatureSBBC         `xml:"sbbc"`
+	IBS          *DomainFeatureIBS          `xml:"ibs"`
 }
 
 type DomainCPUTuneShares struct {
