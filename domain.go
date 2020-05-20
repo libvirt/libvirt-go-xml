@@ -1868,7 +1868,7 @@ type DomainResource struct {
 type DomainVCPU struct {
 	Placement string `xml:"placement,attr,omitempty"`
 	CPUSet    string `xml:"cpuset,attr,omitempty"`
-	Current   string `xml:"current,attr,omitempty"`
+	Current   uint   `xml:"current,attr,omitempty"`
 	Value     int    `xml:",chardata"`
 }
 

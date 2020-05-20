@@ -1092,7 +1092,7 @@ var domainTestData = []struct {
 			VCPU: &DomainVCPU{
 				Placement: "static",
 				CPUSet:    "1-4,^3,6",
-				Current:   "1",
+				Current:   1,
 				Value:     2,
 			},
 			VCPUs: &DomainVCPUs{
