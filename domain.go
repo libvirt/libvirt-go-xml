@@ -1926,7 +1926,7 @@ type DomainNuma struct {
 type DomainCell struct {
 	ID        *uint                `xml:"id,attr"`
 	CPUs      string               `xml:"cpus,attr"`
-	Memory    string               `xml:"memory,attr"`
+	Memory    uint                 `xml:"memory,attr"`
 	Unit      string               `xml:"unit,attr,omitempty"`
 	MemAccess string               `xml:"memAccess,attr,omitempty"`
 	Discard   string               `xml:"discard,attr,omitempty"`

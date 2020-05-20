@@ -1177,7 +1177,7 @@ var domainTestData = []struct {
 						{
 							ID:        &cellID0,
 							CPUs:      "0-1",
-							Memory:    "512000",
+							Memory:    512000,
 							Unit:      "KiB",
 							MemAccess: "private",
 							Distances: &DomainCellDistances{
@@ -1192,7 +1192,7 @@ var domainTestData = []struct {
 						{
 							ID:        &cellID1,
 							CPUs:      "2-3",
-							Memory:    "512000",
+							Memory:    512000,
 							Unit:      "KiB",
 							MemAccess: "private",
 							Distances: &DomainCellDistances{
