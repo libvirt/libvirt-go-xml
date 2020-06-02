@@ -741,6 +741,7 @@ type DomainInterface struct {
 	IP                  []DomainInterfaceIP         `xml:"ip"`
 	Route               []DomainInterfaceRoute      `xml:"route"`
 	Script              *DomainInterfaceScript      `xml:"script"`
+	DownScript          *DomainInterfaceScript      `xml:"downscript"`
 	Target              *DomainInterfaceTarget      `xml:"target"`
 	Guest               *DomainInterfaceGuest       `xml:"guest"`
 	Model               *DomainInterfaceModel       `xml:"model"`
