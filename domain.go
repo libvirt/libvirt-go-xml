@@ -1798,8 +1798,7 @@ type DomainSysInfoOEMStrings struct {
 	Entry []string `xml:"entry"`
 }
 
-type DomainSysInfo struct {
-	Type       string                   `xml:"type,attr"`
+type DomainSysInfoSMBIOS struct {
 	BIOS       *DomainSysInfoBIOS       `xml:"bios"`
 	System     *DomainSysInfoSystem     `xml:"system"`
 	BaseBoard  []DomainSysInfoBaseBoard `xml:"baseBoard"`
@@ -1809,8 +1808,18 @@ type DomainSysInfo struct {
 	OEMStrings *DomainSysInfoOEMStrings `xml:"oemStrings"`
 }
 
+type DomainSysInfoFWCfg struct {
+	Entry []DomainSysInfoEntry `xml:"entry"`
+}
+
+type DomainSysInfo struct {
+	SMBIOS *DomainSysInfoSMBIOS `xml:"-"`
+	FWCfg  *DomainSysInfoFWCfg  `xml:"-"`
+}
+
 type DomainSysInfoEntry struct {
 	Name  string `xml:"name,attr"`
+	File  string `xml:"file,attr,omitempty"`
 	Value string `xml:",chardata"`
 }
 
@@ -2452,7 +2461,7 @@ type Domain struct {
 	CPUTune        *DomainCPUTune        `xml:"cputune"`
 	NUMATune       *DomainNUMATune       `xml:"numatune"`
 	Resource       *DomainResource       `xml:"resource"`
-	SysInfo        *DomainSysInfo        `xml:"sysinfo"`
+	SysInfo        []DomainSysInfo       `xml:"sysinfo"`
 	Bootloader     string                `xml:"bootloader,omitempty"`
 	BootloaderArgs string                `xml:"bootloader_args,omitempty"`
 	OS             *DomainOS             `xml:"os"`
@@ -5465,4 +5474,74 @@ func (a *DomainLaunchSecurity) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 	}
 
 	return nil
+}
+
+type domainSysInfo DomainSysInfo
+
+type domainSysInfoSMBIOS struct {
+	DomainSysInfoSMBIOS
+	domainSysInfo
+}
+
+type domainSysInfoFWCfg struct {
+	DomainSysInfoFWCfg
+	domainSysInfo
+}
+
+func (a *DomainSysInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "sysinfo"
+	if a.SMBIOS != nil {
+		smbios := domainSysInfoSMBIOS{}
+		smbios.domainSysInfo = domainSysInfo(*a)
+		smbios.DomainSysInfoSMBIOS = *a.SMBIOS
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "smbios",
+		})
+		return e.EncodeElement(smbios, start)
+	} else if a.FWCfg != nil {
+		fwcfg := domainSysInfoFWCfg{}
+		fwcfg.domainSysInfo = domainSysInfo(*a)
+		fwcfg.DomainSysInfoFWCfg = *a.FWCfg
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "fwcfg",
+		})
+		return e.EncodeElement(fwcfg, start)
+	} else {
+		gen := domainSysInfo(*a)
+		return e.EncodeElement(gen, start)
+	}
+}
+
+func (a *DomainSysInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing 'type' attribute on domain controller")
+	}
+	if typ == "smbios" {
+		var smbios domainSysInfoSMBIOS
+		err := d.DecodeElement(&smbios, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainSysInfo(smbios.domainSysInfo)
+		a.SMBIOS = &smbios.DomainSysInfoSMBIOS
+		return nil
+	} else if typ == "fwcfg" {
+		var fwcfg domainSysInfoFWCfg
+		err := d.DecodeElement(&fwcfg, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainSysInfo(fwcfg.domainSysInfo)
+		a.FWCfg = &fwcfg.DomainSysInfoFWCfg
+		return nil
+	} else {
+		var gen domainSysInfo
+		err := d.DecodeElement(&gen, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainSysInfo(gen)
+		return nil
+	}
 }

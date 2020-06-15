@@ -737,50 +737,67 @@ var domainTestData = []struct {
 				InitGroup: "fred",
 				InitDir:   "/home/fred",
 			},
-			SysInfo: &DomainSysInfo{
-				Type: "smbios",
-				BIOS: &DomainSysInfoBIOS{
-					Entry: []DomainSysInfoEntry{
-						DomainSysInfoEntry{
-							Name:  "vendor",
-							Value: "vendor",
+			SysInfo: []DomainSysInfo{
+				DomainSysInfo{
+					SMBIOS: &DomainSysInfoSMBIOS{
+						BIOS: &DomainSysInfoBIOS{
+							Entry: []DomainSysInfoEntry{
+								DomainSysInfoEntry{
+									Name:  "vendor",
+									Value: "vendor",
+								},
+							},
+						},
+						System: &DomainSysInfoSystem{
+							Entry: []DomainSysInfoEntry{
+								DomainSysInfoEntry{
+									Name:  "manufacturer",
+									Value: "manufacturer",
+								},
+								DomainSysInfoEntry{
+									Name:  "product",
+									Value: "product",
+								},
+								DomainSysInfoEntry{
+									Name:  "version",
+									Value: "version",
+								},
+							},
+						},
+						BaseBoard: []DomainSysInfoBaseBoard{
+							DomainSysInfoBaseBoard{
+								Entry: []DomainSysInfoEntry{
+									DomainSysInfoEntry{
+										Name:  "manufacturer",
+										Value: "manufacturer",
+									},
+									DomainSysInfoEntry{
+										Name:  "product",
+										Value: "product",
+									},
+									DomainSysInfoEntry{
+										Name:  "version",
+										Value: "version",
+									},
+									DomainSysInfoEntry{
+										Name:  "serial",
+										Value: "serial",
+									},
+								},
+							},
 						},
 					},
 				},
-				System: &DomainSysInfoSystem{
-					Entry: []DomainSysInfoEntry{
-						DomainSysInfoEntry{
-							Name:  "manufacturer",
-							Value: "manufacturer",
-						},
-						DomainSysInfoEntry{
-							Name:  "product",
-							Value: "product",
-						},
-						DomainSysInfoEntry{
-							Name:  "version",
-							Value: "version",
-						},
-					},
-				},
-				BaseBoard: []DomainSysInfoBaseBoard{
-					DomainSysInfoBaseBoard{
+				DomainSysInfo{
+					FWCfg: &DomainSysInfoFWCfg{
 						Entry: []DomainSysInfoEntry{
 							DomainSysInfoEntry{
-								Name:  "manufacturer",
-								Value: "manufacturer",
+								Name:  "vendor",
+								Value: "vendor",
 							},
 							DomainSysInfoEntry{
-								Name:  "product",
-								Value: "product",
-							},
-							DomainSysInfoEntry{
-								Name:  "version",
-								Value: "version",
-							},
-							DomainSysInfoEntry{
-								Name:  "serial",
-								Value: "serial",
+								Name: "installer",
+								File: "/some/path.cfg",
 							},
 						},
 					},
@@ -839,6 +856,10 @@ var domainTestData = []struct {
 			`      <entry name="version">version</entry>`,
 			`      <entry name="serial">serial</entry>`,
 			`    </baseBoard>`,
+			`  </sysinfo>`,
+			`  <sysinfo type="fwcfg">`,
+			`    <entry name="vendor">vendor</entry>`,
+			`    <entry name="installer" file="/some/path.cfg"></entry>`,
 			`  </sysinfo>`,
 			`  <os>`,
 			`    <type arch="x86_64" machine="pc">hvm</type>`,
