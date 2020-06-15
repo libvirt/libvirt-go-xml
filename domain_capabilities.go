@@ -73,6 +73,7 @@ type DomainCapsCPUMode struct {
 	Models    []DomainCapsCPUModel   `xml:"model"`
 	Vendor    string                 `xml:"vendor,omitempty"`
 	Features  []DomainCapsCPUFeature `xml:"feature"`
+	Enums     []DomainCapsEnum       `xml:"enum"`
 }
 
 type DomainCapsCPUModel struct {
