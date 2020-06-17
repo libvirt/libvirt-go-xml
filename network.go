@@ -94,6 +94,7 @@ type NetworkForwardNATPort struct {
 }
 
 type NetworkForwardNAT struct {
+	IPv6      string                     `xml:"ipv6,attr,omitempty"`
 	Addresses []NetworkForwardNATAddress `xml:"address"`
 	Ports     []NetworkForwardNATPort    `xml:"port"`
 }
