@@ -1560,6 +1560,7 @@ type DomainIOMMUDriver struct {
 	CachingMode string `xml:"caching_mode,attr,omitempty"`
 	EIM         string `xml:"eim,attr,omitempty"`
 	IOTLB       string `xml:"iotlb,attr,omitempty"`
+	AWBits      uint   `xml:"aw_bits,attr,omitempty"`
 }
 
 type DomainNVRAM struct {
