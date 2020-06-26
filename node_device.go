@@ -285,12 +285,18 @@ type NodeDeviceCCWCapability struct {
 }
 
 type NodeDeviceMDevCapability struct {
-	Type       *NodeDeviceMDevCapabilityType `xml:"type"`
-	IOMMUGroup *NodeDeviceIOMMUGroup         `xml:"iommuGroup"`
+	Type       *NodeDeviceMDevCapabilityType  `xml:"type"`
+	IOMMUGroup *NodeDeviceIOMMUGroup          `xml:"iommuGroup"`
+	Attrs      []NodeDeviceMDevCapabilityAttrs `xml:"attr,omitempty"`
 }
 
 type NodeDeviceMDevCapabilityType struct {
 	ID string `xml:"id,attr"`
+}
+
+type NodeDeviceMDevCapabilityAttrs struct {
+	Name string `xml:"name,attr"`
+	Value string `xml:"value,attr"`
 }
 
 func (a *NodeDevicePCIAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
