@@ -1,7 +1,7 @@
 # libvirt-go-xml
 
 [![Build Status](https://gitlab.com/libvirt/libvirt-go-xml/badges/master/pipeline.svg)](https://gitlab.com/libvirt/libvirt-go-xml/pipelines)
-[![API Documentation](https://godoc.org/libvirt.org/libvirt-go-xml?status.svg)](https://godoc.org/libvirt.org/libvirt-go-xml)
+[![API Documentation](https://img.shields.io/static/v1?label=godev&message=reference&color=00add8)](https://pkg.go.dev/libvirt.org/libvirt-go-xml)
 
 Go API for manipulating libvirt XML documents
 
@@ -12,7 +12,7 @@ the way in which the application talks to libvirt.
 
 ## Documentation
 
-* [API documentation for the bindings](https://godoc.org/libvirt.org/libvirt-go-xml)
+* [API documentation for the bindings](https://pkg.go.dev/libvirt.org/libvirt-go-xml)
 * [Libvirt XML schema documentation](https://libvirt.org/format.html):
   * [capabilities](https://libvirt.org/formatcaps.html)
   * [domain](https://libvirt.org/formatdomain.html)
