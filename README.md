@@ -27,12 +27,13 @@ the way in which the application talks to libvirt.
 
 ## Contributing
 
-The libvirt project aims to add support for new APIs to libvirt-go
-as soon as they are added to the main libvirt C library. If you
-are submitting changes to the libvirt C library API, please submit
-a libvirt-go change at the same time.
+The libvirt project aims to add support for new XML elements to
+libvirt-go-xml as soon as they are added to the main libvirt C
+library. If you are submitting changes to the libvirt C library
+that introduce new XML elements, please submit a libvirt-go-xml
+change at the same time.
 
-Bug fixes and other improvements to the libvirt-go library are
+Bug fixes and other improvements to the libvirt-go-xml library are
 welcome at any time. The preferred submission method is to use
 git send-email to submit patches to the libvir-list@redhat.com
 mailing list. eg. to send a single patch
