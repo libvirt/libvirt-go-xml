@@ -1226,6 +1226,7 @@ var domainTestData = []struct {
 							},
 						},
 					},
+					nil,
 				},
 			},
 			Devices: &DomainDeviceList{

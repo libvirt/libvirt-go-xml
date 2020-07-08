@@ -1932,7 +1932,8 @@ type DomainCPU struct {
 }
 
 type DomainNuma struct {
-	Cell []DomainCell `xml:"cell"`
+	Cell          []DomainCell             `xml:"cell"`
+	Interconnects *DomainNUMAInterconnects `xml:"interconnects"`
 }
 
 type DomainCell struct {
@@ -1943,6 +1944,7 @@ type DomainCell struct {
 	MemAccess string               `xml:"memAccess,attr,omitempty"`
 	Discard   string               `xml:"discard,attr,omitempty"`
 	Distances *DomainCellDistances `xml:"distances"`
+	Caches    []DomainCellCache    `xml:"cache"`
 }
 
 type DomainCellDistances struct {
@@ -1952,6 +1954,45 @@ type DomainCellDistances struct {
 type DomainCellSibling struct {
 	ID    uint `xml:"id,attr"`
 	Value uint `xml:"value,attr"`
+}
+
+type DomainCellCache struct {
+	Level         uint                `xml:"level,attr"`
+	Associativity string              `xml:"associativity,attr"`
+	Policy        string              `xml:"policy,attr"`
+	Size          DomainCellCacheSize `xml:"size"`
+	Line          DomainCellCacheLine `xml:"line"`
+}
+
+type DomainCellCacheSize struct {
+	Value string `xml:"value,attr"`
+	Unit  string `xml:"unit,attr"`
+}
+
+type DomainCellCacheLine struct {
+	Value string `xml:"value,attr"`
+	Unit  string `xml:"unit,attr"`
+}
+
+type DomainNUMAInterconnects struct {
+	Latencies  []DomainNUMAInterconnectLatency   `xml:"latency"`
+	Bandwidths []DomainNUMAInterconnectBandwidth `xml:"bandwidth"`
+}
+
+type DomainNUMAInterconnectLatency struct {
+	Initiator uint   `xml:"initiator,attr"`
+	Target    uint   `xml:"target,attr"`
+	Cache     uint   `xml:"cache,attr,omitempty"`
+	Type      string `xml:"type,attr"`
+	Value     uint   `xml:"value,attr"`
+}
+
+type DomainNUMAInterconnectBandwidth struct {
+	Initiator uint   `xml:"initiator,attr"`
+	Target    uint   `xml:"target,attr"`
+	Type      string `xml:"type,attr"`
+	Value     uint   `xml:"value,attr"`
+	Unit      string `xml:"unit,attr"`
 }
 
 type DomainClock struct {
