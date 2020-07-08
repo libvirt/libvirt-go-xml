@@ -1,4 +1,7 @@
-# libvirt-go-xml [![build status](https://gitlab.com/libvirt/libvirt-go-xml/badges/master/pipeline.svg)](https://gitlab.com/libvirt/libvirt-go-xml/pipelines) [![GoDoc](https://godoc.org/libvirt.org/libvirt-go-xml?status.svg)](https://godoc.org/libvirt.org/libvirt-go-xml)
+# libvirt-go-xml
+
+[![Build Status](https://gitlab.com/libvirt/libvirt-go-xml/badges/master/pipeline.svg)](https://gitlab.com/libvirt/libvirt-go-xml/pipelines)
+[![API Documentation](https://godoc.org/libvirt.org/libvirt-go-xml?status.svg)](https://godoc.org/libvirt.org/libvirt-go-xml)
 
 Go API for manipulating libvirt XML documents
 
