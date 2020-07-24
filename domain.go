@@ -462,6 +462,7 @@ type DomainFilesystem struct {
 type DomainInterfaceMAC struct {
 	Address string `xml:"address,attr"`
 	Type    string `xml:"type,attr,omitempty"`
+	Check   string `xml:"check,attr,omitempty"`
 }
 
 type DomainInterfaceModel struct {
