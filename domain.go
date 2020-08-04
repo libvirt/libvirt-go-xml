@@ -1632,6 +1632,7 @@ type DomainTPMBackendDevice struct {
 type DomainShmem struct {
 	XMLName xml.Name           `xml:"shmem"`
 	Name    string             `xml:"name,attr"`
+	Role    string             `xml:"role,attr,omitempty"`
 	Size    *DomainShmemSize   `xml:"size"`
 	Model   *DomainShmemModel  `xml:"model"`
 	Server  *DomainShmemServer `xml:"server"`
