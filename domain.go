@@ -1385,9 +1385,18 @@ type DomainHostdevSubsysSCSISourceHost struct {
 }
 
 type DomainHostdevSubsysSCSISourceISCSI struct {
-	Name string                 `xml:"name,attr"`
-	Host []DomainDiskSourceHost `xml:"host"`
-	Auth *DomainDiskAuth        `xml:"auth"`
+	Name      string                                  `xml:"name,attr"`
+	Host      []DomainDiskSourceHost                  `xml:"host"`
+	Auth      *DomainDiskAuth                         `xml:"auth"`
+	Initiator *DomainHostdevSubsysSCSISourceInitiator `xml:"initiator"`
+}
+
+type DomainHostdevSubsysSCSISourceInitiator struct {
+	IQN DomainHostdevSubsysSCSISourceIQN `xml:"iqn"`
+}
+
+type DomainHostdevSubsysSCSISourceIQN struct {
+	Name string `xml:"name,attr"`
 }
 
 type DomainHostdevSubsysSCSIHost struct {
