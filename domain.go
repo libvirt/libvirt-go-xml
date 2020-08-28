@@ -1311,8 +1311,28 @@ type DomainSound struct {
 	XMLName xml.Name           `xml:"sound"`
 	Model   string             `xml:"model,attr"`
 	Codec   []DomainSoundCodec `xml:"codec"`
+	Audio   *DomainSoundAudio  `xml:"audio"`
 	Alias   *DomainAlias       `xml:"alias"`
 	Address *DomainAddress     `xml:"address"`
+}
+
+type DomainSoundAudio struct {
+	ID uint `xml:"id,attr"`
+}
+
+type DomainAudio struct {
+	XMLName xml.Name        `xml:"audio"`
+	OSS     *DomainAudioOSS `xml:"-"`
+}
+
+type DomainAudioOSS struct {
+	ID     int                    `xml:"id,attr"`
+	Input  *DomainAudioOSSChannel `xml:"input"`
+	Output *DomainAudioOSSChannel `xml:"output"`
+}
+
+type DomainAudioOSSChannel struct {
+	Dev string `xml:"dev,attr"`
 }
 
 type DomainRNGRate struct {
@@ -1685,6 +1705,7 @@ type DomainDeviceList struct {
 	TPMs         []DomainTPM         `xml:"tpm"`
 	Graphics     []DomainGraphic     `xml:"graphics"`
 	Sounds       []DomainSound       `xml:"sound"`
+	Audios       []DomainAudio       `xml:"audio"`
 	Videos       []DomainVideo       `xml:"video"`
 	Hostdevs     []DomainHostdev     `xml:"hostdev"`
 	RedirDevs    []DomainRedirDev    `xml:"redirdev"`
@@ -4841,6 +4862,34 @@ func (a *DomainGraphic) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 			return err
 		}
 		a.EGLHeadless = &egl
+		return nil
+	}
+	return nil
+}
+
+func (a *DomainAudio) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "audio"
+	if a.OSS != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "oss",
+		})
+		return e.EncodeElement(a.OSS, start)
+	}
+	return nil
+}
+
+func (a *DomainAudio) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		return fmt.Errorf("Missing 'type' attribute on domain audio")
+	}
+	if typ == "oss" {
+		var oss DomainAudioOSS
+		err := d.DecodeElement(&oss, &start)
+		if err != nil {
+			return err
+		}
+		a.OSS = &oss
 		return nil
 	}
 	return nil
