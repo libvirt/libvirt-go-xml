@@ -2393,6 +2393,15 @@ type DomainBHyveCommandline struct {
 	Envs    []DomainBHyveCommandlineEnv `xml:"env"`
 }
 
+type DomainXenCommandlineArg struct {
+	Value string `xml:"value,attr"`
+}
+
+type DomainXenCommandline struct {
+	XMLName xml.Name                  `xml:"http://libvirt.org/schemas/domain/xen/1.0 commandline"`
+	Args    []DomainXenCommandlineArg `xml:"arg"`
+}
+
 type DomainBlockIOTune struct {
 	Weight uint                      `xml:"weight,omitempty"`
 	Device []DomainBlockIOTuneDevice `xml:"device"`
@@ -2561,6 +2570,7 @@ type Domain struct {
 	LXCNamespace         *DomainLXCNamespace
 	BHyveCommandline     *DomainBHyveCommandline
 	VMWareDataCenterPath *DomainVMWareDataCenterPath
+	XenCommandline       *DomainXenCommandline
 }
 
 func (d *Domain) Unmarshal(doc string) error {
