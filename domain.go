@@ -1430,7 +1430,8 @@ type DomainHostdevSubsysSCSIHostSource struct {
 }
 
 type DomainHostdevSubsysPCISource struct {
-	Address *DomainAddressPCI `xml:"address"`
+	WriteFiltering string            `xml:"writeFiltering,attr,omitempty"`
+	Address        *DomainAddressPCI `xml:"address"`
 }
 
 type DomainHostdevSubsysPCIDriver struct {
@@ -3459,6 +3460,7 @@ func (a *DomainInterfaceSourceHostdev) UnmarshalXML(d *xml.Decoder, start xml.St
 
 				if typ == "pci" {
 					a.PCI = &DomainHostdevSubsysPCISource{
+						"",
 						&DomainAddressPCI{},
 					}
 					err := d.DecodeElement(a.PCI.Address, &tok)
