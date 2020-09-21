@@ -65,6 +65,7 @@ type NodeDeviceCapability struct {
 	DRM        *NodeDeviceDRMCapability
 	CCW        *NodeDeviceCCWCapability
 	MDev       *NodeDeviceMDevCapability
+	CSS        *NodeDeviceCSSCapability
 }
 
 type NodeDeviceIDName struct {
@@ -285,8 +286,8 @@ type NodeDeviceCCWCapability struct {
 }
 
 type NodeDeviceMDevCapability struct {
-	Type       *NodeDeviceMDevCapabilityType  `xml:"type"`
-	IOMMUGroup *NodeDeviceIOMMUGroup          `xml:"iommuGroup"`
+	Type       *NodeDeviceMDevCapabilityType   `xml:"type"`
+	IOMMUGroup *NodeDeviceIOMMUGroup           `xml:"iommuGroup"`
 	Attrs      []NodeDeviceMDevCapabilityAttrs `xml:"attr,omitempty"`
 }
 
@@ -295,8 +296,14 @@ type NodeDeviceMDevCapabilityType struct {
 }
 
 type NodeDeviceMDevCapabilityAttrs struct {
-	Name string `xml:"name,attr"`
+	Name  string `xml:"name,attr"`
 	Value string `xml:"value,attr"`
+}
+
+type NodeDeviceCSSCapability struct {
+	CSSID *uint `xml:"cssid"`
+	SSID  *uint `xml:"ssid"`
+	DevNo *uint `xml:"devno"`
 }
 
 func (a *NodeDevicePCIAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -389,6 +396,83 @@ func (c *NodeDeviceCCWCapability) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 			chardata, ok := cdata.(xml.CharData)
 			if !ok {
 				return fmt.Errorf("Expected text for CCW '%s'", tok.Name.Local)
+			}
+
+			valstr := strings.TrimPrefix(string(chardata), "0x")
+			val, err := strconv.ParseUint(valstr, 16, 64)
+			if err != nil {
+				return err
+			}
+
+			vali := uint(val)
+			if tok.Name.Local == "cssid" {
+				c.CSSID = &vali
+			} else if tok.Name.Local == "ssid" {
+				c.SSID = &vali
+			} else if tok.Name.Local == "devno" {
+				c.DevNo = &vali
+			}
+		}
+	}
+	return nil
+}
+
+func (c *NodeDeviceCSSCapability) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	if c.CSSID != nil {
+		cssid := xml.StartElement{
+			Name: xml.Name{Local: "cssid"},
+		}
+		e.EncodeToken(cssid)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("0x%x", *c.CSSID)))
+		e.EncodeToken(cssid.End())
+	}
+	if c.SSID != nil {
+		ssid := xml.StartElement{
+			Name: xml.Name{Local: "ssid"},
+		}
+		e.EncodeToken(ssid)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("0x%x", *c.SSID)))
+		e.EncodeToken(ssid.End())
+	}
+	if c.DevNo != nil {
+		devno := xml.StartElement{
+			Name: xml.Name{Local: "devno"},
+		}
+		e.EncodeToken(devno)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("0x%04x", *c.DevNo)))
+		e.EncodeToken(devno.End())
+	}
+	e.EncodeToken(start.End())
+	return nil
+}
+
+func (c *NodeDeviceCSSCapability) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		switch tok := tok.(type) {
+		case xml.StartElement:
+			cdata, err := d.Token()
+			if err != nil {
+				return err
+			}
+
+			if tok.Name.Local != "cssid" &&
+				tok.Name.Local != "ssid" &&
+				tok.Name.Local != "devno" {
+				continue
+			}
+
+			chardata, ok := cdata.(xml.CharData)
+			if !ok {
+				return fmt.Errorf("Expected text for CSS '%s'", tok.Name.Local)
 			}
 
 			valstr := strings.TrimPrefix(string(chardata), "0x")
@@ -684,6 +768,12 @@ func (c *NodeDeviceCapability) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 			return err
 		}
 		c.MDev = &mdevCaps
+	case "css":
+		var cssCaps NodeDeviceCSSCapability
+		if err := d.DecodeElement(&cssCaps, &start); err != nil {
+			return err
+		}
+		c.CSS = &cssCaps
 	}
 	d.Skip()
 	return nil
@@ -750,6 +840,11 @@ func (c *NodeDeviceCapability) MarshalXML(e *xml.Encoder, start xml.StartElement
 			xml.Name{Local: "type"}, "mdev",
 		})
 		return e.EncodeElement(c.MDev, start)
+	} else if c.CSS != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "css",
+		})
+		return e.EncodeElement(c.CSS, start)
 	}
 	return nil
 }
