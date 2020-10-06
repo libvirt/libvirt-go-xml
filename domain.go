@@ -330,33 +330,38 @@ type DomainDiskMirror struct {
 	BackingStore *DomainDiskBackingStore `xml:"backingStore"`
 }
 
+type DomainBackendDomain struct {
+	Name string `xml:"name,attr"`
+}
+
 type DomainDisk struct {
-	XMLName      xml.Name                `xml:"disk"`
-	Device       string                  `xml:"device,attr,omitempty"`
-	RawIO        string                  `xml:"rawio,attr,omitempty"`
-	SGIO         string                  `xml:"sgio,attr,omitempty"`
-	Snapshot     string                  `xml:"snapshot,attr,omitempty"`
-	Model        string                  `xml:"model,attr,omitempty"`
-	Driver       *DomainDiskDriver       `xml:"driver"`
-	Auth         *DomainDiskAuth         `xml:"auth"`
-	Source       *DomainDiskSource       `xml:"source"`
-	BackingStore *DomainDiskBackingStore `xml:"backingStore"`
-	Geometry     *DomainDiskGeometry     `xml:"geometry"`
-	BlockIO      *DomainDiskBlockIO      `xml:"blockio"`
-	Mirror       *DomainDiskMirror       `xml:"mirror"`
-	Target       *DomainDiskTarget       `xml:"target"`
-	IOTune       *DomainDiskIOTune       `xml:"iotune"`
-	ReadOnly     *DomainDiskReadOnly     `xml:"readonly"`
-	Shareable    *DomainDiskShareable    `xml:"shareable"`
-	Transient    *DomainDiskTransient    `xml:"transient"`
-	Serial       string                  `xml:"serial,omitempty"`
-	WWN          string                  `xml:"wwn,omitempty"`
-	Vendor       string                  `xml:"vendor,omitempty"`
-	Product      string                  `xml:"product,omitempty"`
-	Encryption   *DomainDiskEncryption   `xml:"encryption"`
-	Boot         *DomainDeviceBoot       `xml:"boot"`
-	Alias        *DomainAlias            `xml:"alias"`
-	Address      *DomainAddress          `xml:"address"`
+	XMLName       xml.Name                `xml:"disk"`
+	Device        string                  `xml:"device,attr,omitempty"`
+	RawIO         string                  `xml:"rawio,attr,omitempty"`
+	SGIO          string                  `xml:"sgio,attr,omitempty"`
+	Snapshot      string                  `xml:"snapshot,attr,omitempty"`
+	Model         string                  `xml:"model,attr,omitempty"`
+	Driver        *DomainDiskDriver       `xml:"driver"`
+	Auth          *DomainDiskAuth         `xml:"auth"`
+	Source        *DomainDiskSource       `xml:"source"`
+	BackingStore  *DomainDiskBackingStore `xml:"backingStore"`
+	BackendDomain *DomainBackendDomain    `xml:"backenddomain"`
+	Geometry      *DomainDiskGeometry     `xml:"geometry"`
+	BlockIO       *DomainDiskBlockIO      `xml:"blockio"`
+	Mirror        *DomainDiskMirror       `xml:"mirror"`
+	Target        *DomainDiskTarget       `xml:"target"`
+	IOTune        *DomainDiskIOTune       `xml:"iotune"`
+	ReadOnly      *DomainDiskReadOnly     `xml:"readonly"`
+	Shareable     *DomainDiskShareable    `xml:"shareable"`
+	Transient     *DomainDiskTransient    `xml:"transient"`
+	Serial        string                  `xml:"serial,omitempty"`
+	WWN           string                  `xml:"wwn,omitempty"`
+	Vendor        string                  `xml:"vendor,omitempty"`
+	Product       string                  `xml:"product,omitempty"`
+	Encryption    *DomainDiskEncryption   `xml:"encryption"`
+	Boot          *DomainDeviceBoot       `xml:"boot"`
+	Alias         *DomainAlias            `xml:"alias"`
+	Address       *DomainAddress          `xml:"address"`
 }
 
 type DomainFilesystemDriver struct {
@@ -744,6 +749,7 @@ type DomainInterface struct {
 	Route               []DomainInterfaceRoute      `xml:"route"`
 	Script              *DomainInterfaceScript      `xml:"script"`
 	DownScript          *DomainInterfaceScript      `xml:"downscript"`
+	BackendDomain       *DomainBackendDomain        `xml:"backenddomain"`
 	Target              *DomainInterfaceTarget      `xml:"target"`
 	Guest               *DomainInterfaceGuest       `xml:"guest"`
 	Model               *DomainInterfaceModel       `xml:"model"`
