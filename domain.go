@@ -1274,13 +1274,14 @@ type DomainMemBalloonStats struct {
 }
 
 type DomainMemBalloon struct {
-	XMLName     xml.Name                `xml:"memballoon"`
-	Model       string                  `xml:"model,attr"`
-	AutoDeflate string                  `xml:"autodeflate,attr,omitempty"`
-	Driver      *DomainMemBalloonDriver `xml:"driver"`
-	Stats       *DomainMemBalloonStats  `xml:"stats"`
-	Alias       *DomainAlias            `xml:"alias"`
-	Address     *DomainAddress          `xml:"address"`
+	XMLName           xml.Name                `xml:"memballoon"`
+	Model             string                  `xml:"model,attr"`
+	AutoDeflate       string                  `xml:"autodeflate,attr,omitempty"`
+	FreePageReporting string                  `xml:"free-page-reporting,attr,omitempty"`
+	Driver            *DomainMemBalloonDriver `xml:"driver"`
+	Stats             *DomainMemBalloonStats  `xml:"stats"`
+	Alias             *DomainAlias            `xml:"alias"`
+	Address           *DomainAddress          `xml:"address"`
 }
 
 type DomainVSockCID struct {
