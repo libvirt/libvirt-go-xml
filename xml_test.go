@@ -186,6 +186,18 @@ var extraActualNodes = map[string][]string{
 	"testdata/libvirt/tests/qemudomainsnapshotxml2xmlout/external_vm_redefine.xml": []string{
 		"/domainsnapshot[0]/disks[0]/disk[0]/@type",
 	},
+	"testdata/libvirt/tests/bhyvexml2argvdata/bhyvexml2argv-fs-9p.xml": []string{
+		"/domain[0]/devices[0]/filesystem[0]/@type",
+	},
+	"testdata/libvirt/tests/bhyvexml2argvdata/bhyvexml2argv-fs-9p-readonly.xml": []string{
+		"/domain[0]/devices[0]/filesystem[0]/@type",
+	},
+	"testdata/libvirt/tests/bhyvexml2argvdata/bhyvexml2argv-fs-9p-unsupported-accessmode.xml": []string{
+		"/domain[0]/devices[0]/filesystem[0]/@type",
+	},
+	"testdata/libvirt/tests/bhyvexml2argvdata/bhyvexml2argv-fs-9p-unsupported-driver.xml": []string{
+		"/domain[0]/devices[0]/filesystem[0]/@type",
+	},
 }
 
 var extraExpectNodes = map[string][]string{
