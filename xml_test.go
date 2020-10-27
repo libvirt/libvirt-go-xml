@@ -323,6 +323,8 @@ func testRoundTrip(t *testing.T, xml string, filename string) {
 	} else if strings.HasPrefix(xml, "<interface") {
 		if strings.Contains(filename, "networkxml") {
 			doc = &NetworkForwardInterface{}
+		} else if strings.Contains(filename, "qemuhotplug") {
+			doc = &DomainInterface{}
 		} else {
 			doc = &Interface{}
 		}
