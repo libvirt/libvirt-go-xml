@@ -5469,19 +5469,24 @@ func (d *DomainCPU) Marshal() (string, error) {
 
 func (a *DomainLaunchSecuritySEV) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	e.EncodeToken(start)
-	cbitpos := xml.StartElement{
-		Name: xml.Name{Local: "cbitpos"},
-	}
-	e.EncodeToken(cbitpos)
-	e.EncodeToken(xml.CharData(fmt.Sprintf("%d", *a.CBitPos)))
-	e.EncodeToken(cbitpos.End())
 
-	reducedPhysBits := xml.StartElement{
-		Name: xml.Name{Local: "reducedPhysBits"},
+	if a.CBitPos != nil {
+		cbitpos := xml.StartElement{
+			Name: xml.Name{Local: "cbitpos"},
+		}
+		e.EncodeToken(cbitpos)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("%d", *a.CBitPos)))
+		e.EncodeToken(cbitpos.End())
 	}
-	e.EncodeToken(reducedPhysBits)
-	e.EncodeToken(xml.CharData(fmt.Sprintf("%d", *a.ReducedPhysBits)))
-	e.EncodeToken(reducedPhysBits.End())
+
+	if a.ReducedPhysBits != nil {
+		reducedPhysBits := xml.StartElement{
+			Name: xml.Name{Local: "reducedPhysBits"},
+		}
+		e.EncodeToken(reducedPhysBits)
+		e.EncodeToken(xml.CharData(fmt.Sprintf("%d", *a.ReducedPhysBits)))
+		e.EncodeToken(reducedPhysBits.End())
+	}
 
 	if a.Policy != nil {
 		policy := xml.StartElement{
