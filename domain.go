@@ -453,6 +453,8 @@ type DomainFilesystem struct {
 	AccessMode     string                          `xml:"accessmode,attr,omitempty"`
 	Model          string                          `xml:"model,attr,omitempty"`
 	MultiDevs      string                          `xml:"multidevs,attr,omitempty"`
+	FMode          string                          `xml:"fmode,attr,omitempty"`
+	DMode          string                          `xml:"dmode,attr,omitempty"`
 	Driver         *DomainFilesystemDriver         `xml:"driver"`
 	Binary         *DomainFilesystemBinary         `xml:"binary"`
 	Source         *DomainFilesystemSource         `xml:"source"`
