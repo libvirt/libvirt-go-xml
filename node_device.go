@@ -131,10 +131,10 @@ type NodeDevicePCIPhysFunctionCapability struct {
 }
 
 type NodeDevicePCIMDevTypesCapability struct {
-	Types []NodeDevicePCIMDevType `xml:"type"`
+	Types []NodeDeviceMDevType `xml:"type"`
 }
 
-type NodeDevicePCIMDevType struct {
+type NodeDeviceMDevType struct {
 	ID                 string `xml:"id,attr"`
 	Name               string `xml:"name"`
 	DeviceAPI          string `xml:"deviceAPI"`
