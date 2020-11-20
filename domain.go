@@ -2056,7 +2056,7 @@ type DomainTimer struct {
 	Track      string              `xml:"track,attr,omitempty"`
 	TickPolicy string              `xml:"tickpolicy,attr,omitempty"`
 	CatchUp    *DomainTimerCatchUp `xml:"catchup"`
-	Frequency  uint32              `xml:"frequency,attr,omitempty"`
+	Frequency  uint64              `xml:"frequency,attr,omitempty"`
 	Mode       string              `xml:"mode,attr,omitempty"`
 	Present    string              `xml:"present,attr,omitempty"`
 }
