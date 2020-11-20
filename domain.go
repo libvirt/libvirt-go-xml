@@ -2114,6 +2114,7 @@ type DomainFeatureHyperV struct {
 type DomainFeatureKVM struct {
 	Hidden        *DomainFeatureState `xml:"hidden"`
 	HintDedicated *DomainFeatureState `xml:"hint-dedicated"`
+	PollControl   *DomainFeatureState `xml:"poll-control"`
 }
 
 type DomainFeatureXenPassthrough struct {
