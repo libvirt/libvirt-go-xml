@@ -207,10 +207,16 @@ type DomainDiskSourceNetwork struct {
 	Query     string                            `xml:"query,attr,omitempty"`
 	TLS       string                            `xml:"tls,attr,omitempty"`
 	Hosts     []DomainDiskSourceHost            `xml:"host"`
+	Identity  *DomainDiskSourceNetworkIdentity  `xml:"identity"`
 	Initiator *DomainDiskSourceNetworkInitiator `xml:"initiator"`
 	Snapshot  *DomainDiskSourceNetworkSnapshot  `xml:"snapshot"`
 	Config    *DomainDiskSourceNetworkConfig    `xml:"config"`
 	Auth      *DomainDiskAuth                   `xml:"auth"`
+}
+
+type DomainDiskSourceNetworkIdentity struct {
+	User  string `xml:"user,attr"`
+	Group string `xml:"group,attr"`
 }
 
 type DomainDiskSourceNetworkInitiator struct {
