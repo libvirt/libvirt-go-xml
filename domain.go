@@ -1678,8 +1678,9 @@ type DomainTPMBackendPassthrough struct {
 }
 
 type DomainTPMBackendEmulator struct {
-	Version    string                      `xml:"version,attr,omitempty"`
-	Encryption *DomainTPMBackendEncryption `xml:"encryption"`
+	Version         string                      `xml:"version,attr,omitempty"`
+	Encryption      *DomainTPMBackendEncryption `xml:"encryption"`
+	PersistentState string                      `xml:"persistent_state,attr,omitempty"`
 }
 
 type DomainTPMBackendEncryption struct {
