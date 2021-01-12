@@ -236,23 +236,33 @@ type DomainDiskSourceVolume struct {
 	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
 }
 
+type DomainDiskMetadataCache struct {
+	MaxSize *DomainDiskMetadataCacheSize `xml:"max_size"`
+}
+
+type DomainDiskMetadataCacheSize struct {
+	Unit  string `xml:"unit,attr,omitempty"`
+	Value int    `xml:",cdata"`
+}
+
 type DomainDiskDriver struct {
-	Name         string `xml:"name,attr,omitempty"`
-	Type         string `xml:"type,attr,omitempty"`
-	Cache        string `xml:"cache,attr,omitempty"`
-	ErrorPolicy  string `xml:"error_policy,attr,omitempty"`
-	RErrorPolicy string `xml:"rerror_policy,attr,omitempty"`
-	IO           string `xml:"io,attr,omitempty"`
-	IOEventFD    string `xml:"ioeventfd,attr,omitempty"`
-	EventIDX     string `xml:"event_idx,attr,omitempty"`
-	CopyOnRead   string `xml:"copy_on_read,attr,omitempty"`
-	Discard      string `xml:"discard,attr,omitempty"`
-	IOThread     *uint  `xml:"iothread,attr"`
-	DetectZeros  string `xml:"detect_zeroes,attr,omitempty"`
-	Queues       *uint  `xml:"queues,attr"`
-	IOMMU        string `xml:"iommu,attr,omitempty"`
-	ATS          string `xml:"ats,attr,omitempty"`
-	Packed       string `xml:"packed,attr,omitempty"`
+	Name          string                   `xml:"name,attr,omitempty"`
+	Type          string                   `xml:"type,attr,omitempty"`
+	Cache         string                   `xml:"cache,attr,omitempty"`
+	ErrorPolicy   string                   `xml:"error_policy,attr,omitempty"`
+	RErrorPolicy  string                   `xml:"rerror_policy,attr,omitempty"`
+	IO            string                   `xml:"io,attr,omitempty"`
+	IOEventFD     string                   `xml:"ioeventfd,attr,omitempty"`
+	EventIDX      string                   `xml:"event_idx,attr,omitempty"`
+	CopyOnRead    string                   `xml:"copy_on_read,attr,omitempty"`
+	Discard       string                   `xml:"discard,attr,omitempty"`
+	IOThread      *uint                    `xml:"iothread,attr"`
+	DetectZeros   string                   `xml:"detect_zeroes,attr,omitempty"`
+	Queues        *uint                    `xml:"queues,attr"`
+	IOMMU         string                   `xml:"iommu,attr,omitempty"`
+	ATS           string                   `xml:"ats,attr,omitempty"`
+	Packed        string                   `xml:"packed,attr,omitempty"`
+	MetadataCache *DomainDiskMetadataCache `xml:"metadata_cache"`
 }
 
 type DomainDiskTarget struct {
@@ -312,7 +322,8 @@ type DomainDiskBlockIO struct {
 }
 
 type DomainDiskFormat struct {
-	Type string `xml:"type,attr"`
+	Type          string                   `xml:"type,attr"`
+	MetadataCache *DomainDiskMetadataCache `xml:"metadata_cache"`
 }
 
 type DomainDiskBackingStore struct {
