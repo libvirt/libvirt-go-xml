@@ -83,7 +83,7 @@ var domainSnapshotTestData = []struct {
 					DomainSnapshotDisk{
 						Name:     "vda",
 						Snapshot: "external",
-						Driver: &DomainSnapshotDiskDriver{
+						Driver: &DomainDiskDriver{
 							Type: "qcow2",
 						},
 						Source: &DomainDiskSource{
