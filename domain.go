@@ -156,6 +156,7 @@ type DomainDiskSource struct {
 	Network       *DomainDiskSourceNetwork   `xml:"-"`
 	Volume        *DomainDiskSourceVolume    `xml:"-"`
 	NVME          *DomainDiskSourceNVME      `xml:"-"`
+	VHostUser     *DomainDiskSourceVHostUser `xml:"-"`
 	StartupPolicy string                     `xml:"startupPolicy,attr,omitempty"`
 	Index         uint                       `xml:"index,attr,omitempty"`
 	Encryption    *DomainDiskEncryption      `xml:"encryption"`
@@ -241,6 +242,8 @@ type DomainDiskSourceVolume struct {
 	Mode     string                 `xml:"mode,attr,omitempty"`
 	SecLabel []DomainDeviceSecLabel `xml:"seclabel"`
 }
+
+type DomainDiskSourceVHostUser DomainChardevSource
 
 type DomainDiskMetadataCache struct {
 	MaxSize *DomainDiskMetadataCacheSize `xml:"max_size"`
@@ -2869,6 +2872,32 @@ func (a *DomainDiskReservationsSource) UnmarshalXML(d *xml.Decoder, start xml.St
 	return nil
 }
 
+func (a *DomainDiskSourceVHostUser) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "source"
+	src := DomainChardevSource(*a)
+	typ := getChardevSourceType(&src)
+	if typ != "" {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, typ,
+		})
+	}
+	return e.EncodeElement(&src, start)
+}
+
+func (a *DomainDiskSourceVHostUser) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if !ok {
+		typ = "unix"
+	}
+	src := createChardevSource(typ)
+	err := d.DecodeElement(&src, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainDiskSourceVHostUser(*src)
+	return nil
+}
+
 type domainDiskSource DomainDiskSource
 
 type domainDiskSourceFile struct {
@@ -2898,6 +2927,11 @@ type domainDiskSourceVolume struct {
 
 type domainDiskSourceNVMEPCI struct {
 	DomainDiskSourceNVMEPCI
+	domainDiskSource
+}
+
+type domainDiskSourceVHostUser struct {
+	DomainDiskSourceVHostUser
 	domainDiskSource
 }
 
@@ -2946,6 +2980,11 @@ func (a *DomainDiskSource) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 			})
 			return e.EncodeElement(&nvme, start)
 		}
+	} else if a.VHostUser != nil {
+		vhost := domainDiskSourceVHostUser{
+			*a.VHostUser, domainDiskSource(*a),
+		}
+		return e.EncodeElement(&vhost, start)
 	}
 	return nil
 }
@@ -3018,6 +3057,16 @@ func (a *DomainDiskSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			*a = DomainDiskSource(nvme.domainDiskSource)
 			a.NVME.PCI = &nvme.DomainDiskSourceNVMEPCI
 		}
+	} else if a.VHostUser != nil {
+		vhost := domainDiskSourceVHostUser{
+			*a.VHostUser, domainDiskSource(*a),
+		}
+		err := d.DecodeElement(&vhost, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainDiskSource(vhost.domainDiskSource)
+		a.VHostUser = &vhost.DomainDiskSourceVHostUser
 	}
 	return nil
 }
@@ -3047,6 +3096,10 @@ func (a *DomainDiskBackingStore) MarshalXML(e *xml.Encoder, start xml.StartEleme
 			start.Attr = append(start.Attr, xml.Attr{
 				xml.Name{Local: "type"}, "volume",
 			})
+		} else if a.Source.VHostUser != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "vhostuser",
+			})
 		}
 	}
 	disk := domainDiskBackingStore(*a)
@@ -3069,6 +3122,8 @@ func (a *DomainDiskBackingStore) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 		a.Source.Dir = &DomainDiskSourceDir{}
 	} else if typ == "volume" {
 		a.Source.Volume = &DomainDiskSourceVolume{}
+	} else if typ == "vhostuser" {
+		a.Source.VHostUser = &DomainDiskSourceVHostUser{}
 	}
 	disk := domainDiskBackingStore(*a)
 	err := d.DecodeElement(&disk, &start)
@@ -3117,6 +3172,10 @@ func (a *DomainDiskMirror) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 			start.Attr = append(start.Attr, xml.Attr{
 				xml.Name{Local: "type"}, "volume",
 			})
+		} else if a.Source.VHostUser != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "vhostuser",
+			})
 		}
 	}
 	disk := domainDiskMirror(*a)
@@ -3139,6 +3198,8 @@ func (a *DomainDiskMirror) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		a.Source.Dir = &DomainDiskSourceDir{}
 	} else if typ == "volume" {
 		a.Source.Volume = &DomainDiskSourceVolume{}
+	} else if typ == "vhostuser" {
+		a.Source.VHostUser = &DomainDiskSourceVHostUser{}
 	}
 	disk := domainDiskMirror(*a)
 	err := d.DecodeElement(&disk, &start)
@@ -3196,6 +3257,10 @@ func (a *DomainDisk) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			start.Attr = append(start.Attr, xml.Attr{
 				xml.Name{Local: "type"}, "nvme",
 			})
+		} else if a.Source.VHostUser != nil {
+			start.Attr = append(start.Attr, xml.Attr{
+				xml.Name{Local: "type"}, "vhostuser",
+			})
 		}
 	}
 	disk := domainDisk(*a)
@@ -3220,6 +3285,8 @@ func (a *DomainDisk) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		a.Source.Volume = &DomainDiskSourceVolume{}
 	} else if typ == "nvme" {
 		a.Source.NVME = &DomainDiskSourceNVME{}
+	} else if typ == "vhostuser" {
+		a.Source.VHostUser = &DomainDiskSourceVHostUser{}
 	}
 	disk := domainDisk(*a)
 	err := d.DecodeElement(&disk, &start)
