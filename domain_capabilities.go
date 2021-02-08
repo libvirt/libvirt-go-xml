@@ -77,9 +77,10 @@ type DomainCapsCPUMode struct {
 }
 
 type DomainCapsCPUModel struct {
-	Name     string `xml:",chardata"`
-	Usable   string `xml:"usable,attr,omitempty"`
-	Fallback string `xml:"fallback,attr,omitempty"`
+	Name       string `xml:",chardata"`
+	Usable     string `xml:"usable,attr,omitempty"`
+	Fallback   string `xml:"fallback,attr,omitempty"`
+	Deprecated string `xml:"deprecated,attr,omitempty"`
 }
 
 type DomainCapsCPUFeature struct {
