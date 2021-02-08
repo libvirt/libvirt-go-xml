@@ -482,6 +482,7 @@ type DomainFilesystem struct {
 	ReadOnly       *DomainFilesystemReadOnly       `xml:"readonly"`
 	SpaceHardLimit *DomainFilesystemSpaceHardLimit `xml:"space_hard_limit"`
 	SpaceSoftLimit *DomainFilesystemSpaceSoftLimit `xml:"space_soft_limit"`
+	Boot           *DomainDeviceBoot               `xml:"boot"`
 	Alias          *DomainAlias                    `xml:"alias"`
 	Address        *DomainAddress                  `xml:"address"`
 }
