@@ -1317,12 +1317,19 @@ type DomainVSockCID struct {
 	Address string `xml:"address,attr,omitempty"`
 }
 
+type DomainVSockDriver struct {
+	IOMMU  string `xml:"iommu,attr,omitempty"`
+	ATS    string `xml:"ats,attr,omitempty"`
+	Packed string `xml:"packed,attr,omitempty"`
+}
+
 type DomainVSock struct {
-	XMLName xml.Name        `xml:"vsock"`
-	Model   string          `xml:"model,attr,omitempty"`
-	CID     *DomainVSockCID `xml:"cid"`
-	Alias   *DomainAlias    `xml:"alias"`
-	Address *DomainAddress  `xml:"address"`
+	XMLName xml.Name           `xml:"vsock"`
+	Model   string             `xml:"model,attr,omitempty"`
+	CID     *DomainVSockCID    `xml:"cid"`
+	Driver  *DomainVSockDriver `xml:"driver"`
+	Alias   *DomainAlias       `xml:"alias"`
+	Address *DomainAddress     `xml:"address"`
 }
 
 type DomainMemBalloonDriver struct {
