@@ -1481,8 +1481,9 @@ type DomainHostdevSubsysPCIDriver struct {
 }
 
 type DomainHostdevSubsysPCI struct {
-	Driver *DomainHostdevSubsysPCIDriver `xml:"driver"`
-	Source *DomainHostdevSubsysPCISource `xml:"source"`
+	Driver  *DomainHostdevSubsysPCIDriver `xml:"driver"`
+	Source  *DomainHostdevSubsysPCISource `xml:"source"`
+	Teaming *DomainInterfaceTeaming       `xml:"teaming"`
 }
 
 type DomainAddressMDev struct {
