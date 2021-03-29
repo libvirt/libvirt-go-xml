@@ -1248,6 +1248,10 @@ type DomainGraphicEGLHeadless struct {
 	GL *DomainGraphicEGLHeadlessGL `xml:"gl"`
 }
 
+type DomainGraphicAudio struct {
+	ID uint `xml:"id,attr,omitempty"`
+}
+
 type DomainGraphic struct {
 	XMLName     xml.Name                  `xml:"graphics"`
 	SDL         *DomainGraphicSDL         `xml:"-"`
@@ -1256,6 +1260,7 @@ type DomainGraphic struct {
 	Desktop     *DomainGraphicDesktop     `xml:"-"`
 	Spice       *DomainGraphicSpice       `xml:"-"`
 	EGLHeadless *DomainGraphicEGLHeadless `xml:"-"`
+	Audio       *DomainGraphicAudio       `xml:"audio"`
 }
 
 type DomainVideoAccel struct {
@@ -1363,18 +1368,132 @@ type DomainSoundAudio struct {
 }
 
 type DomainAudio struct {
-	XMLName xml.Name        `xml:"audio"`
-	OSS     *DomainAudioOSS `xml:"-"`
+	XMLName    xml.Name               `xml:"audio"`
+	ID         int                    `xml:"id,attr"`
+	None       *DomainAudioNone       `xml:"-"`
+	ALSA       *DomainAudioALSA       `xml:"-"`
+	CoreAudio  *DomainAudioCoreAudio  `xml:"-"`
+	Jack       *DomainAudioJack       `xml:"-"`
+	OSS        *DomainAudioOSS        `xml:"-"`
+	PulseAudio *DomainAudioPulseAudio `xml:"-"`
+	SDL        *DomainAudioSDL        `xml:"-"`
+	SPICE      *DomainAudioSPICE      `xml:"-"`
+	File       *DomainAudioFile       `xml:"-"`
+}
+
+type DomainAudioChannel struct {
+	MixingEngine  string                      `xml:"mixingEngine,attr,omitempty"`
+	FixedSettings string                      `xml:"fixedSettings,attr,omitempty"`
+	Voices        uint                        `xml:"voices,attr,omitempty"`
+	Settings      *DomainAudioChannelSettings `xml:"settings"`
+	BufferLength  uint                        `xml:"bufferLength,attr,omitempty"`
+}
+
+type DomainAudioChannelSettings struct {
+	Frequency uint   `xml:"frequency,attr,omitempty"`
+	Channels  uint   `xml:"channels,attr,omitempty"`
+	Format    string `xml:"format,attr,omitempty"`
+}
+
+type DomainAudioNone struct {
+	Input  *DomainAudioNoneChannel `xml:"input"`
+	Output *DomainAudioNoneChannel `xml:"output"`
+}
+
+type DomainAudioNoneChannel struct {
+	DomainAudioChannel
+}
+
+type DomainAudioALSA struct {
+	Input  *DomainAudioALSAChannel `xml:"input"`
+	Output *DomainAudioALSAChannel `xml:"output"`
+}
+
+type DomainAudioALSAChannel struct {
+	DomainAudioChannel
+	Dev string `xml:"dev,attr,omitempty"`
+}
+
+type DomainAudioCoreAudio struct {
+	Input  *DomainAudioCoreAudioChannel `xml:"input"`
+	Output *DomainAudioCoreAudioChannel `xml:"output"`
+}
+
+type DomainAudioCoreAudioChannel struct {
+	DomainAudioChannel
+	BufferCount uint `xml:"bufferCount,attr,omitempty"`
+}
+
+type DomainAudioJack struct {
+	Input  *DomainAudioJackChannel `xml:"input"`
+	Output *DomainAudioJackChannel `xml:"output"`
+}
+
+type DomainAudioJackChannel struct {
+	DomainAudioChannel
+	ServerName   string `xml:"serverName,attr,omitempty"`
+	ClientName   string `xml:"clientName,attr,omitempty"`
+	ConnectPorts string `xml:"connectPorts,attr,omitempty"`
+	ExactName    string `xml:"exactName,attr,omitempty"`
 }
 
 type DomainAudioOSS struct {
-	ID     int                    `xml:"id,attr"`
+	TryMMap   string `xml:"tryMMap,attr,omitempty"`
+	Exclusive string `xml:"exclusive,attr,omitempty"`
+	DSPPolicy *int   `xml:"dspPolicy,attr"`
+
 	Input  *DomainAudioOSSChannel `xml:"input"`
 	Output *DomainAudioOSSChannel `xml:"output"`
 }
 
 type DomainAudioOSSChannel struct {
-	Dev string `xml:"dev,attr"`
+	DomainAudioChannel
+	Dev         string `xml:"dev,attr,omitempty"`
+	BufferCount uint   `xml:"bufferCount,attr,omitempty"`
+	TryPoll     string `xml:"tryPoll,attr,omitempty"`
+}
+
+type DomainAudioPulseAudio struct {
+	ServerName string                        `xml:"serverName,attr,omitempty"`
+	Input      *DomainAudioPulseAudioChannel `xml:"input"`
+	Output     *DomainAudioPulseAudioChannel `xml:"output"`
+}
+
+type DomainAudioPulseAudioChannel struct {
+	DomainAudioChannel
+	Name       string `xml:"name,attr,omitempty"`
+	StreamName string `xml:"streamName,attr,omitempty"`
+	Latency    uint   `xml:"latency,attr,omitempty"`
+}
+
+type DomainAudioSDL struct {
+	Driver string                 `xml:"driver,attr,omitempty"`
+	Input  *DomainAudioSDLChannel `xml:"input"`
+	Output *DomainAudioSDLChannel `xml:"output"`
+}
+
+type DomainAudioSDLChannel struct {
+	DomainAudioChannel
+	BufferCount uint `xml:"bufferCount,attr,omitempty"`
+}
+
+type DomainAudioSPICE struct {
+	Input  *DomainAudioSPICEChannel `xml:"input"`
+	Output *DomainAudioSPICEChannel `xml:"output"`
+}
+
+type DomainAudioSPICEChannel struct {
+	DomainAudioChannel
+}
+
+type DomainAudioFile struct {
+	Path   string                  `xml:"path,attr,omitempty"`
+	Input  *DomainAudioFileChannel `xml:"input"`
+	Output *DomainAudioFileChannel `xml:"output"`
+}
+
+type DomainAudioFileChannel struct {
+	DomainAudioChannel
 }
 
 type DomainRNGRate struct {
@@ -4905,38 +5024,74 @@ func (a *DomainGraphicListener) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	return nil
 }
 
+type domainGraphicSDL struct {
+	DomainGraphicSDL
+	Audio *DomainGraphicAudio `xml:"audio"`
+}
+
+type domainGraphicVNC struct {
+	DomainGraphicVNC
+	Audio *DomainGraphicAudio `xml:"audio"`
+}
+
+type domainGraphicRDP struct {
+	DomainGraphicRDP
+	Audio *DomainGraphicAudio `xml:"audio"`
+}
+
+type domainGraphicDesktop struct {
+	DomainGraphicDesktop
+	Audio *DomainGraphicAudio `xml:"audio"`
+}
+
+type domainGraphicSpice struct {
+	DomainGraphicSpice
+	Audio *DomainGraphicAudio `xml:"audio"`
+}
+
+type domainGraphicEGLHeadless struct {
+	DomainGraphicEGLHeadless
+	Audio *DomainGraphicAudio `xml:"audio"`
+}
+
 func (a *DomainGraphic) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name.Local = "graphics"
 	if a.SDL != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "sdl",
 		})
-		return e.EncodeElement(a.SDL, start)
+		sdl := domainGraphicSDL{*a.SDL, a.Audio}
+		return e.EncodeElement(sdl, start)
 	} else if a.VNC != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "vnc",
 		})
-		return e.EncodeElement(a.VNC, start)
+		vnc := domainGraphicVNC{*a.VNC, a.Audio}
+		return e.EncodeElement(vnc, start)
 	} else if a.RDP != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "rdp",
 		})
-		return e.EncodeElement(a.RDP, start)
+		rdp := domainGraphicRDP{*a.RDP, a.Audio}
+		return e.EncodeElement(rdp, start)
 	} else if a.Desktop != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "desktop",
 		})
-		return e.EncodeElement(a.Desktop, start)
+		desktop := domainGraphicDesktop{*a.Desktop, a.Audio}
+		return e.EncodeElement(desktop, start)
 	} else if a.Spice != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "spice",
 		})
-		return e.EncodeElement(a.Spice, start)
+		spice := domainGraphicSpice{*a.Spice, a.Audio}
+		return e.EncodeElement(spice, start)
 	} else if a.EGLHeadless != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "egl-headless",
 		})
-		return e.EncodeElement(a.EGLHeadless, start)
+		egl := domainGraphicEGLHeadless{*a.EGLHeadless, a.Audio}
+		return e.EncodeElement(egl, start)
 	}
 	return nil
 }
@@ -4947,52 +5102,58 @@ func (a *DomainGraphic) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		return fmt.Errorf("Missing 'type' attribute on domain graphics")
 	}
 	if typ == "sdl" {
-		var sdl DomainGraphicSDL
+		var sdl domainGraphicSDL
 		err := d.DecodeElement(&sdl, &start)
 		if err != nil {
 			return err
 		}
-		a.SDL = &sdl
+		a.SDL = &sdl.DomainGraphicSDL
+		a.Audio = sdl.Audio
 		return nil
 	} else if typ == "vnc" {
-		var vnc DomainGraphicVNC
+		var vnc domainGraphicVNC
 		err := d.DecodeElement(&vnc, &start)
 		if err != nil {
 			return err
 		}
-		a.VNC = &vnc
+		a.VNC = &vnc.DomainGraphicVNC
+		a.Audio = vnc.Audio
 		return nil
 	} else if typ == "rdp" {
-		var rdp DomainGraphicRDP
+		var rdp domainGraphicRDP
 		err := d.DecodeElement(&rdp, &start)
 		if err != nil {
 			return err
 		}
-		a.RDP = &rdp
+		a.RDP = &rdp.DomainGraphicRDP
+		a.Audio = rdp.Audio
 		return nil
 	} else if typ == "desktop" {
-		var desktop DomainGraphicDesktop
+		var desktop domainGraphicDesktop
 		err := d.DecodeElement(&desktop, &start)
 		if err != nil {
 			return err
 		}
-		a.Desktop = &desktop
+		a.Desktop = &desktop.DomainGraphicDesktop
+		a.Audio = desktop.Audio
 		return nil
 	} else if typ == "spice" {
-		var spice DomainGraphicSpice
+		var spice domainGraphicSpice
 		err := d.DecodeElement(&spice, &start)
 		if err != nil {
 			return err
 		}
-		a.Spice = &spice
+		a.Spice = &spice.DomainGraphicSpice
+		a.Audio = spice.Audio
 		return nil
 	} else if typ == "egl-headless" {
-		var egl DomainGraphicEGLHeadless
+		var egl domainGraphicEGLHeadless
 		err := d.DecodeElement(&egl, &start)
 		if err != nil {
 			return err
 		}
-		a.EGLHeadless = &egl
+		a.EGLHeadless = &egl.DomainGraphicEGLHeadless
+		a.Audio = egl.Audio
 		return nil
 	}
 	return nil
@@ -5000,11 +5161,56 @@ func (a *DomainGraphic) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 
 func (a *DomainAudio) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name.Local = "audio"
-	if a.OSS != nil {
+	if a.ID != 0 {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "id"}, fmt.Sprintf("%d", a.ID),
+		})
+	}
+	if a.None != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "none",
+		})
+		return e.EncodeElement(a.None, start)
+	} else if a.ALSA != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "alsa",
+		})
+		return e.EncodeElement(a.ALSA, start)
+	} else if a.CoreAudio != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "coreaudio",
+		})
+		return e.EncodeElement(a.CoreAudio, start)
+	} else if a.Jack != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "jack",
+		})
+		return e.EncodeElement(a.Jack, start)
+	} else if a.OSS != nil {
 		start.Attr = append(start.Attr, xml.Attr{
 			xml.Name{Local: "type"}, "oss",
 		})
 		return e.EncodeElement(a.OSS, start)
+	} else if a.PulseAudio != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "pulseaudio",
+		})
+		return e.EncodeElement(a.PulseAudio, start)
+	} else if a.SDL != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "sdl",
+		})
+		return e.EncodeElement(a.SDL, start)
+	} else if a.SPICE != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "spice",
+		})
+		return e.EncodeElement(a.SPICE, start)
+	} else if a.File != nil {
+		start.Attr = append(start.Attr, xml.Attr{
+			xml.Name{Local: "type"}, "file",
+		})
+		return e.EncodeElement(a.File, start)
 	}
 	return nil
 }
@@ -5014,13 +5220,86 @@ func (a *DomainAudio) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	if !ok {
 		return fmt.Errorf("Missing 'type' attribute on domain audio")
 	}
-	if typ == "oss" {
+	id, ok := getAttr(start.Attr, "id")
+	if ok {
+		idval, err := strconv.ParseInt(id, 10, 32)
+		if err != nil {
+			return err
+		}
+		a.ID = int(idval)
+	}
+
+	if typ == "none" {
+		var none DomainAudioNone
+		err := d.DecodeElement(&none, &start)
+		if err != nil {
+			return err
+		}
+		a.None = &none
+		return nil
+	} else if typ == "alsa" {
+		var alsa DomainAudioALSA
+		err := d.DecodeElement(&alsa, &start)
+		if err != nil {
+			return err
+		}
+		a.ALSA = &alsa
+		return nil
+	} else if typ == "coreaudio" {
+		var coreaudio DomainAudioCoreAudio
+		err := d.DecodeElement(&coreaudio, &start)
+		if err != nil {
+			return err
+		}
+		a.CoreAudio = &coreaudio
+		return nil
+	} else if typ == "jack" {
+		var jack DomainAudioJack
+		err := d.DecodeElement(&jack, &start)
+		if err != nil {
+			return err
+		}
+		a.Jack = &jack
+		return nil
+	} else if typ == "oss" {
 		var oss DomainAudioOSS
 		err := d.DecodeElement(&oss, &start)
 		if err != nil {
 			return err
 		}
 		a.OSS = &oss
+		return nil
+	} else if typ == "pulseaudio" {
+		var pulseaudio DomainAudioPulseAudio
+		err := d.DecodeElement(&pulseaudio, &start)
+		if err != nil {
+			return err
+		}
+		a.PulseAudio = &pulseaudio
+		return nil
+	} else if typ == "sdl" {
+		var sdl DomainAudioSDL
+		err := d.DecodeElement(&sdl, &start)
+		if err != nil {
+			return err
+		}
+		a.SDL = &sdl
+		return nil
+	} else if typ == "spice" {
+		var spice DomainAudioSPICE
+		err := d.DecodeElement(&spice, &start)
+		if err != nil {
+			return err
+		}
+		a.SPICE = &spice
+		return nil
+	} else if typ == "file" {
+		var file DomainAudioFile
+		err := d.DecodeElement(&file, &start)
+		if err != nil {
+			return err
+		}
+		a.File = &file
 		return nil
 	}
 	return nil
