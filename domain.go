@@ -1157,6 +1157,7 @@ type DomainGraphicVNC struct {
 	Passwd        string                  `xml:"passwd,attr,omitempty"`
 	PasswdValidTo string                  `xml:"passwdValidTo,attr,omitempty"`
 	Connected     string                  `xml:"connected,attr,omitempty"`
+	PowerControl  string                  `xml:"powerControl,attr,omitempty"`
 	Listen        string                  `xml:"listen,attr,omitempty"`
 	Listeners     []DomainGraphicListener `xml:"listen"`
 }
