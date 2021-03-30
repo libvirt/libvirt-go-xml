@@ -2048,26 +2048,36 @@ type DomainOSInitEnv struct {
 	Value string `xml:",chardata"`
 }
 
+type DomainOSFirmwareInfo struct {
+	Features []DomainOSFirmwareFeature `xml:"feature"`
+}
+
+type DomainOSFirmwareFeature struct {
+	Enabled string `xml:"enabled,attr,omitempty"`
+	Name    string `xml:"name,attr,omitempty"`
+}
+
 type DomainOS struct {
-	Type        *DomainOSType      `xml:"type"`
-	Firmware    string             `xml:"firmware,attr,omitempty"`
-	Init        string             `xml:"init,omitempty"`
-	InitArgs    []string           `xml:"initarg"`
-	InitEnv     []DomainOSInitEnv  `xml:"initenv"`
-	InitDir     string             `xml:"initdir,omitempty"`
-	InitUser    string             `xml:"inituser,omitempty"`
-	InitGroup   string             `xml:"initgroup,omitempty"`
-	Loader      *DomainLoader      `xml:"loader"`
-	NVRam       *DomainNVRam       `xml:"nvram"`
-	Kernel      string             `xml:"kernel,omitempty"`
-	Initrd      string             `xml:"initrd,omitempty"`
-	Cmdline     string             `xml:"cmdline,omitempty"`
-	DTB         string             `xml:"dtb,omitempty"`
-	ACPI        *DomainACPI        `xml:"acpi"`
-	BootDevices []DomainBootDevice `xml:"boot"`
-	BootMenu    *DomainBootMenu    `xml:"bootmenu"`
-	BIOS        *DomainBIOS        `xml:"bios"`
-	SMBios      *DomainSMBios      `xml:"smbios"`
+	Type         *DomainOSType         `xml:"type"`
+	Firmware     string                `xml:"firmware,attr,omitempty"`
+	FirmwareInfo *DomainOSFirmwareInfo `xml:"firmware"`
+	Init         string                `xml:"init,omitempty"`
+	InitArgs     []string              `xml:"initarg"`
+	InitEnv      []DomainOSInitEnv     `xml:"initenv"`
+	InitDir      string                `xml:"initdir,omitempty"`
+	InitUser     string                `xml:"inituser,omitempty"`
+	InitGroup    string                `xml:"initgroup,omitempty"`
+	Loader       *DomainLoader         `xml:"loader"`
+	NVRam        *DomainNVRam          `xml:"nvram"`
+	Kernel       string                `xml:"kernel,omitempty"`
+	Initrd       string                `xml:"initrd,omitempty"`
+	Cmdline      string                `xml:"cmdline,omitempty"`
+	DTB          string                `xml:"dtb,omitempty"`
+	ACPI         *DomainACPI           `xml:"acpi"`
+	BootDevices  []DomainBootDevice    `xml:"boot"`
+	BootMenu     *DomainBootMenu       `xml:"bootmenu"`
+	BIOS         *DomainBIOS           `xml:"bios"`
+	SMBios       *DomainSMBios         `xml:"smbios"`
 }
 
 type DomainResource struct {
