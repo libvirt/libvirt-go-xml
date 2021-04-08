@@ -291,6 +291,7 @@ type NodeDeviceCCWCapability struct {
 type NodeDeviceMDevCapability struct {
 	Type       *NodeDeviceMDevCapabilityType   `xml:"type"`
 	IOMMUGroup *NodeDeviceIOMMUGroup           `xml:"iommuGroup"`
+	UUID       string                          `xml:"uuid,omitempty"`
 	Attrs      []NodeDeviceMDevCapabilityAttrs `xml:"attr,omitempty"`
 }
 
