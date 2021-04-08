@@ -275,10 +275,11 @@ type DomainDiskDriver struct {
 }
 
 type DomainDiskTarget struct {
-	Dev       string `xml:"dev,attr,omitempty"`
-	Bus       string `xml:"bus,attr,omitempty"`
-	Tray      string `xml:"tray,attr,omitempty"`
-	Removable string `xml:"removable,attr,omitempty"`
+	Dev          string `xml:"dev,attr,omitempty"`
+	Bus          string `xml:"bus,attr,omitempty"`
+	Tray         string `xml:"tray,attr,omitempty"`
+	Removable    string `xml:"removable,attr,omitempty"`
+	RotationRate uint   `xml:"rotation_rate,attr,omitempty"`
 }
 
 type DomainDiskEncryption struct {
