@@ -98,6 +98,7 @@ type DomainController struct {
 	USB          *DomainControllerUSB          `xml:"-"`
 	VirtIOSerial *DomainControllerVirtIOSerial `xml:"-"`
 	XenBus       *DomainControllerXenBus       `xml:"-"`
+	ACPI         *DomainDeviceACPI             `xml:"acpi"`
 	Alias        *DomainAlias                  `xml:"alias"`
 	Address      *DomainAddress                `xml:"address"`
 }
@@ -381,6 +382,7 @@ type DomainDisk struct {
 	Product       string                  `xml:"product,omitempty"`
 	Encryption    *DomainDiskEncryption   `xml:"encryption"`
 	Boot          *DomainDeviceBoot       `xml:"boot"`
+	ACPI          *DomainDeviceACPI       `xml:"acpi"`
 	Alias         *DomainAlias            `xml:"alias"`
 	Address       *DomainAddress          `xml:"address"`
 }
@@ -484,6 +486,7 @@ type DomainFilesystem struct {
 	SpaceHardLimit *DomainFilesystemSpaceHardLimit `xml:"space_hard_limit"`
 	SpaceSoftLimit *DomainFilesystemSpaceSoftLimit `xml:"space_soft_limit"`
 	Boot           *DomainDeviceBoot               `xml:"boot"`
+	ACPI           *DomainDeviceACPI               `xml:"acpi"`
 	Alias          *DomainAlias                    `xml:"alias"`
 	Address        *DomainAddress                  `xml:"address"`
 }
@@ -793,6 +796,7 @@ type DomainInterface struct {
 	PortOptions         *DomainInterfacePortOptions `xml:"port"`
 	Coalesce            *DomainInterfaceCoalesce    `xml:"coalesce"`
 	ROM                 *DomainROM                  `xml:"rom"`
+	ACPI                *DomainDeviceACPI           `xml:"acpi"`
 	Alias               *DomainAlias                `xml:"alias"`
 	Address             *DomainAddress              `xml:"address"`
 }
@@ -934,6 +938,10 @@ type DomainAlias struct {
 	Name string `xml:"name,attr"`
 }
 
+type DomainDeviceACPI struct {
+	Index uint `xml:"index,attr,omitempty"`
+}
+
 type DomainAddressPCI struct {
 	Domain        *uint              `xml:"domain,attr"`
 	Bus           *uint              `xml:"bus,attr"`
@@ -1028,6 +1036,7 @@ type DomainConsole struct {
 	Protocol *DomainChardevProtocol `xml:"protocol"`
 	Target   *DomainConsoleTarget   `xml:"target"`
 	Log      *DomainChardevLog      `xml:"log"`
+	ACPI     *DomainDeviceACPI      `xml:"acpi"`
 	Alias    *DomainAlias           `xml:"alias"`
 	Address  *DomainAddress         `xml:"address"`
 }
@@ -1038,6 +1047,7 @@ type DomainSerial struct {
 	Protocol *DomainChardevProtocol `xml:"protocol"`
 	Target   *DomainSerialTarget    `xml:"target"`
 	Log      *DomainChardevLog      `xml:"log"`
+	ACPI     *DomainDeviceACPI      `xml:"acpi"`
 	Alias    *DomainAlias           `xml:"alias"`
 	Address  *DomainAddress         `xml:"address"`
 }
@@ -1048,6 +1058,7 @@ type DomainParallel struct {
 	Protocol *DomainChardevProtocol `xml:"protocol"`
 	Target   *DomainParallelTarget  `xml:"target"`
 	Log      *DomainChardevLog      `xml:"log"`
+	ACPI     *DomainDeviceACPI      `xml:"acpi"`
 	Alias    *DomainAlias           `xml:"alias"`
 	Address  *DomainAddress         `xml:"address"`
 }
@@ -1062,6 +1073,7 @@ type DomainChannel struct {
 	Protocol *DomainChardevProtocol `xml:"protocol"`
 	Target   *DomainChannelTarget   `xml:"target"`
 	Log      *DomainChardevLog      `xml:"log"`
+	ACPI     *DomainDeviceACPI      `xml:"acpi"`
 	Alias    *DomainAlias           `xml:"alias"`
 	Address  *DomainAddress         `xml:"address"`
 }
@@ -1072,6 +1084,7 @@ type DomainRedirDev struct {
 	Source   *DomainChardevSource   `xml:"source"`
 	Protocol *DomainChardevProtocol `xml:"protocol"`
 	Boot     *DomainDeviceBoot      `xml:"boot"`
+	ACPI     *DomainDeviceACPI      `xml:"acpi"`
 	Alias    *DomainAlias           `xml:"alias"`
 	Address  *DomainAddress         `xml:"address"`
 }
@@ -1095,6 +1108,7 @@ type DomainInput struct {
 	Model   string             `xml:"model,attr,omitempty"`
 	Driver  *DomainInputDriver `xml:"driver"`
 	Source  *DomainInputSource `xml:"source"`
+	ACPI    *DomainDeviceACPI  `xml:"acpi"`
 	Alias   *DomainAlias       `xml:"alias"`
 	Address *DomainAddress     `xml:"address"`
 }
@@ -1292,6 +1306,7 @@ type DomainVideo struct {
 	XMLName xml.Name           `xml:"video"`
 	Model   DomainVideoModel   `xml:"model"`
 	Driver  *DomainVideoDriver `xml:"driver"`
+	ACPI    *DomainDeviceACPI  `xml:"acpi"`
 	Alias   *DomainAlias       `xml:"alias"`
 	Address *DomainAddress     `xml:"address"`
 }
@@ -1315,6 +1330,7 @@ type DomainMemBalloon struct {
 	FreePageReporting string                  `xml:"freePageReporting,attr,omitempty"`
 	Driver            *DomainMemBalloonDriver `xml:"driver"`
 	Stats             *DomainMemBalloonStats  `xml:"stats"`
+	ACPI              *DomainDeviceACPI       `xml:"acpi"`
 	Alias             *DomainAlias            `xml:"alias"`
 	Address           *DomainAddress          `xml:"address"`
 }
@@ -1335,6 +1351,7 @@ type DomainVSock struct {
 	Model   string             `xml:"model,attr,omitempty"`
 	CID     *DomainVSockCID    `xml:"cid"`
 	Driver  *DomainVSockDriver `xml:"driver"`
+	ACPI    *DomainDeviceACPI  `xml:"acpi"`
 	Alias   *DomainAlias       `xml:"alias"`
 	Address *DomainAddress     `xml:"address"`
 }
@@ -1346,10 +1363,11 @@ type DomainMemBalloonDriver struct {
 }
 
 type DomainPanic struct {
-	XMLName xml.Name       `xml:"panic"`
-	Model   string         `xml:"model,attr,omitempty"`
-	Alias   *DomainAlias   `xml:"alias"`
-	Address *DomainAddress `xml:"address"`
+	XMLName xml.Name          `xml:"panic"`
+	Model   string            `xml:"model,attr,omitempty"`
+	ACPI    *DomainDeviceACPI `xml:"acpi"`
+	Alias   *DomainAlias      `xml:"alias"`
+	Address *DomainAddress    `xml:"address"`
 }
 
 type DomainSoundCodec struct {
@@ -1361,6 +1379,7 @@ type DomainSound struct {
 	Model   string             `xml:"model,attr"`
 	Codec   []DomainSoundCodec `xml:"codec"`
 	Audio   *DomainSoundAudio  `xml:"audio"`
+	ACPI    *DomainDeviceACPI  `xml:"acpi"`
 	Alias   *DomainAlias       `xml:"alias"`
 	Address *DomainAddress     `xml:"address"`
 }
@@ -1527,6 +1546,7 @@ type DomainRNG struct {
 	Driver  *DomainRNGDriver  `xml:"driver"`
 	Rate    *DomainRNGRate    `xml:"rate"`
 	Backend *DomainRNGBackend `xml:"backend"`
+	ACPI    *DomainDeviceACPI `xml:"acpi"`
 	Alias   *DomainAlias      `xml:"alias"`
 	Address *DomainAddress    `xml:"address"`
 }
@@ -1672,6 +1692,7 @@ type DomainHostdev struct {
 	CapsNet        *DomainHostdevCapsNet        `xml:"-"`
 	Boot           *DomainDeviceBoot            `xml:"boot"`
 	ROM            *DomainROM                   `xml:"rom"`
+	ACPI           *DomainDeviceACPI            `xml:"acpi"`
 	Alias          *DomainAlias                 `xml:"alias"`
 	Address        *DomainAddress               `xml:"address"`
 }
@@ -1728,22 +1749,25 @@ type DomainMemorydev struct {
 	UUID    string                 `xml:"uuid,omitempty"`
 	Source  *DomainMemorydevSource `xml:"source"`
 	Target  *DomainMemorydevTarget `xml:"target"`
+	ACPI    *DomainDeviceACPI      `xml:"acpi"`
 	Alias   *DomainAlias           `xml:"alias"`
 	Address *DomainAddress         `xml:"address"`
 }
 
 type DomainWatchdog struct {
-	XMLName xml.Name       `xml:"watchdog"`
-	Model   string         `xml:"model,attr"`
-	Action  string         `xml:"action,attr,omitempty"`
-	Alias   *DomainAlias   `xml:"alias"`
-	Address *DomainAddress `xml:"address"`
+	XMLName xml.Name          `xml:"watchdog"`
+	Model   string            `xml:"model,attr"`
+	Action  string            `xml:"action,attr,omitempty"`
+	ACPI    *DomainDeviceACPI `xml:"acpi"`
+	Alias   *DomainAlias      `xml:"alias"`
+	Address *DomainAddress    `xml:"address"`
 }
 
 type DomainHub struct {
-	Type    string         `xml:"type,attr"`
-	Alias   *DomainAlias   `xml:"alias"`
-	Address *DomainAddress `xml:"address"`
+	Type    string            `xml:"type,attr"`
+	ACPI    *DomainDeviceACPI `xml:"acpi"`
+	Alias   *DomainAlias      `xml:"alias"`
+	Address *DomainAddress    `xml:"address"`
 }
 
 type DomainIOMMU struct {
@@ -1760,8 +1784,9 @@ type DomainIOMMUDriver struct {
 }
 
 type DomainNVRAM struct {
-	Alias   *DomainAlias   `xml:"alias"`
-	Address *DomainAddress `xml:"address"`
+	ACPI    *DomainDeviceACPI `xml:"acpi"`
+	Alias   *DomainAlias      `xml:"alias"`
+	Address *DomainAddress    `xml:"address"`
 }
 
 type DomainLease struct {
@@ -1782,6 +1807,7 @@ type DomainSmartcard struct {
 	Host        *DomainSmartcardHost      `xml:"-"`
 	HostCerts   []DomainSmartcardHostCert `xml:"certificate"`
 	Database    string                    `xml:"database,omitempty"`
+	ACPI        *DomainDeviceACPI         `xml:"acpi"`
 	Alias       *DomainAlias              `xml:"alias"`
 	Address     *DomainAddress            `xml:"address"`
 }
@@ -1797,6 +1823,7 @@ type DomainTPM struct {
 	XMLName xml.Name          `xml:"tpm"`
 	Model   string            `xml:"model,attr,omitempty"`
 	Backend *DomainTPMBackend `xml:"backend"`
+	ACPI    *DomainDeviceACPI `xml:"acpi"`
 	Alias   *DomainAlias      `xml:"alias"`
 	Address *DomainAddress    `xml:"address"`
 }
@@ -1832,6 +1859,7 @@ type DomainShmem struct {
 	Model   *DomainShmemModel  `xml:"model"`
 	Server  *DomainShmemServer `xml:"server"`
 	MSI     *DomainShmemMSI    `xml:"msi"`
+	ACPI    *DomainDeviceACPI  `xml:"acpi"`
 	Alias   *DomainAlias       `xml:"alias"`
 	Address *DomainAddress     `xml:"address"`
 }
