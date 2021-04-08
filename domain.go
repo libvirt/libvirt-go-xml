@@ -2571,6 +2571,11 @@ type DomainQEMUCapabilities struct {
 	Del     []DomainQEMUCapabilitiesEntry `xml:"del"`
 }
 
+type DomainQEMUDeprecation struct {
+	XMLName  xml.Name `xml:"http://libvirt.org/schemas/domain/qemu/1.0 deprecation"`
+	Behavior string   `xml:"behavior,attr,omitempty"`
+}
+
 type DomainLXCNamespace struct {
 	XMLName  xml.Name               `xml:"http://libvirt.org/schemas/domain/lxc/1.0 namespace"`
 	ShareNet *DomainLXCNamespaceMap `xml:"sharenet"`
@@ -2772,6 +2777,7 @@ type Domain struct {
 	/* Hypervisor namespaces must all be last */
 	QEMUCommandline      *DomainQEMUCommandline
 	QEMUCapabilities     *DomainQEMUCapabilities
+	QEMUDeprecation      *DomainQEMUDeprecation
 	LXCNamespace         *DomainLXCNamespace
 	BHyveCommandline     *DomainBHyveCommandline
 	VMWareDataCenterPath *DomainVMWareDataCenterPath
