@@ -409,7 +409,8 @@ type DomainFilesystemSource struct {
 }
 
 type DomainFilesystemSourceMount struct {
-	Dir string `xml:"dir,attr"`
+	Dir    string `xml:"dir,attr,omitempty"`
+	Socket string `xml:"socket,attr,omitempty"`
 }
 
 type DomainFilesystemSourceBlock struct {
@@ -459,16 +460,21 @@ type DomainFilesystemBinaryCache struct {
 	Mode string `xml:"mode,attr"`
 }
 
+type DomainFilesystemBinarySandbox struct {
+	Mode string `xml:"mode,attr"`
+}
+
 type DomainFilesystemBinaryLock struct {
 	POSIX string `xml:"posix,attr,omitempty"`
 	Flock string `xml:"flock,attr,omitempty"`
 }
 
 type DomainFilesystemBinary struct {
-	Path  string                       `xml:"path,attr,omitempty"`
-	XAttr string                       `xml:"xattr,attr,omitempty"`
-	Cache *DomainFilesystemBinaryCache `xml:"cache"`
-	Lock  *DomainFilesystemBinaryLock  `xml:"lock"`
+	Path    string                         `xml:"path,attr,omitempty"`
+	XAttr   string                         `xml:"xattr,attr,omitempty"`
+	Cache   *DomainFilesystemBinaryCache   `xml:"cache"`
+	Sandbox *DomainFilesystemBinarySandbox `xml:"sandbox"`
+	Lock    *DomainFilesystemBinaryLock    `xml:"lock"`
 }
 
 type DomainFilesystem struct {
