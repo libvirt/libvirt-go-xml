@@ -94,11 +94,12 @@ type DomainCapsEnum struct {
 }
 
 type DomainCapsDevices struct {
-	Disk     *DomainCapsDevice `xml:"disk"`
-	Graphics *DomainCapsDevice `xml:"graphics"`
-	Video    *DomainCapsDevice `xml:"video"`
-	HostDev  *DomainCapsDevice `xml:"hostdev"`
-	RNG      *DomainCapsDevice `xml:"rng"`
+	Disk       *DomainCapsDevice `xml:"disk"`
+	Graphics   *DomainCapsDevice `xml:"graphics"`
+	Video      *DomainCapsDevice `xml:"video"`
+	HostDev    *DomainCapsDevice `xml:"hostdev"`
+	RNG        *DomainCapsDevice `xml:"rng"`
+	FileSystem *DomainCapsDevice `xml:"filesystem"`
 }
 
 type DomainCapsDevice struct {
