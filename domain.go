@@ -295,6 +295,7 @@ type DomainDiskShareable struct {
 }
 
 type DomainDiskTransient struct {
+	ShareBacking string `xml:"shareBacking,attr,omitempty"`
 }
 
 type DomainDiskIOTune struct {
