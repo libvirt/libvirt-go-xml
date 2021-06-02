@@ -1127,7 +1127,18 @@ type DomainInputDriver struct {
 }
 
 type DomainInputSource struct {
+	Passthrough *DomainInputSourcePassthrough `xml:"-"`
+	EVDev       *DomainInputSourceEVDev       `xml:"-"`
+}
+
+type DomainInputSourcePassthrough struct {
 	EVDev string `xml:"evdev,attr"`
+}
+
+type DomainInputSourceEVDev struct {
+	Dev    string `xml:"dev,attr"`
+	Grab   string `xml:"grab,attr,omitempty"`
+	Repeat string `xml:"repeat,attr,omitempty"`
 }
 
 type DomainGraphicListenerAddress struct {
@@ -3488,6 +3499,85 @@ func (d *DomainDisk) Marshal() (string, error) {
 		return "", err
 	}
 	return string(doc), nil
+}
+
+type domainInputSource DomainInputSource
+
+type domainInputSourcePassthrough struct {
+	DomainInputSourcePassthrough
+	domainInputSource
+}
+
+type domainInputSourceEVDev struct {
+	DomainInputSourceEVDev
+	domainInputSource
+}
+
+func (a *DomainInputSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if a.Passthrough != nil {
+		passthrough := domainInputSourcePassthrough{
+			*a.Passthrough, domainInputSource(*a),
+		}
+		return e.EncodeElement(&passthrough, start)
+	} else if a.EVDev != nil {
+		evdev := domainInputSourceEVDev{
+			*a.EVDev, domainInputSource(*a),
+		}
+		return e.EncodeElement(&evdev, start)
+	}
+	return nil
+}
+
+func (a *DomainInputSource) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if a.Passthrough != nil {
+		passthrough := domainInputSourcePassthrough{
+			*a.Passthrough, domainInputSource(*a),
+		}
+		err := d.DecodeElement(&passthrough, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainInputSource(passthrough.domainInputSource)
+		a.Passthrough = &passthrough.DomainInputSourcePassthrough
+	} else if a.EVDev != nil {
+		evdev := domainInputSourceEVDev{
+			*a.EVDev, domainInputSource(*a),
+		}
+		err := d.DecodeElement(&evdev, &start)
+		if err != nil {
+			return err
+		}
+		*a = DomainInputSource(evdev.domainInputSource)
+		a.EVDev = &evdev.DomainInputSourceEVDev
+	}
+	return nil
+}
+
+type domainInput DomainInput
+
+func (a *DomainInput) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "input"
+	input := domainInput(*a)
+	return e.EncodeElement(input, start)
+}
+
+func (a *DomainInput) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	typ, ok := getAttr(start.Attr, "type")
+	if ok {
+		a.Source = &DomainInputSource{}
+		if typ == "passthrough" {
+			a.Source.Passthrough = &DomainInputSourcePassthrough{}
+		} else if typ == "evdev" {
+			a.Source.EVDev = &DomainInputSourceEVDev{}
+		}
+	}
+	input := domainInput(*a)
+	err := d.DecodeElement(&input, &start)
+	if err != nil {
+		return err
+	}
+	*a = DomainInput(input)
+	return nil
 }
 
 func (a *DomainFilesystemSource) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
